@@ -1,9 +1,11 @@
 package service
 
 import (
-	"gitlab.com/distributed_lab/logan/v3"
 	"net"
 	"net/http"
+
+	"gitlab.com/distributed_lab/kit/pgdb"
+	"gitlab.com/distributed_lab/logan/v3"
 
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 
@@ -12,9 +14,11 @@ import (
 )
 
 type service struct {
-	log      *logan.Entry
-	copus    types.Copus
-	listener net.Listener
+	log             *logan.Entry
+	copus           types.Copus
+	listener        net.Listener
+	db              *pgdb.DB
+	ethMinterConfig config.EthMinterConfig
 }
 
 func (s *service) run() error {
@@ -30,9 +34,11 @@ func (s *service) run() error {
 
 func newService(cfg config.Config) *service {
 	return &service{
-		log:      cfg.Log(),
-		copus:    cfg.Copus(),
-		listener: cfg.Listener(),
+		log:             cfg.Log(),
+		copus:           cfg.Copus(),
+		listener:        cfg.Listener(),
+		db:              cfg.DB(),
+		ethMinterConfig: cfg.EthMinter(),
 	}
 }
 

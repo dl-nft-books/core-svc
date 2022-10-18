@@ -1,0 +1,6 @@
+in: query
+name: 'chain_id'
+required: true
+schema:
+  type: integer
+  description: Chain identifier

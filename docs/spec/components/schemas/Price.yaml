@@ -1,0 +1,25 @@
+allOf:
+  - $ref: '#/components/schemas/PriceKey'
+  - type: object
+    required:
+      - attributes
+      - relationships
+    properties:
+      attributes:
+        type: object
+        required:
+          - amount
+        properties:
+          amount:
+            type: string
+            description: amount of specified tokens required to buy the nft
+      relationships:
+        type: object
+        required:
+          - signature
+        properties:
+          signature:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/SignatureKey'

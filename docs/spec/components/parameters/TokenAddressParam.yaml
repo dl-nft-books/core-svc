@@ -1,0 +1,6 @@
+in: query
+name: 'token_address'
+required: false
+schema:
+  type: string
+  description: ERC-20 contract address (if not specified, the price will be converted in native token of the network)
