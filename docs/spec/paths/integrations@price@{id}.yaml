@@ -11,7 +11,7 @@ get:
   summary: Get Price ($) of nft with signature
   operationId: getPrice
   parameters:
-    - $ref: '#/components/parameters/NetworkIDParam'
+    - $ref: '#/components/parameters/PlatformParam'
     - $ref: '#/components/parameters/TokenAddressParam'
   responses:
     '200':

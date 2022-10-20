@@ -3,6 +3,7 @@ package data
 type BookQ interface {
 	New() BookQ
 	Get() (*Book, error)
+	FilterActual() BookQ
 	FilterByID(id int64) BookQ
 }
 
@@ -12,6 +13,8 @@ type Book struct {
 	Description     string `db:"description" structs:"description"`
 	Price           string `db:"price" structs:"price"`
 	ContractAddress string `db:"contract_address" structs:"contract_address"`
+	ContractName    string `db:"contract_name" structs:"contract_name"`
+	ContractVersion string `db:"contract_version" structs:"contract_version"`
 	Banner          string `db:"banner" structs:"banner"`
 	File            string `db:"file" structs:"file"`
 	Deleted         bool   `db:"deleted" structs:"-"`

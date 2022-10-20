@@ -8,6 +8,6 @@ type ResourceType string
 
 // List of ResourceType
 const (
-	PRICE      ResourceType = "price"
+	PRICES     ResourceType = "prices"
 	SIGNATURES ResourceType = "signatures"
 )

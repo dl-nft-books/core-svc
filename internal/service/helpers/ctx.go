@@ -16,6 +16,7 @@ const (
 	logCtxKey ctxKey = iota
 	booksQCtxKey
 	minterCtxKey
+	coingeckoCtxKey
 )
 
 func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
@@ -32,12 +33,22 @@ func CtxBooksQ(entry data.BookQ) func(context.Context) context.Context {
 
 func CtxMinter(entry config.EthMinterConfig) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
-		return context.WithValue(ctx, booksQCtxKey, entry)
+		return context.WithValue(ctx, minterCtxKey, entry)
 	}
 }
 
+func CtxCoingecko(entry config.CoingeckoConfig) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, coingeckoCtxKey, entry)
+	}
+}
+
+func Coingecko(r *http.Request) config.CoingeckoConfig {
+	return r.Context().Value(coingeckoCtxKey).(config.CoingeckoConfig)
+}
+
 func Minter(r *http.Request) config.EthMinterConfig {
-	return r.Context().Value(booksQCtxKey).(config.EthMinterConfig)
+	return r.Context().Value(minterCtxKey).(config.EthMinterConfig)
 }
 
 func BooksQ(r *http.Request) data.BookQ {

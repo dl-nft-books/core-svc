@@ -18,7 +18,8 @@ func (s *service) router() chi.Router {
 		ape.CtxMiddleware(
 			helpers.CtxLog(s.log),
 			helpers.CtxBooksQ(postgres.NewBooksQ(s.db)),
-			helpers.CtxMinter(s.ethMinterConfig),
+			helpers.CtxMinter(*s.ethMinterConfig),
+			helpers.CtxCoingecko(*s.coingeckoConfig),
 		),
 	)
 	r.Route("/integrations/price", func(r chi.Router) {

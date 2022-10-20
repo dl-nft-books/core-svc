@@ -18,7 +18,8 @@ type service struct {
 	copus           types.Copus
 	listener        net.Listener
 	db              *pgdb.DB
-	ethMinterConfig config.EthMinterConfig
+	ethMinterConfig *config.EthMinterConfig
+	coingeckoConfig *config.CoingeckoConfig
 }
 
 func (s *service) run() error {
@@ -39,6 +40,7 @@ func newService(cfg config.Config) *service {
 		listener:        cfg.Listener(),
 		db:              cfg.DB(),
 		ethMinterConfig: cfg.EthMinter(),
+		coingeckoConfig: cfg.Coingecko(),
 	}
 }
 

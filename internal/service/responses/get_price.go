@@ -6,8 +6,8 @@ import (
 )
 
 func NewGetPriceResponse(tokenAmount string, signature *helpers.SignatureParameters) resources.PriceResponse {
-	priceKey := resources.NewKeyInt64(0, resources.PRICE)
-	signatureKey := resources.NewKeyInt64(0, resources.SIGNATURES)
+	priceKey := resources.NewKeyInt64(1, resources.PRICES)
+	signatureKey := resources.NewKeyInt64(1, resources.SIGNATURES)
 
 	included := resources.Included{}
 	included.Add(&resources.Signature{

@@ -16,7 +16,7 @@ func NewBooksQ(db *pgdb.DB) data.BookQ {
 	return &BooksQ{
 		db: db.Clone(),
 		sql: squirrel.
-			Select(fmt.Sprintf("b.%s", priceColumnName)).
+			Select("*").
 			From(fmt.Sprintf("%s as b", booksTableName)),
 	}
 }
@@ -43,5 +43,10 @@ func (b *BooksQ) Get() (*data.Book, error) {
 
 func (b *BooksQ) FilterByID(id int64) data.BookQ {
 	b.sql = b.sql.Where(squirrel.Eq{"b.id": id})
+	return b
+}
+
+func (b *BooksQ) FilterActual() data.BookQ {
+	b.sql = b.sql.Where(squirrel.Eq{"b.deleted": "f"})
 	return b
 }

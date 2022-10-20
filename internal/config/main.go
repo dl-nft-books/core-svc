@@ -13,8 +13,9 @@ type Config interface {
 	pgdb.Databaser
 	types.Copuser
 	comfig.Listenerer
+	EthMinterConfigurator
 
-	EthMinter() EthMinterConfig
+	Coingecko() *CoingeckoConfig
 }
 
 type config struct {
@@ -23,16 +24,18 @@ type config struct {
 	types.Copuser
 	comfig.Listenerer
 	getter kv.Getter
+	EthMinterConfigurator
 
-	ethMinter comfig.Once
+	coingecko comfig.Once
 }
 
 func New(getter kv.Getter) Config {
 	return &config{
-		getter:     getter,
-		Databaser:  pgdb.NewDatabaser(getter),
-		Copuser:    copus.NewCopuser(getter),
-		Listenerer: comfig.NewListenerer(getter),
-		Logger:     comfig.NewLogger(getter, comfig.LoggerOpts{}),
+		getter:                getter,
+		Databaser:             pgdb.NewDatabaser(getter),
+		Copuser:               copus.NewCopuser(getter),
+		Listenerer:            comfig.NewListenerer(getter),
+		Logger:                comfig.NewLogger(getter, comfig.LoggerOpts{}),
+		EthMinterConfigurator: NewEthMinterConfigurator(getter),
 	}
 }

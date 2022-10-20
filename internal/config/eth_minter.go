@@ -4,16 +4,35 @@ import (
 	"crypto/ecdsa"
 	"fmt"
 	"reflect"
+	"time"
 
 	"github.com/ethereum/go-ethereum/crypto"
 	"gitlab.com/distributed_lab/figure"
+	"gitlab.com/distributed_lab/kit/comfig"
 	"gitlab.com/distributed_lab/kit/kv"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
+type EthMinterConfigurator interface {
+	EthMinter() *EthMinterConfig
+}
+
 type EthMinterConfig struct {
 	PrivateKey *ecdsa.PrivateKey `fig:"eth_signer,required"`
+	ChainID    int64             `fig:"chain_id,required""`
 	Precision  int               `fig:"precision,required"`
+	Expiration time.Duration     `fig:"expiration,required"`
+}
+
+type ethMinterConfigurator struct {
+	getter kv.Getter
+	once   comfig.Once
+}
+
+func NewEthMinterConfigurator(getter kv.Getter) EthMinterConfigurator {
+	return &ethMinterConfigurator{
+		getter: getter,
+	}
 }
 
 var hooks = figure.Hooks{
@@ -31,8 +50,8 @@ var hooks = figure.Hooks{
 	},
 }
 
-func (c *config) EthMinter() EthMinterConfig {
-	return c.ethMinter.Do(func() interface{} {
+func (c *ethMinterConfigurator) EthMinter() *EthMinterConfig {
+	return c.once.Do(func() interface{} {
 		var cfg EthMinterConfig
 
 		err := figure.Out(&cfg).
@@ -43,6 +62,6 @@ func (c *config) EthMinter() EthMinterConfig {
 			panic(err)
 		}
 
-		return cfg
-	}).(EthMinterConfig)
+		return &cfg
+	}).(*EthMinterConfig)
 }

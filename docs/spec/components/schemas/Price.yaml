@@ -8,11 +8,11 @@ allOf:
       attributes:
         type: object
         required:
-          - amount
+          - price
         properties:
           amount:
             type: string
-            description: amount of specified tokens required to buy the nft
+            description: price required to buy the nft
       relationships:
         type: object
         required:

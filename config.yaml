@@ -1,15 +1,22 @@
 log:
+  level: debug
   disable_sentry: true
 
 db:
   url: "postgres://book:book@localhost:25432/book?sslmode=disable"
 
 eth_minter:
-  eth_signer:
+  eth_signer: "e2f501ca73a112dba6f9c898396ebb7ed763c053859970942f6c821222384484"
+  chain_id: 1
   precision: 18
+  expiration: 5m
+
+coingecko:
+  host: "localhost:8000"
+  endpoint: "integrations/pricer/price"
 
 listener:
-  addr: :8000
+  addr: :8001
 
 cop:
   disabled: true
