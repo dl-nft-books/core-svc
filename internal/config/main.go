@@ -14,6 +14,7 @@ type Config interface {
 	types.Copuser
 	comfig.Listenerer
 	EthMinterConfigurator
+	TaskRunner
 
 	Coingecko() *CoingeckoConfig
 }
@@ -25,6 +26,7 @@ type config struct {
 	comfig.Listenerer
 	getter kv.Getter
 	EthMinterConfigurator
+	TaskRunner
 
 	coingecko comfig.Once
 }
@@ -37,5 +39,6 @@ func New(getter kv.Getter) Config {
 		Listenerer:            comfig.NewListenerer(getter),
 		Logger:                comfig.NewLogger(getter, comfig.LoggerOpts{}),
 		EthMinterConfigurator: NewEthMinterConfigurator(getter),
+		TaskRunner:            NewTaskRunner(getter),
 	}
 }

@@ -1,0 +1,38 @@
+allOf:
+  - $ref: '#/components/schemas/TaskKey'
+  - type: object
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - signature
+          - ipfs_hash
+          - token_id
+          - status
+        properties:
+          signature:
+            type: string
+            example: I love Distributed Lab!!!
+          ipfs_hash:
+            type: string
+            example: QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
+          token_id:
+            type: integer
+            example: 123
+          status:
+            type: integer
+            format: TaskStatus
+            enum:
+              - name: pending
+                value: 1
+              - name: generating
+                value: 2
+              - name: finished_generation
+                value: 3
+              - name: uploading
+                value: 4
+              - name: finished_uploading
+                value: 5
+            example: 2

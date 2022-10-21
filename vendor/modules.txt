@@ -49,6 +49,9 @@ github.com/ethereum/go-ethereum/signer/core/apitypes
 github.com/ethersphere/bee/pkg/crypto
 github.com/ethersphere/bee/pkg/crypto/eip712
 github.com/ethersphere/bee/pkg/swarm
+# github.com/fatih/structs v1.1.0
+## explicit
+github.com/fatih/structs
 # github.com/fsnotify/fsnotify v1.4.9
 ## explicit; go 1.13
 github.com/fsnotify/fsnotify
@@ -169,11 +172,6 @@ gitlab.com/distributed_lab/lorem
 # gitlab.com/distributed_lab/running v0.0.0-20200706131153-4af0e83eb96c
 ## explicit
 gitlab.com/distributed_lab/running
-# gitlab.com/distributed_lab/urlval v3.0.0+incompatible
-## explicit
-gitlab.com/distributed_lab/urlval
-gitlab.com/distributed_lab/urlval/internal
-gitlab.com/distributed_lab/urlval/internal/betterreflect
 # golang.org/x/crypto v0.0.0-20220214200702-86341886e292
 ## explicit; go 1.17
 golang.org/x/crypto/sha3

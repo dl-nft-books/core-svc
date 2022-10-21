@@ -4,9 +4,8 @@ required:
   - type
 properties:
   id:
-    type: string
-    example: '123'
+    type: integer
   type:
     type: string
     enum:
-      - signatures
+      - tasks

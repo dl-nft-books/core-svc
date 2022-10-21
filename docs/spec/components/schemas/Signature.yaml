@@ -18,4 +18,3 @@ allOf:
           v:
             type: integer
             example: 0
-

@@ -18,12 +18,20 @@ func (s *service) router() chi.Router {
 		ape.CtxMiddleware(
 			helpers.CtxLog(s.log),
 			helpers.CtxBooksQ(postgres.NewBooksQ(s.db)),
+			helpers.CtxTasksQ(postgres.NewTasksQ(s.db)),
 			helpers.CtxMinter(*s.ethMinterConfig),
 			helpers.CtxCoingecko(*s.coingeckoConfig),
 		),
 	)
-	r.Route("/integrations/price", func(r chi.Router) {
-		r.Get("/{id}", handlers.GetPrice)
+	r.Route("/integrations/generator", func(r chi.Router) {
+		r.Route("/price", func(r chi.Router) {
+			r.Route("/{id}", func(r chi.Router) {
+				r.Get("/", handlers.GetPrice)
+			})
+		})
+		r.Route("/tasks", func(r chi.Router) {
+			r.Post("/", handlers.CreateTask)
+		})
 	})
 
 	return r

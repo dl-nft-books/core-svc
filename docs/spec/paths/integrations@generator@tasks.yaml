@@ -1,0 +1,29 @@
+post:
+  tags:
+    - Tasks
+  summary: Create new task
+  operationId: CreateTask
+  requestBody:
+    content:
+      applications/vnd.api+json:
+        schema:
+          type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/CreateTask'
+  responses:
+    '200':
+      description: Task created successfully
+      content:
+        application/vnd.api+json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/TaskKey'
+    '400':
+      description: bad request
+    '500':
+      description: internal error

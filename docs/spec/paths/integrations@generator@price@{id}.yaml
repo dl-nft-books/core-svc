@@ -22,14 +22,14 @@ get:
             type: object
             properties:
               data:
-                $ref: "#/components/schemas/Price"
+                $ref: '#/components/schemas/Price'
               included:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Signature"
+                  $ref: '#/components/schemas/Signature'
     '400':
-      $ref: "#/components/responses/BadRequestError"
+      $ref: '#/components/responses/BadRequestError'
     '404':
       $ref: '#/components/responses/NotFoundError'
     '500':
-      $ref: "#/components/responses/InternalError"
+      $ref: '#/components/responses/InternalError'
