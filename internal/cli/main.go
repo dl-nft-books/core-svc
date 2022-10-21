@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"gitlab.com/distributed_lab/logan/v3"
+	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/runners"
@@ -12,6 +13,18 @@ import (
 
 	"github.com/alecthomas/kingpin"
 	"gitlab.com/distributed_lab/kit/kv"
+)
+
+var (
+	app = kingpin.New("generator-svc", "service that generates pdf and sends them to the s3")
+
+	runCommand           = app.Command("run", "run command")
+	apiCommand           = runCommand.Command("api", "run api")
+	taskProcessorCommand = runCommand.Command("task-processor", "run task processor")
+
+	migrateCommand     = app.Command("migrate", "migrate command")
+	migrateUpCommand   = migrateCommand.Command("up", "migrate db up")
+	migrateDownCommand = migrateCommand.Command("down", "migrate db down")
 )
 
 func Run(args []string) bool {
@@ -26,20 +39,9 @@ func Run(args []string) bool {
 	cfg := config.New(kv.MustFromEnv())
 	log = cfg.Log()
 
-	app := kingpin.New("generator-svc", "")
-
-	runCmd := app.Command("run", "run command")
-	serviceCmd := runCmd.Command("service", "run service")
-	runnerCmd := runCmd.Command("runner", "run runner")
-
-	migrateCmd := app.Command("migrate", "migrate command")
-	migrateUpCmd := migrateCmd.Command("up", "migrate db up")
-	migrateDownCmd := migrateCmd.Command("down", "migrate db down")
-
 	cmd, err := app.Parse(args[1:])
 	if err != nil {
-		log.WithError(err).Error("failed to parse arguments")
-		return false
+		panic(errors.Wrap(err, "failed to parse arguments"))
 	}
 
 	// Creating context and sync.WaitGroup
@@ -47,20 +49,20 @@ func Run(args []string) bool {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	switch cmd {
-	case serviceCmd.FullCommand():
-		api.Run(cfg)
-	case runnerCmd.FullCommand():
-		run(waitGroup, ctx, cfg, runners.StartTaskRunner)
-	case migrateUpCmd.FullCommand():
+	case apiCommand.FullCommand():
+		run(waitGroup, ctx, cfg, api.Run)
+		log.Info("started api...")
+	case taskProcessorCommand.FullCommand():
+		run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
+		log.Info("started task processor...")
+	case migrateUpCommand.FullCommand():
 		err = MigrateUp(cfg)
-	case migrateDownCmd.FullCommand():
+	case migrateDownCommand.FullCommand():
 		err = MigrateDown(cfg)
-	default:
-		log.Errorf("unknown command %s", cmd)
-		return false
 	}
 	if err != nil {
-		log.WithError(err).Error("failed to exec cmd")
+		log.WithError(err).Error("failed to run command")
+		cancel()
 		return false
 	}
 

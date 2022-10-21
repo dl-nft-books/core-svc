@@ -1,4 +1,4 @@
-package taskRunner
+package task_processor
 
 import (
 	"context"
@@ -13,9 +13,9 @@ import (
 	"strconv"
 )
 
-const cursorKey = "task_runner_cursor"
+const cursorKey = "task_processor_cursor"
 
-type TaskRunner struct {
+type TaskProcessor struct {
 	name   string
 	logger *logan.Entry
 
@@ -25,46 +25,46 @@ type TaskRunner struct {
 	runnerCfg config.RunnerData
 }
 
-func New(cfg config.Config) *TaskRunner {
+func New(cfg config.Config) *TaskProcessor {
 	status := resources.TaskPending
 
-	return &TaskRunner{
-		name: cfg.TaskRunnerCfg().Name,
+	return &TaskProcessor{
+		name: cfg.TaskProcessorCfg().Name,
 		selector: data.TaskSelector{
 			PageParams: pgdb.CursorPageParams{
-				Cursor: cfg.TaskRunnerCfg().Cursor,
+				Cursor: cfg.TaskProcessorCfg().Cursor,
 				Order:  pgdb.OrderTypeAsc,
-				Limit:  cfg.TaskRunnerCfg().Limit,
+				Limit:  cfg.TaskProcessorCfg().Limit,
 			},
 			Status: &status,
 		},
 		logger:    cfg.Log(),
 		db:        postgres.NewDB(cfg.DB()),
-		runnerCfg: cfg.TaskRunnerCfg().Runner,
+		runnerCfg: cfg.TaskProcessorCfg().Runner,
 	}
 }
 
-func (r *TaskRunner) Run(ctx context.Context) {
+func (p *TaskProcessor) Run(ctx context.Context) {
 	running.WithBackOff(
-		ctx, r.logger,
-		r.name, r.run,
-		r.runnerCfg.NormalPeriod,
-		r.runnerCfg.MinAbnormalPeriod,
-		r.runnerCfg.MaxAbnormalPeriod,
+		ctx, p.logger,
+		p.name, p.run,
+		p.runnerCfg.NormalPeriod,
+		p.runnerCfg.MinAbnormalPeriod,
+		p.runnerCfg.MaxAbnormalPeriod,
 	)
 }
 
-func (r *TaskRunner) run(ctx context.Context) error {
-	return r.db.Transaction(func() error {
-		tasks, err := r.getTasks(r.db)
+func (p *TaskProcessor) run(ctx context.Context) error {
+	return p.db.Transaction(func() error {
+		tasks, err := p.getTasks(p.db)
 		if err != nil {
 			return errors.Wrap(err, "failed to get tasks from the database")
 		}
 		if len(tasks) == 0 {
-			r.logger.Debug("Found no tasks to process")
+			p.logger.Debug("Found no tasks to process")
 			return nil
 		}
-		r.logger.Debugf("Found %d task(s) to process", len(tasks))
+		p.logger.Debugf("Found %d task(s) to process", len(tasks))
 
 		for _, task := range tasks {
 			errFields := logan.F{
@@ -73,23 +73,23 @@ func (r *TaskRunner) run(ctx context.Context) error {
 				"task_status":    task.Status,
 			}
 
-			if err = r.db.Tasks().UpdateStatus(resources.TaskGenerating, task.Id); err != nil {
+			if err = p.db.Tasks().UpdateStatus(resources.TaskGenerating, task.Id); err != nil {
 				return errors.Wrap(err, "failed to update task status", errFields)
 			}
-			if err = r.handleTask(task); err != nil {
+			if err = p.handleTask(task); err != nil {
 				return errors.Wrap(err, "failed to handle task", errFields)
 			}
-			if err = r.db.Tasks().UpdateStatus(resources.TaskFinishedGeneration, task.Id); err != nil {
+			if err = p.db.Tasks().UpdateStatus(resources.TaskFinishedGeneration, task.Id); err != nil {
 				return errors.Wrap(err, "failed to update task status", errFields)
 			}
 		}
 
-		r.logger.Debugf("Successfully finished processing a batch of tasks", len(tasks))
+		p.logger.Debugf("Successfully finished processing a batch of tasks", len(tasks))
 		return nil
 	})
 }
 
-func (r *TaskRunner) getTasks(db data.DB) ([]data.Task, error) {
+func (p *TaskProcessor) getTasks(db data.DB) ([]data.Task, error) {
 	cursorKV, err := db.KeyValue().LockingGet(cursorKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get current cursor value")
@@ -107,8 +107,8 @@ func (r *TaskRunner) getTasks(db data.DB) ([]data.Task, error) {
 		return nil, errors.Wrap(err, "failed to parse cursor")
 	}
 
-	r.selector.PageParams.Cursor = uint64(cursor)
-	tasks, err := db.Tasks().Select(r.selector)
+	p.selector.PageParams.Cursor = uint64(cursor)
+	tasks, err := db.Tasks().Select(p.selector)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get subtasks from db")
 	}

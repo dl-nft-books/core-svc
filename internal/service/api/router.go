@@ -2,7 +2,7 @@ package api
 
 import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
-	handlers2 "gitlab.com/tokend/nft-books/generator-svc/internal/service/api/handlers"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/handlers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 
 	"github.com/go-chi/chi"
@@ -25,11 +25,11 @@ func (s *service) router() chi.Router {
 	r.Route("/integrations/generator", func(r chi.Router) {
 		r.Route("/price", func(r chi.Router) {
 			r.Route("/{id}", func(r chi.Router) {
-				r.Get("/", handlers2.GetPrice)
+				r.Get("/", handlers.GetPrice)
 			})
 		})
 		r.Route("/tasks", func(r chi.Router) {
-			r.Post("/", handlers2.CreateTask)
+			r.Post("/", handlers.CreateTask)
 		})
 	})
 

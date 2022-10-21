@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"net"
 	"net/http"
 
@@ -44,7 +45,7 @@ func newService(cfg config.Config) *service {
 	}
 }
 
-func Run(cfg config.Config) {
+func Run(ctx context.Context, cfg config.Config) {
 	if err := newService(cfg).run(); err != nil {
 		panic(err)
 	}

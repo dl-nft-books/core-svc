@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const yamlTaskRunnerKey = "task_runner"
+const yamlTaskProcessorKey = "task_processor"
 
 type RunnerData struct {
 	NormalPeriod      time.Duration `fig:"normal_period"`
@@ -16,39 +16,39 @@ type RunnerData struct {
 	MaxAbnormalPeriod time.Duration `fig:"normal_period"`
 }
 
-type TaskRunner interface {
-	TaskRunnerCfg() TaskRunnerCfg
+type TaskProcessor interface {
+	TaskProcessorCfg() TaskProcessorCfg
 }
 
-type taskRunner struct {
+type taskProcessor struct {
 	getter kv.Getter
 	once   comfig.Once
 }
 
-func NewTaskRunner(getter kv.Getter) TaskRunner {
-	return &taskRunner{
+func NewTaskProcessor(getter kv.Getter) TaskProcessor {
+	return &taskProcessor{
 		getter: getter,
 	}
 }
 
-type TaskRunnerCfg struct {
+type TaskProcessorCfg struct {
 	Name   string     `fig:"name"`
 	Cursor uint64     `fig:"cursor"`
 	Limit  uint64     `fig:"limit,non_zero"`
 	Runner RunnerData `fig:"runner,required"`
 }
 
-func (t *taskRunner) TaskRunnerCfg() TaskRunnerCfg {
+func (t *taskProcessor) TaskProcessorCfg() TaskProcessorCfg {
 	return t.once.Do(func() interface{} {
-		var cfg TaskRunnerCfg
+		var cfg TaskProcessorCfg
 
 		err := figure.Out(&cfg).
-			From(kv.MustGetStringMap(t.getter, yamlTaskRunnerKey)).
+			From(kv.MustGetStringMap(t.getter, yamlTaskProcessorKey)).
 			Please()
 		if err != nil {
 			panic(errors.Wrap(err, "failed to figure out task producer fields"))
 		}
 
 		return cfg
-	}).(TaskRunnerCfg)
+	}).(TaskProcessorCfg)
 }

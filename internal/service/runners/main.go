@@ -3,9 +3,9 @@ package runners
 import (
 	"context"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/runners/taskRunner"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/runners/task_processor"
 )
 
-func StartTaskRunner(ctx context.Context, cfg config.Config) {
-	taskRunner.New(cfg).Run(ctx)
+func RunTaskProcessor(ctx context.Context, cfg config.Config) {
+	task_processor.New(cfg).Run(ctx)
 }
