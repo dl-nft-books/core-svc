@@ -1,9 +1,9 @@
-package service
+package api
 
 import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/handlers"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/helpers"
+	handlers2 "gitlab.com/tokend/nft-books/generator-svc/internal/service/api/handlers"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 
 	"github.com/go-chi/chi"
 	"gitlab.com/distributed_lab/ape"
@@ -17,8 +17,7 @@ func (s *service) router() chi.Router {
 		ape.LoganMiddleware(s.log),
 		ape.CtxMiddleware(
 			helpers.CtxLog(s.log),
-			helpers.CtxBooksQ(postgres.NewBooksQ(s.db)),
-			helpers.CtxTasksQ(postgres.NewTasksQ(s.db)),
+			helpers.CtxDB(postgres.NewDB(s.db)),
 			helpers.CtxMinter(*s.ethMinterConfig),
 			helpers.CtxCoingecko(*s.coingeckoConfig),
 		),
@@ -26,11 +25,11 @@ func (s *service) router() chi.Router {
 	r.Route("/integrations/generator", func(r chi.Router) {
 		r.Route("/price", func(r chi.Router) {
 			r.Route("/{id}", func(r chi.Router) {
-				r.Get("/", handlers.GetPrice)
+				r.Get("/", handlers2.GetPrice)
 			})
 		})
 		r.Route("/tasks", func(r chi.Router) {
-			r.Post("/", handlers.CreateTask)
+			r.Post("/", handlers2.CreateTask)
 		})
 	})
 

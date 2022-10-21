@@ -14,6 +14,7 @@ const (
 	tasksTable = "tasks"
 
 	tasksId        = "id"
+	tasksAccount   = "account"
 	tasksSignature = "signature"
 	tasksIpfsHash  = "ipfs_hash"
 	tasksTokenId   = "token_id"
@@ -50,25 +51,14 @@ func (q *tasksQ) Sort(sort pgdb.Sorts) data.TasksQ {
 	return q
 }
 
-func (q *tasksQ) FilterById(id ...int64) data.TasksQ {
-	q.selector = q.selector.Where(squirrel.Eq{tasksId: id})
-	return q
+func (q *tasksQ) Select(selector data.TaskSelector) (tasks []data.Task, err error) {
+	return q.selectByQuery(applyTasksSelector(q.selector, selector))
 }
 
-func (q *tasksQ) FilterByIpfsHash(ipfsHash string) data.TasksQ {
-	q.selector = q.selector.Where(squirrel.Eq{tasksIpfsHash: ipfsHash})
-	return q
-}
-
-func (q *tasksQ) Select() (tasks []data.Task, err error) {
-	err = q.database.Select(&tasks, q.selector)
-	return
-}
-
-func (q *tasksQ) Get() (*data.Task, error) {
+func (q *tasksQ) GetById(id int64) (*data.Task, error) {
 	var task data.Task
 
-	err := q.database.Get(&task, q.selector)
+	err := q.database.Get(&task, q.selector.Where(squirrel.Eq{tasksId: id}))
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
@@ -116,4 +106,31 @@ func (q *tasksQ) UpdateStatus(newStatus resources.TaskStatus, id int64) error {
 		Set(tasksStatus, newStatus).
 		Where(squirrel.Eq{tasksId: id})
 	return q.database.Exec(statement)
+}
+
+func (q *tasksQ) Transaction(fn func(q data.TasksQ) error) (err error) {
+	return q.database.Transaction(func() error {
+		return fn(q)
+	})
+}
+
+func (q *tasksQ) selectByQuery(query squirrel.Sqlizer) (subtasks []data.Task, err error) {
+	err = q.database.Select(&subtasks, query)
+	return subtasks, err
+}
+
+func applyTasksSelector(sql squirrel.SelectBuilder, selector data.TaskSelector) squirrel.SelectBuilder {
+	sql = selector.PageParams.ApplyTo(sql, tasksId)
+
+	if selector.Account != nil {
+		sql = sql.Where(squirrel.Eq{tasksAccount: *selector.Account})
+	}
+	if selector.IpfsHash != nil {
+		sql = sql.Where(squirrel.Eq{tasksIpfsHash: *selector.IpfsHash})
+	}
+	if selector.Status != nil {
+		sql = sql.Where(squirrel.Eq{tasksStatus: *selector.Status})
+	}
+
+	return sql
 }

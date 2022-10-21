@@ -1,7 +1,7 @@
 package responses
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/helpers"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
