@@ -17,7 +17,7 @@ type RunnerData struct {
 }
 
 type TaskRunner interface {
-	TaskRunner() TaskRunnerCfg
+	TaskRunnerCfg() TaskRunnerCfg
 }
 
 type taskRunner struct {
@@ -38,7 +38,7 @@ type TaskRunnerCfg struct {
 	Runner RunnerData `fig:"runner,required"`
 }
 
-func (t *taskRunner) TaskRunner() TaskRunnerCfg {
+func (t *taskRunner) TaskRunnerCfg() TaskRunnerCfg {
 	return t.once.Do(func() interface{} {
 		var cfg TaskRunnerCfg
 

@@ -29,18 +29,18 @@ func New(cfg config.Config) *TaskRunner {
 	status := resources.TaskPending
 
 	return &TaskRunner{
-		name: cfg.TaskRunner().Name,
+		name: cfg.TaskRunnerCfg().Name,
 		selector: data.TaskSelector{
 			PageParams: pgdb.CursorPageParams{
-				Cursor: cfg.TaskRunner().Cursor,
+				Cursor: cfg.TaskRunnerCfg().Cursor,
 				Order:  pgdb.OrderTypeAsc,
-				Limit:  cfg.TaskRunner().Limit,
+				Limit:  cfg.TaskRunnerCfg().Limit,
 			},
 			Status: &status,
 		},
 		logger:    cfg.Log(),
 		db:        postgres.NewDB(cfg.DB()),
-		runnerCfg: cfg.TaskRunner().Runner,
+		runnerCfg: cfg.TaskRunnerCfg().Runner,
 	}
 }
 
