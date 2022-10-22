@@ -363,6 +363,8 @@ github.com/moul/http2curl v1.0.0/go.mod h1:8UbvGypXm98wA/IqH45anm5Y2Z6ep6O31QGOA
 github.com/nats-io/nats.go v1.8.1/go.mod h1:BrFz9vVn0fU3AcH9Vn4Kd7W0NpJ651tD5omQ3M8LwxM=
 github.com/nats-io/nkeys v0.0.2/go.mod h1:dab7URMsZm6Z/jp9Z5UGa87Uutgc2mVpXLC4B7TDb/4=
 github.com/nats-io/nuid v1.0.1/go.mod h1:19wcPz3Ph3q0Jbyiqsd0kePYG7A95tJPxeL+1OSON2c=
+github.com/nullstyle/go-xdr v0.0.0-20180726165426-f4c839f75077 h1:A804awGqaW7i61y8KnbtHmh3scqbNuTJqcycq3u5ZAU=
+github.com/nullstyle/go-xdr v0.0.0-20180726165426-f4c839f75077/go.mod h1:sZZi9x5aHXGZ/RRp7Ne5rkvtDxZb7pd7vgVA+gmE35A=
 github.com/oklog/ulid v1.3.1 h1:EGfNDEx6MqHz8B3uNV6QAib1UR2Lm97sHi3ocA6ESJ4=
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
 github.com/olekukonko/tablewriter v0.0.5 h1:P2Ga83D34wi1o9J6Wh1mRuqd4mF/x/lgBS7N7AbDhec=
@@ -415,6 +417,8 @@ github.com/spf13/afero v1.6.0/go.mod h1:Ai8FlHk4v/PARR026UzYexafAt9roJ7LcLMAmO6Z
 github.com/spf13/cast v1.3.0/go.mod h1:Qx5cxh0v+4UWYiBimWS+eyWzqEqokIECu5etghLkUJE=
 github.com/spf13/cast v1.3.1 h1:nFm6S0SMdyzrzcmThSipiEubIDy8WEXKNZ0UOgiRpng=
 github.com/spf13/cast v1.3.1/go.mod h1:Qx5cxh0v+4UWYiBimWS+eyWzqEqokIECu5etghLkUJE=
+github.com/spf13/cast v1.4.1 h1:s0hze+J0196ZfEMTs80N7UlFt0BDuQ7Q+JDnHiMWKdA=
+github.com/spf13/cast v1.4.1/go.mod h1:Qx5cxh0v+4UWYiBimWS+eyWzqEqokIECu5etghLkUJE=
 github.com/spf13/cobra v0.0.5/go.mod h1:3K3wKZymM7VvHMDS9+Akkh4K60UwM26emMESw8tLCHU=
 github.com/spf13/cobra v1.2.1/go.mod h1:ExllRjgxM/piMAM+3tAZvg8fsklGAf3tPfi+i8t68Nk=
 github.com/spf13/jwalterweatherman v1.0.0/go.mod h1:cQK4TGJAtQXfYWX+Ddv3mKDzgVb68N+wFjFa4jdeBTo=
@@ -468,6 +472,8 @@ gitlab.com/distributed_lab/ape v1.7.1 h1:LpTmZgG7Lvx6ulopQbH2aWI3s8ey9FsKVjbic3Z
 gitlab.com/distributed_lab/ape v1.7.1/go.mod h1:Qy9Y2arL0hmZIpVpctGEFhdrVsjWtyVJ5G+bZWcFT4s=
 gitlab.com/distributed_lab/figure v2.1.0+incompatible h1:8kNtvWO91BSQ4OsqL2P3qNWSBnh/Q/TdWB8vHy8xvNI=
 gitlab.com/distributed_lab/figure v2.1.0+incompatible/go.mod h1:tk+aPBohT49MGPLy5+eVbE1HpD/CaC5drBHfVpRI8eE=
+gitlab.com/distributed_lab/json-api-connector v0.2.4 h1:wHd82vZ4ZmabEsFEU1mhcIN4kkKEV+QQUJ/qSFroTPs=
+gitlab.com/distributed_lab/json-api-connector v0.2.4/go.mod h1:PfWKMdxGaBCbO5TcWecu/ZFFJXuVuHo/Ur4go7CIPZ4=
 gitlab.com/distributed_lab/kit v1.11.1 h1:BsOxbGZOySl3CQiLtJpXpPYMP+9R3uNK6IL9T6xBNv0=
 gitlab.com/distributed_lab/kit v1.11.1/go.mod h1:MZj5Vb71YBWJ2wLAb9fDvlCYKewmNDNVWjAiERwgbdA=
 gitlab.com/distributed_lab/logan v3.7.2+incompatible/go.mod h1:25oL/FPFXmyYzWeA6vahMvnFJV8P7mOx0jZhRP7nhlc=
@@ -477,8 +483,20 @@ gitlab.com/distributed_lab/lorem v0.2.0 h1:Rc7Ef3eGSpei8EtWcV6fzPW3O/QEF2zgZR4+h
 gitlab.com/distributed_lab/lorem v0.2.0/go.mod h1:wkzrGoB1L/yUBu56SfoJ/vNiPqiHZcg75AnBkWNcjhQ=
 gitlab.com/distributed_lab/running v0.0.0-20200706131153-4af0e83eb96c h1:cpIjV8C//7sLVvMcBaFGopI8sMcCw8Za7T0HIf52esU=
 gitlab.com/distributed_lab/running v0.0.0-20200706131153-4af0e83eb96c/go.mod h1:4TnADX84dQjQMRHKIMPCVL0L97rD/Jxv0xDbrN6aKzk=
+gitlab.com/distributed_lab/running v1.6.0 h1:O2GQHgYkpNRDbobR11atOCH2rhS1okNKyadiAqi+kQI=
+gitlab.com/distributed_lab/running v1.6.0/go.mod h1:4TnADX84dQjQMRHKIMPCVL0L97rD/Jxv0xDbrN6aKzk=
 gitlab.com/distributed_lab/urlval v3.0.0+incompatible h1:OWU3CcZU+z0BVooufOSQFO9biDfsjM3e7YYauC278HU=
 gitlab.com/distributed_lab/urlval v3.0.0+incompatible/go.mod h1:cKnUlnZCHUuke/l95YLvW5JoGC2yn53HVgF9rt1WiIg=
+gitlab.com/tokend/connectors v0.1.9 h1:mRXJGfab+q32a+4JYeumT/fdunDIVAXqMZVngFLMyTU=
+gitlab.com/tokend/connectors v0.1.9/go.mod h1:z5l3jmOasX3D9e61L0sI67z4ZimfxKAea+Q770FQecU=
+gitlab.com/tokend/go v3.15.0+incompatible h1:+FLJP11ppj5ttU3KNcvvummU3uE6hpju1CY4mwxuIr0=
+gitlab.com/tokend/go v3.15.0+incompatible/go.mod h1:qz38YBc7VL29H2gnXbpRzcEVw2d1NUZ5SVDzIehqDCA=
+gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312 h1:u8pxrNw8QKIsrmClG71uuTPy22fkePAXBkHgxrXkMU8=
+gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312/go.mod h1:vdlhN5/oQR7uY8EsGSqPf8bwnmQxxpaq7qrQn5Y3U/w=
+gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022123018-d1ff8eba379a h1:SMjYDy04haIEtYmAHnAc1lRSUAwSFnNjRI5r0BtHDYA=
+gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022123018-d1ff8eba379a/go.mod h1:SMym7B40PLAweAAUAr1/pF88s5YxpwwSCf2OowPpwmY=
+gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022125247-81cac705a28c h1:csZbaYFrTNVQDcg1VB+cNMOnT9jeS4eKIFodYGCgONY=
+gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022125247-81cac705a28c/go.mod h1:SMym7B40PLAweAAUAr1/pF88s5YxpwwSCf2OowPpwmY=
 go.etcd.io/etcd/api/v3 v3.5.0/go.mod h1:cbVKeC6lCfl7j/8jBhAK6aIYO9XOjdptoxU/nLQcPvs=
 go.etcd.io/etcd/client/pkg/v3 v3.5.0/go.mod h1:IJHfcCEKxYu1Os13ZdwCwIUTUVGYTSAM3YSwc9/Ac1g=
 go.etcd.io/etcd/client/v2 v2.305.0/go.mod h1:h9puh54ZTgAKtEbut2oe9P4L/oqKCVB6xsXlzd7alYQ=

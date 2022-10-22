@@ -19,11 +19,12 @@ func (s *service) router() chi.Router {
 			helpers.CtxLog(s.log),
 			helpers.CtxBooksQ(postgres.NewBooksQ(s.db)),
 			helpers.CtxMinter(*s.ethMinterConfig),
-			helpers.CtxCoingecko(*s.coingeckoConfig),
+			helpers.CtxPricer(s.pricer),
 		),
 	)
-	r.Route("/integrations/price", func(r chi.Router) {
-		r.Get("/{id}", handlers.GetPrice)
+
+	r.Route("/integrations/generator", func(r chi.Router) {
+		r.Get("/signed-price", handlers.GetPrice)
 	})
 
 	return r

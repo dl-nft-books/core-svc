@@ -20,7 +20,7 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := helpers.BooksQ(r).FilterActual().FilterByID(req.ID).Get()
+	book, err := helpers.BooksQ(r).FilterActual().FilterByID(req.BookID).Get()
 	if err != nil {
 		ape.Render(w, problems.InternalError())
 		return
@@ -40,13 +40,14 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 		ChainID:         mintConfig.ChainID,
 	}
 
-	rawPrice, err := helpers.GetPrice(r, info.TokenAddress, req.Platform)
+	priceRes, err := helpers.Pricer(r).GetPrice(req.Platform, book.ContractAddress)
 	if err != nil {
+		helpers.Log(r).WithError(err).Error("error")
 		ape.Render(w, problems.InternalError())
 		return
 	}
 
-	info.Price, err = helpers.ConvertPrice(rawPrice, mintConfig.Precision)
+	info.Price, err = helpers.ConvertPrice(priceRes.Data.Attributes.Price, mintConfig.Precision)
 	if err != nil {
 		ape.Render(w, problems.InternalError())
 		return

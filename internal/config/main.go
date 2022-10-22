@@ -6,6 +6,7 @@ import (
 	"gitlab.com/distributed_lab/kit/copus/types"
 	"gitlab.com/distributed_lab/kit/kv"
 	"gitlab.com/distributed_lab/kit/pgdb"
+	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 )
 
 type Config interface {
@@ -14,10 +15,8 @@ type Config interface {
 	types.Copuser
 	comfig.Listenerer
 	EthMinterConfigurator
-
-	Coingecko() *CoingeckoConfig
+	pricer.Pricer
 }
-
 type config struct {
 	comfig.Logger
 	pgdb.Databaser
@@ -25,6 +24,7 @@ type config struct {
 	comfig.Listenerer
 	getter kv.Getter
 	EthMinterConfigurator
+	pricer.Pricer
 
 	coingecko comfig.Once
 }
@@ -37,5 +37,6 @@ func New(getter kv.Getter) Config {
 		Listenerer:            comfig.NewListenerer(getter),
 		Logger:                comfig.NewLogger(getter, comfig.LoggerOpts{}),
 		EthMinterConfigurator: NewEthMinterConfigurator(getter),
+		Pricer:                pricer.NewPricer(getter),
 	}
 }

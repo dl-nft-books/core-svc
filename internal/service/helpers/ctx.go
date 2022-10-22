@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
+
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 
@@ -16,7 +18,7 @@ const (
 	logCtxKey ctxKey = iota
 	booksQCtxKey
 	minterCtxKey
-	coingeckoCtxKey
+	pricerCtxKey
 )
 
 func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
@@ -37,14 +39,14 @@ func CtxMinter(entry config.EthMinterConfig) func(context.Context) context.Conte
 	}
 }
 
-func CtxCoingecko(entry config.CoingeckoConfig) func(context.Context) context.Context {
+func CtxPricer(entry *pricer.Connector) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
-		return context.WithValue(ctx, coingeckoCtxKey, entry)
+		return context.WithValue(ctx, pricerCtxKey, entry)
 	}
 }
 
-func Coingecko(r *http.Request) config.CoingeckoConfig {
-	return r.Context().Value(coingeckoCtxKey).(config.CoingeckoConfig)
+func Pricer(r *http.Request) *pricer.Connector {
+	return r.Context().Value(pricerCtxKey).(*pricer.Connector)
 }
 
 func Minter(r *http.Request) config.EthMinterConfig {
