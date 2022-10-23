@@ -17,7 +17,8 @@ func (s *service) router() chi.Router {
 		ape.LoganMiddleware(s.log),
 		ape.CtxMiddleware(
 			helpers.CtxLog(s.log),
-			helpers.CtxDB(postgres.NewDB(s.db)),
+			helpers.CtxBooksQ(postgres.NewBooksQ(s.booksDB)),
+			helpers.CtxGeneratorDB(postgres.NewGeneratorDB(s.generatorDB)),
 			helpers.CtxMinter(*s.ethMinterConfig),
 			helpers.CtxCoingecko(*s.coingeckoConfig),
 		),

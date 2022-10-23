@@ -19,8 +19,8 @@ type TaskProcessor struct {
 	name   string
 	logger *logan.Entry
 
-	db       data.DB
-	selector data.TaskSelector
+	generatorDB data.DB
+	selector    data.TaskSelector
 
 	runnerCfg config.RunnerData
 }
@@ -38,9 +38,9 @@ func New(cfg config.Config) *TaskProcessor {
 			},
 			Status: &status,
 		},
-		logger:    cfg.Log(),
-		db:        postgres.NewDB(cfg.DB()),
-		runnerCfg: cfg.TaskProcessorCfg().Runner,
+		logger:      cfg.Log(),
+		generatorDB: postgres.NewDB(cfg.GeneratorDB().DB),
+		runnerCfg:   cfg.TaskProcessorCfg().Runner,
 	}
 }
 
@@ -55,8 +55,8 @@ func (p *TaskProcessor) Run(ctx context.Context) {
 }
 
 func (p *TaskProcessor) run(ctx context.Context) error {
-	return p.db.Transaction(func() error {
-		tasks, err := p.getTasks(p.db)
+	return p.generatorDB.Transaction(func() error {
+		tasks, err := p.getTasks(p.generatorDB)
 		if err != nil {
 			return errors.Wrap(err, "failed to get tasks from the database")
 		}
@@ -73,13 +73,13 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 				"task_status":    task.Status,
 			}
 
-			if err = p.db.Tasks().UpdateStatus(resources.TaskGenerating, task.Id); err != nil {
+			if err = p.generatorDB.Tasks().UpdateStatus(resources.TaskGenerating, task.Id); err != nil {
 				return errors.Wrap(err, "failed to update task status", errFields)
 			}
 			if err = p.handleTask(task); err != nil {
 				return errors.Wrap(err, "failed to handle task", errFields)
 			}
-			if err = p.db.Tasks().UpdateStatus(resources.TaskFinishedGeneration, task.Id); err != nil {
+			if err = p.generatorDB.Tasks().UpdateStatus(resources.TaskFinishedGeneration, task.Id); err != nil {
 				return errors.Wrap(err, "failed to update task status", errFields)
 			}
 		}

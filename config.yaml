@@ -1,9 +1,11 @@
 log:
   disable_sentry: true
 
-# Use the book-svc database
-db:
-  url: "postgres://book:book@localhost:25432/book?sslmode=disable"
+database:
+  book-svc:
+    url: "postgres://book:book@localhost:25432/book?sslmode=disable"
+  generator-svc:
+    url: "postgres://book:book@localhost:25432/book?sslmode=disable"
 
 task_processor:
   name: task_processor # Name to be displayed in logs

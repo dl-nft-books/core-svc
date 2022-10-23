@@ -1,6 +1,6 @@
 post:
   tags:
-    - Tasks
+    - CreateTask
   summary: Create new task
   operationId: CreateTask
   requestBody:
@@ -27,3 +27,67 @@ post:
       description: bad request
     '500':
       description: internal error
+get:
+  tags:
+    - Tasks
+  summary: List all active tasks
+  operationId: ListTasks
+  parameters:
+    - $ref: '#/components/parameters/pageNumberParam'
+    - $ref: '#/components/parameters/pageLimitParam'
+    - $ref: '#/components/parameters/orderParam'
+    - name: 'filter[account]'
+      in: query
+      description: Array of account IDs to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    - name: 'filter[id]'
+      in: query
+      description: Array of task IDs to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+    - name: 'filter[state]'
+      in: query
+      description: Array of task states to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+          enum:
+            - name: active
+              value: 1
+            - name: deleted
+              value: 2
+  responses:
+    '201':
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/TasksArray'
+    '404':
+      description: Not found error
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+    '500':
+      description: Internal error
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Errors'

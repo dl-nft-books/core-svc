@@ -7,10 +7,11 @@ import (
 
 type Task struct {
 	Id        int64                `db:"id" structs:"-" json:"-"`
+	BookId    int64                `db:"book_id" structs:"-" json:"-"`
+	TokenId   int64                `db:"token_id" structs:"token_id"`
 	Account   string               `db:"account" structs:"account"`
 	Signature string               `db:"signature" structs:"signature"`
 	IpfsHash  string               `db:"ipfs_hash" structs:"ipfs_hash"`
-	TokenId   int64                `db:"token_id" structs:"token_id"`
 	Status    resources.TaskStatus `db:"status" structs:"status"`
 }
 

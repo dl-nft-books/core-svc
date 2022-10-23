@@ -1,11 +1,10 @@
 package data
 
-type DB interface {
-	New() DB
+type GeneratorDB interface {
+	New() GeneratorDB
 
 	Tasks() TasksQ
 	KeyValue() KeyValueQ
-	Books() BookQ
 
 	Transaction(func() error) error
 }

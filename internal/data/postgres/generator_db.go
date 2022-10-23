@@ -9,14 +9,14 @@ type db struct {
 	raw *pgdb.DB
 }
 
-func NewDB(rawDB *pgdb.DB) data.DB {
+func NewGeneratorDB(rawDB *pgdb.DB) data.GeneratorDB {
 	return &db{
 		raw: rawDB,
 	}
 }
 
-func (db *db) New() data.DB {
-	return NewDB(db.raw.Clone())
+func (db *db) New() data.GeneratorDB {
+	return NewGeneratorDB(db.raw.Clone())
 }
 
 func (db *db) Tasks() data.TasksQ {
@@ -25,10 +25,6 @@ func (db *db) Tasks() data.TasksQ {
 
 func (db *db) KeyValue() data.KeyValueQ {
 	return NewKeyValueQ(db.raw)
-}
-
-func (db *db) Books() data.BookQ {
-	return NewBooksQ(db.raw)
 }
 
 func (db *db) Transaction(fn func() error) error {

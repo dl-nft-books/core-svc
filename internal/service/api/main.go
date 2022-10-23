@@ -18,7 +18,8 @@ type service struct {
 	log             *logan.Entry
 	copus           types.Copus
 	listener        net.Listener
-	db              *pgdb.DB
+	booksDB         *pgdb.DB
+	generatorDB     *pgdb.DB
 	ethMinterConfig *config.EthMinterConfig
 	coingeckoConfig *config.CoingeckoConfig
 }
@@ -39,7 +40,8 @@ func newService(cfg config.Config) *service {
 		log:             cfg.Log(),
 		copus:           cfg.Copus(),
 		listener:        cfg.Listener(),
-		db:              cfg.DB(),
+		booksDB:         cfg.BookDB().DB,
+		generatorDB:     cfg.GeneratorDB().DB,
 		ethMinterConfig: cfg.EthMinter(),
 		coingeckoConfig: cfg.Coingecko(),
 	}

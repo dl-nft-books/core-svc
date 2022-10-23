@@ -18,7 +18,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdTaskId, err := helpers.DB(r).Tasks().Insert(data.Task{
+	createdTaskId, err := helpers.GeneratorDB(r).Tasks().Insert(data.Task{
 		Signature: request.Data.Attributes.Signature,
 		Account:   request.Data.Attributes.Account,
 		Status:    resources.TaskPending,
