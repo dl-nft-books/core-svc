@@ -19,7 +19,7 @@ type TaskProcessor struct {
 	name   string
 	logger *logan.Entry
 
-	generatorDB data.DB
+	generatorDB data.GeneratorDB
 	selector    data.TaskSelector
 
 	runnerCfg config.RunnerData
@@ -39,7 +39,7 @@ func New(cfg config.Config) *TaskProcessor {
 			Status: &status,
 		},
 		logger:      cfg.Log(),
-		generatorDB: postgres.NewDB(cfg.GeneratorDB().DB),
+		generatorDB: postgres.NewGeneratorDB(cfg.GeneratorDB().DB),
 		runnerCfg:   cfg.TaskProcessorCfg().Runner,
 	}
 }
@@ -89,7 +89,7 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 	})
 }
 
-func (p *TaskProcessor) getTasks(db data.DB) ([]data.Task, error) {
+func (p *TaskProcessor) getTasks(db data.GeneratorDB) ([]data.Task, error) {
 	cursorKV, err := db.KeyValue().LockingGet(cursorKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get current cursor value")
