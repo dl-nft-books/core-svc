@@ -40,7 +40,7 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 		ChainID:         mintConfig.ChainID,
 	}
 
-	priceRes, err := helpers.Pricer(r).GetPrice(req.Platform, book.ContractAddress)
+	priceRes, err := helpers.Pricer(r).GetPrice(req.Platform, req.TokenAddress)
 	if err != nil {
 		helpers.Log(r).WithError(err).Error("error")
 		ape.Render(w, problems.InternalError())
