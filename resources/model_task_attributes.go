@@ -5,6 +5,7 @@
 package resources
 
 type TaskAttributes struct {
+	BookId    int32      `json:"book_id"`
 	IpfsHash  string     `json:"ipfs_hash"`
 	Signature string     `json:"signature"`
 	Status    TaskStatus `json:"status"`

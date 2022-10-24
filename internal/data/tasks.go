@@ -46,10 +46,11 @@ func (t Task) Resource() resources.Task {
 	return resources.Task{
 		Key: resources.NewKeyInt64(t.Id, resources.TASKS),
 		Attributes: resources.TaskAttributes{
+			TokenId:   int32(t.TokenId),
+			BookId:    int32(t.BookId),
 			IpfsHash:  t.IpfsHash,
 			Signature: t.Signature,
 			Status:    t.Status,
-			TokenId:   int32(t.TokenId),
 		},
 	}
 }

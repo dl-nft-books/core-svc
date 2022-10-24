@@ -1,6 +1,6 @@
 post:
   tags:
-    - CreateTask
+    - Tasks
   summary: Create new task
   operationId: CreateTask
   requestBody:
@@ -35,10 +35,9 @@ get:
   parameters:
     - $ref: '#/components/parameters/pageNumberParam'
     - $ref: '#/components/parameters/pageLimitParam'
-    - $ref: '#/components/parameters/orderParam'
     - name: 'filter[account]'
       in: query
-      description: Array of account IDs to be filtered with
+      description: Array of account addresses to be filtered with
       explode: false
       required: false
       schema:
@@ -79,15 +78,9 @@ get:
               data:
                 type: object
                 $ref: '#/components/schemas/TasksArray'
+    '400':
+      $ref: '#/components/responses/BadRequestError'
     '404':
-      description: Not found error
-      content:
-        application/vnd.api+json:
-          schema:
-            $ref: '#/components/schemas/Errors'
+      $ref: '#/components/responses/NotFoundError'
     '500':
-      description: Internal error
-      content:
-        application/vnd.api+json:
-          schema:
-            $ref: '#/components/schemas/Errors'
+      $ref: '#/components/responses/InternalError'

@@ -7,20 +7,24 @@ allOf:
       attributes:
         type: object
         required:
+          - token_id
+          - book_id
           - signature
           - ipfs_hash
-          - token_id
           - status
         properties:
+          token_id:
+            type: integer
+            example: 123
+          book_id:
+            type: integer
+            example: 2
           signature:
             type: string
             example: I love Distributed Lab!!!
           ipfs_hash:
             type: string
             example: QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
-          token_id:
-            type: integer
-            example: 123
           status:
             type: integer
             format: TaskStatus

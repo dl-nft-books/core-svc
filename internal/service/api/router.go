@@ -29,8 +29,14 @@ func (s *service) router() chi.Router {
 				r.Get("/", handlers.GetPrice)
 			})
 		})
+
 		r.Route("/tasks", func(r chi.Router) {
 			r.Post("/", handlers.CreateTask)
+			r.Get("/", handlers.ListTasks)
+
+			r.Route("/{id}", func(r chi.Router) {
+				r.Get("/", handlers.GetTaskByID)
+			})
 		})
 	})
 

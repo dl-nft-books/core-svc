@@ -10,6 +10,7 @@ allOf:
         required:
           - signature
           - account
+          - book_id
         properties:
           signature:
             type: string
@@ -17,3 +18,6 @@ allOf:
           account:
             type: string
             example: '0xcD3C5Ecb0159DFD0B7b338341CF6594224aE2083'
+          book_id:
+            type: integer
+            example: 2

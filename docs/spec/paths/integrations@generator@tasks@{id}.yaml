@@ -1,0 +1,30 @@
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      description: account id of a task to be requested
+get:
+  tags:
+    - Tasks
+  summary: Get task by ID
+  operationId: GetTaskByID
+  responses:
+    '200':
+      description: Success
+      content:
+        application/vnd.api+json:
+          schema:
+            type: object
+            required:
+              - data
+            properties:
+              data:
+                $ref: '#/components/schemas/Task'
+    '400':
+      description: Bad request
+    '404':
+      description: Not found
+    '500':
+      description: Internal error
