@@ -27,20 +27,22 @@ type SignInfo struct {
 	ContractVersion string
 	ContractAddress string
 	TokenAddress    string
+	TokenURI        string
 	Price           *big.Int
 	ChainID         int64
+	EndTimestamp    int64
 }
 
 func Sign(info *SignInfo, config *config.EthMinterConfig) (*SignatureParameters, error) {
 	privateKey := config.PrivateKey
 
-	endTimestamp := time.Now().Add(config.Expiration).Unix()
+	info.EndTimestamp = time.Now().Add(config.Expiration).Unix()
 
 	if info.TokenAddress == "" {
 		info.TokenAddress = defaultAddress
 	}
 
-	signature, err := signEIP712(privateKey, info, endTimestamp)
+	signature, err := signEIP712(privateKey, info)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to sign EIP712 hash")
 	}
@@ -48,13 +50,14 @@ func Sign(info *SignInfo, config *config.EthMinterConfig) (*SignatureParameters,
 	return parseSignatureParameters(signature)
 }
 
-func signEIP712(privateKey *ecdsa.PrivateKey, info *SignInfo, endTimestamp int64) ([]byte, error) {
+func signEIP712(privateKey *ecdsa.PrivateKey, info *SignInfo) ([]byte, error) {
 	data := &eip712.TypedData{
 		Types: apitypes.Types{
 			"Mint": []apitypes.Type{
 				{Name: "paymentTokenAddress", Type: "address"},
 				{Name: "paymentTokenPrice", Type: "uint256"},
 				{Name: "endTimestamp", Type: "uint256"},
+				{Name: "tokenURI", Type: "bytes32"},
 			},
 			"EIP712Domain": []apitypes.Type{
 				{Name: "name", Type: "string"},
@@ -73,7 +76,8 @@ func signEIP712(privateKey *ecdsa.PrivateKey, info *SignInfo, endTimestamp int64
 		Message: apitypes.TypedDataMessage{
 			"paymentTokenAddress": info.TokenAddress,
 			"paymentTokenPrice":   info.Price.String(),
-			"endTimestamp":        math.NewHexOrDecimal256(endTimestamp),
+			"endTimestamp":        math.NewHexOrDecimal256(info.EndTimestamp),
+			"tokenURI":            []byte(info.TokenURI),
 		},
 	}
 

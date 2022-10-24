@@ -8,12 +8,15 @@ import (
 	"gitlab.com/distributed_lab/urlval"
 )
 
+const maxTokenURILength = 32
+
 var AddressRegexp = regexp.MustCompile("^(0x)?[0-9a-fA-F]{40}$")
 
 type GetPriceRequest struct {
 	BookID       int64  `url:"book_id"`
 	Platform     string `url:"platform"`
 	TokenAddress string `url:"token_address"`
+	TokenURI     string `url:"token_uri"`
 }
 
 func NewGetPriceRequest(r *http.Request) (*GetPriceRequest, error) {
@@ -28,16 +31,30 @@ func NewGetPriceRequest(r *http.Request) (*GetPriceRequest, error) {
 }
 
 func (r GetPriceRequest) validate() error {
-	if r.TokenAddress == "" {
-		return nil
+	err := validation.Errors{
+		"book_id=": validation.Validate(
+			r.BookID,
+			validation.Required,
+			validation.Min(1)),
+		"platform=": validation.Validate(r.Platform, validation.Required),
+		"token_uri": validation.Validate(
+			r.TokenURI,
+			validation.Required,
+			validation.Length(1, maxTokenURILength)),
+	}.Filter()
+
+	if err != nil {
+		return err
 	}
 
-	return validation.Errors{
-		"book_id=": validation.Validate(r.BookID, validation.Min(1)),
-		"token_address=": validation.Validate(
-			r.TokenAddress,
-			validation.Required,
-			validation.Match(AddressRegexp)),
-		"platform=": validation.Validate(r.Platform, validation.Required),
-	}.Filter()
+	if r.TokenAddress != "" {
+		return validation.Errors{
+			"token_address=": validation.Validate(
+				r.TokenAddress,
+				validation.Required,
+				validation.Match(AddressRegexp)),
+		}.Filter()
+	}
+
+	return nil
 }

@@ -37,6 +37,7 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 		ContractVersion: book.ContractVersion,
 		TokenAddress:    req.TokenAddress,
 		ChainID:         mintConfig.ChainID,
+		TokenURI:        req.TokenURI,
 	}
 
 	priceRes, err := helpers.Pricer(r).GetPrice(req.Platform, book.ContractAddress)

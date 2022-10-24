@@ -1,0 +1,6 @@
+name: token_uri
+in: query
+description: Token URI
+required: true
+schema:
+  type: string

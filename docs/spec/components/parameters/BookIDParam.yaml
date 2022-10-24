@@ -1,0 +1,6 @@
+name: book_id
+in: query
+description: Book identifier
+required: true
+schema:
+  type: integer

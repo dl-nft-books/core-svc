@@ -10,7 +10,7 @@ allOf:
         required:
           - price
         properties:
-          amount:
+          price:
             type: string
             description: price required to buy the nft
       relationships:
