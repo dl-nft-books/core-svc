@@ -25,8 +25,6 @@ type config struct {
 	getter kv.Getter
 	EthMinterConfigurator
 	pricer.Pricer
-
-	coingecko comfig.Once
 }
 
 func New(getter kv.Getter) Config {

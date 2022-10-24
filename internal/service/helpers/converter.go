@@ -25,7 +25,12 @@ func ConvertPrice(raw string, precision int) (*big.Int, error) {
 		return nil, errors.New("failed to set bigint value")
 	}
 
-	price.Mul(price, big.NewInt(int64(math.Pow10(precision))))
+	if precision < 0 {
+		positivePrecision := int(math.Abs(float64(precision)))
+		price.Div(price, big.NewInt(int64(math.Pow10(positivePrecision))))
+	} else {
+		price.Mul(price, big.NewInt(int64(math.Pow10(precision))))
+	}
 
 	return price, nil
 }

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/responses"
@@ -55,7 +54,6 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 
 	signature, err := helpers.Sign(&info, &mintConfig)
 	if err != nil {
-		fmt.Println(err)
 		ape.Render(w, problems.InternalError())
 		return
 	}
