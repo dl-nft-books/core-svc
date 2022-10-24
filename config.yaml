@@ -1,4 +1,5 @@
 log:
+  level: debug
   disable_sentry: true
 
 # use the book-svc database
@@ -6,7 +7,7 @@ db:
   url: "postgres://book:book@localhost:25432/book?sslmode=disable"
 
 eth_minter:
-  eth_signer:
+  eth_signer: "b5b6c7a28756d349ac1e7f7bf11fa885ea7d761c498c6f9803ad6b03675ad4a9"
   chain_id: 1
   precision: 18
   expiration: 5m
@@ -23,4 +24,4 @@ cop:
   service_prefix: "/integrations/generator"
 
 pricer:
-  url:
+  url: http://localhost:8111/

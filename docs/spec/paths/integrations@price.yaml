@@ -1,19 +1,13 @@
-parameters:
-  # TODO @slbmax make consistent with other params
-  - name: book_id
-    in: query
-    description: Book identifier
-    required: true
-    schema:
-      type: integer
 get:
   tags:
     - Price
   summary: Get Price ($) of nft with signature
   operationId: getPrice
   parameters:
+    - $ref: '#/components/parameters/BookIDParam'
     - $ref: '#/components/parameters/PlatformParam'
     - $ref: '#/components/parameters/TokenAddressParam'
+    - $ref: '#/components/parameters/TokenURIParam'
   responses:
     '200':
       description: Success
