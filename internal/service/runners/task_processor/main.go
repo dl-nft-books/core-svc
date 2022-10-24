@@ -2,6 +2,8 @@ package task_processor
 
 import (
 	"context"
+	"strconv"
+
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
@@ -10,7 +12,6 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
-	"strconv"
 )
 
 const cursorKey = "task_processor_cursor"
@@ -22,7 +23,8 @@ type TaskProcessor struct {
 	generatorDB data.GeneratorDB
 	selector    data.TaskSelector
 
-	runnerCfg config.RunnerData
+	runnerCfg       config.RunnerData
+	signatureParams *config.SignatureParams
 }
 
 func New(cfg config.Config) *TaskProcessor {
@@ -38,9 +40,10 @@ func New(cfg config.Config) *TaskProcessor {
 			},
 			Status: &status,
 		},
-		logger:      cfg.Log(),
-		generatorDB: postgres.NewGeneratorDB(cfg.GeneratorDB().DB),
-		runnerCfg:   cfg.TaskProcessorCfg().Runner,
+		logger:          cfg.Log(),
+		generatorDB:     postgres.NewGeneratorDB(cfg.GeneratorDB().DB),
+		runnerCfg:       cfg.TaskProcessorCfg().Runner,
+		signatureParams: cfg.PdfSignatureParams(),
 	}
 }
 

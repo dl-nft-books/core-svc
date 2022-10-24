@@ -16,6 +16,7 @@ type Config interface {
 	TaskProcessor
 
 	Coingecko() *CoingeckoConfig
+	PdfSignatureParams() *SignatureParams
 }
 
 type config struct {
@@ -27,7 +28,8 @@ type config struct {
 	EthMinterConfigurator
 	TaskProcessor
 
-	coingecko comfig.Once
+	coingecko          comfig.Once
+	pdfSignatureParams comfig.Once
 }
 
 func New(getter kv.Getter) Config {

@@ -1,13 +1,14 @@
 package handlers
 
 import (
+	"net/http"
+
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
-	"net/http"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
 )
 
 func ListTasks(w http.ResponseWriter, r *http.Request) {
@@ -28,19 +29,5 @@ func ListTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ape.Render(w, formTaskListResponse(tasks))
-}
-
-func formTaskListResponse(tasks []data.Task) (response resources.TaskListResponse) {
-	if len(tasks) == 0 {
-		return resources.TaskListResponse{
-			Data: []resources.Task{},
-		}
-	}
-
-	for _, task := range tasks {
-		response.Data = append(response.Data, task.Resource())
-	}
-
-	return response
+	ape.Render(w, responses.NewTaskListResponse(tasks))
 }
