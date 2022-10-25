@@ -36,6 +36,9 @@ cop:
   service_name: generator-svc
   service_port: 80
 
+documenter:
+  url: http://localhost:8000
+
 pdf_signature_params:
   api_key: b367178b5ddb3ea2cc9add1c9989b1eec155ffce4160b5b8c9777dbe28b9f3a6 #100 free uses only
   params:

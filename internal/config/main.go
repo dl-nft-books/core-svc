@@ -5,6 +5,7 @@ import (
 	"gitlab.com/distributed_lab/kit/copus"
 	"gitlab.com/distributed_lab/kit/copus/types"
 	"gitlab.com/distributed_lab/kit/kv"
+	blobconnector "gitlab.com/tokend/nft-books/blob-svc/connector"
 )
 
 type Config interface {
@@ -15,6 +16,7 @@ type Config interface {
 	EthMinterConfigurator
 	TaskProcessor
 
+	DocumenterConnector() *blobconnector.Connector
 	Coingecko() *CoingeckoConfig
 	PdfSignatureParams() *SignatureParams
 }
@@ -27,7 +29,7 @@ type config struct {
 	Databaser
 	EthMinterConfigurator
 	TaskProcessor
-
+	blobconnector.Documenter
 	coingecko          comfig.Once
 	pdfSignatureParams comfig.Once
 }
@@ -41,5 +43,6 @@ func New(getter kv.Getter) Config {
 		EthMinterConfigurator: NewEthMinterConfigurator(getter),
 		Databaser:             NewDatabaser(getter),
 		TaskProcessor:         NewTaskProcessor(getter),
+		Documenter:            blobconnector.NewDocumenter(getter),
 	}
 }

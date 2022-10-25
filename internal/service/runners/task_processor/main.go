@@ -8,6 +8,7 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/running"
+	"gitlab.com/tokend/nft-books/blob-svc/connector"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
@@ -20,11 +21,14 @@ type TaskProcessor struct {
 	name   string
 	logger *logan.Entry
 
+	booksDB     data.BookQ
 	generatorDB data.GeneratorDB
 	selector    data.TaskSelector
 
 	runnerCfg       config.RunnerData
 	signatureParams *config.SignatureParams
+
+	documenerConnector *connector.Connector
 }
 
 func New(cfg config.Config) *TaskProcessor {
@@ -40,10 +44,12 @@ func New(cfg config.Config) *TaskProcessor {
 			},
 			Status: &status,
 		},
-		logger:          cfg.Log(),
-		generatorDB:     postgres.NewGeneratorDB(cfg.GeneratorDB().DB),
-		runnerCfg:       cfg.TaskProcessorCfg().Runner,
-		signatureParams: cfg.PdfSignatureParams(),
+		logger:             cfg.Log(),
+		booksDB:            postgres.NewBooksQ(cfg.BookDB().DB),
+		generatorDB:        postgres.NewGeneratorDB(cfg.GeneratorDB().DB),
+		runnerCfg:          cfg.TaskProcessorCfg().Runner,
+		signatureParams:    cfg.PdfSignatureParams(),
+		documenerConnector: cfg.DocumenterConnector(),
 	}
 }
 
