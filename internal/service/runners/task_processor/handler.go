@@ -14,30 +14,27 @@ import (
 func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debugf("Started processing task with id of %d", task.Id)
 
-	//// Getting book
-	//p.logger.Debug("Retrieving book...")
-	//book, err := p.booksDB.FilterActual().FilterByID(task.BookId).Get()
-	//if err != nil {
-	//	return err
-	//}
-	//if book == nil {
-	//	return errors.Wrap(err, fmt.Sprintf("failed to get book with id %v", task.Id))
-	//}
-	//p.logger.Debug("Book retrieved successfully")
-	//
-	//// Getting s3key
-	//p.logger.Debug("Retrieving document key...")
-	//key, err := helpers.GetDocumentKey(book.File)
-	//if err != nil {
-	//	return err
-	//}
-	//if key == nil {
-	//	return errors.Wrap(err, "failed to get document key")
-	//}
-	//p.logger.Debug("Key retrieved successfully")
+	// Getting book
+	p.logger.Debug("Retrieving book...")
+	book, err := p.booksDB.FilterActual().FilterByID(task.BookId).Get()
+	if err != nil {
+		return err
+	}
+	if book == nil {
+		return errors.Wrap(err, fmt.Sprintf("failed to get book with id %v", task.Id))
+	}
+	p.logger.Debug("Book retrieved successfully")
 
-	str := "mynewworkingkey.pdf"
-	key := &str
+	// Getting s3key
+	p.logger.Debug("Retrieving document key...")
+	key, err := helpers.GetDocumentKey(book.File)
+	if err != nil {
+		return err
+	}
+	if key == nil {
+		return errors.Wrap(err, "failed to get document key")
+	}
+	p.logger.Debug("Key retrieved successfully")
 
 	// Getting link to download document
 	p.logger.Debug("Retrieving document link from S3...")
