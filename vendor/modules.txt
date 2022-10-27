@@ -74,12 +74,24 @@ github.com/go-gorp/gorp/v3
 # github.com/go-ozzo/ozzo-validation/v4 v4.2.1
 ## explicit; go 1.13
 github.com/go-ozzo/ozzo-validation/v4
+# github.com/gogo/protobuf v1.3.2
+## explicit; go 1.15
+github.com/gogo/protobuf/gogoproto
+github.com/gogo/protobuf/proto
+github.com/gogo/protobuf/protoc-gen-gogo/descriptor
 # github.com/google/jsonapi v0.0.0-20200226002910-c8283f632fb7
 ## explicit
 github.com/google/jsonapi
+# github.com/google/uuid v1.3.0
+## explicit
+github.com/google/uuid
 # github.com/gorilla/i18n v0.0.0-20150820051429-8b358169da46
 ## explicit
 github.com/gorilla/i18n/linebreak
+# github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
+## explicit; go 1.12
+github.com/hashicorp/golang-lru
+github.com/hashicorp/golang-lru/simplelru
 # github.com/hashicorp/hcl v1.0.0
 ## explicit
 github.com/hashicorp/hcl
@@ -92,10 +104,122 @@ github.com/hashicorp/hcl/hcl/token
 github.com/hashicorp/hcl/json/parser
 github.com/hashicorp/hcl/json/scanner
 github.com/hashicorp/hcl/json/token
+# github.com/ipfs/bbloom v0.0.4
+## explicit; go 1.12
+github.com/ipfs/bbloom
+# github.com/ipfs/go-block-format v0.0.3
+## explicit
+github.com/ipfs/go-block-format
+# github.com/ipfs/go-blockservice v0.3.0
+## explicit; go 1.16
+github.com/ipfs/go-blockservice
+# github.com/ipfs/go-cid v0.1.0
+## explicit; go 1.15
+github.com/ipfs/go-cid
+# github.com/ipfs/go-datastore v0.5.0
+## explicit; go 1.16
+github.com/ipfs/go-datastore
+github.com/ipfs/go-datastore/keytransform
+github.com/ipfs/go-datastore/namespace
+github.com/ipfs/go-datastore/query
+github.com/ipfs/go-datastore/sync
+# github.com/ipfs/go-ipfs-blockstore v1.2.0
+## explicit; go 1.16
+github.com/ipfs/go-ipfs-blockstore
+# github.com/ipfs/go-ipfs-chunker v0.0.5
+## explicit; go 1.12
+github.com/ipfs/go-ipfs-chunker
+# github.com/ipfs/go-ipfs-ds-help v1.1.0
+## explicit; go 1.16
+github.com/ipfs/go-ipfs-ds-help
+# github.com/ipfs/go-ipfs-exchange-interface v0.1.0
+## explicit; go 1.16
+github.com/ipfs/go-ipfs-exchange-interface
+# github.com/ipfs/go-ipfs-exchange-offline v0.2.0
+## explicit; go 1.16
+github.com/ipfs/go-ipfs-exchange-offline
+# github.com/ipfs/go-ipfs-files v0.0.3
+## explicit
+github.com/ipfs/go-ipfs-files
+# github.com/ipfs/go-ipfs-posinfo v0.0.1
+## explicit
+github.com/ipfs/go-ipfs-posinfo
+# github.com/ipfs/go-ipfs-util v0.0.2
+## explicit; go 1.14
+github.com/ipfs/go-ipfs-util
+# github.com/ipfs/go-ipld-cbor v0.0.5
+## explicit; go 1.13
+github.com/ipfs/go-ipld-cbor
+github.com/ipfs/go-ipld-cbor/encoding
+# github.com/ipfs/go-ipld-format v0.3.0
+## explicit; go 1.16
+github.com/ipfs/go-ipld-format
+# github.com/ipfs/go-ipld-legacy v0.1.0
+## explicit; go 1.15
+github.com/ipfs/go-ipld-legacy
+# github.com/ipfs/go-log v1.0.5
+## explicit; go 1.12
+github.com/ipfs/go-log
+github.com/ipfs/go-log/tracer
+github.com/ipfs/go-log/tracer/wire
+github.com/ipfs/go-log/writer
+# github.com/ipfs/go-log/v2 v2.3.0
+## explicit; go 1.15
+github.com/ipfs/go-log/v2
+# github.com/ipfs/go-merkledag v0.8.0
+## explicit; go 1.18
+github.com/ipfs/go-merkledag
+github.com/ipfs/go-merkledag/pb
+github.com/ipfs/go-merkledag/test
+# github.com/ipfs/go-metrics-interface v0.0.1
+## explicit
+github.com/ipfs/go-metrics-interface
+# github.com/ipfs/go-unixfs v0.4.1
+## explicit; go 1.18
+github.com/ipfs/go-unixfs
+github.com/ipfs/go-unixfs/importer
+github.com/ipfs/go-unixfs/importer/balanced
+github.com/ipfs/go-unixfs/importer/helpers
+github.com/ipfs/go-unixfs/importer/trickle
+github.com/ipfs/go-unixfs/pb
+# github.com/ipfs/go-verifcid v0.0.1
+## explicit
+github.com/ipfs/go-verifcid
+# github.com/ipld/go-codec-dagpb v1.3.1
+## explicit; go 1.16
+github.com/ipld/go-codec-dagpb
+# github.com/ipld/go-ipld-prime v0.16.0
+## explicit; go 1.16
+github.com/ipld/go-ipld-prime
+github.com/ipld/go-ipld-prime/adl
+github.com/ipld/go-ipld-prime/codec
+github.com/ipld/go-ipld-prime/codec/dagjson
+github.com/ipld/go-ipld-prime/codec/raw
+github.com/ipld/go-ipld-prime/datamodel
+github.com/ipld/go-ipld-prime/fluent/qp
+github.com/ipld/go-ipld-prime/linking
+github.com/ipld/go-ipld-prime/linking/cid
+github.com/ipld/go-ipld-prime/multicodec
+github.com/ipld/go-ipld-prime/node/basic
+github.com/ipld/go-ipld-prime/node/basicnode
+github.com/ipld/go-ipld-prime/node/bindnode
+github.com/ipld/go-ipld-prime/node/mixins
+github.com/ipld/go-ipld-prime/schema
+github.com/ipld/go-ipld-prime/schema/dmt
+github.com/ipld/go-ipld-prime/schema/dsl
+github.com/ipld/go-ipld-prime/storage
+github.com/ipld/go-ipld-prime/traversal
+github.com/ipld/go-ipld-prime/traversal/selector
+# github.com/jbenet/goprocess v0.1.4
+## explicit; go 1.12
+github.com/jbenet/goprocess
 # github.com/jmoiron/sqlx v1.2.0
 ## explicit
 github.com/jmoiron/sqlx
 github.com/jmoiron/sqlx/reflectx
+# github.com/klauspost/cpuid/v2 v2.0.9
+## explicit; go 1.13
+github.com/klauspost/cpuid/v2
 # github.com/lann/builder v0.0.0-20180802200727-47ae307949d0
 ## explicit
 github.com/lann/builder
@@ -107,18 +231,57 @@ github.com/lann/ps
 github.com/lib/pq
 github.com/lib/pq/oid
 github.com/lib/pq/scram
+# github.com/libp2p/go-buffer-pool v0.0.2
+## explicit; go 1.12
+github.com/libp2p/go-buffer-pool
 # github.com/magiconair/properties v1.8.5
 ## explicit; go 1.13
 github.com/magiconair/properties
+# github.com/mattn/go-isatty v0.0.13
+## explicit; go 1.12
+github.com/mattn/go-isatty
+# github.com/minio/sha256-simd v1.0.0
+## explicit; go 1.13
+github.com/minio/sha256-simd
 # github.com/mitchellh/mapstructure v1.4.1
 ## explicit; go 1.14
 github.com/mitchellh/mapstructure
+# github.com/mr-tron/base58 v1.2.0
+## explicit; go 1.12
+github.com/mr-tron/base58/base58
+# github.com/multiformats/go-base32 v0.0.3
+## explicit
+github.com/multiformats/go-base32
+# github.com/multiformats/go-base36 v0.1.0
+## explicit; go 1.11
+github.com/multiformats/go-base36
+# github.com/multiformats/go-multibase v0.0.3
+## explicit; go 1.11
+github.com/multiformats/go-multibase
+# github.com/multiformats/go-multihash v0.2.1
+## explicit; go 1.17
+github.com/multiformats/go-multihash
+github.com/multiformats/go-multihash/core
+github.com/multiformats/go-multihash/register/all
+github.com/multiformats/go-multihash/register/blake2
+github.com/multiformats/go-multihash/register/blake3
+github.com/multiformats/go-multihash/register/miniosha256
+github.com/multiformats/go-multihash/register/murmur3
+github.com/multiformats/go-multihash/register/sha3
+# github.com/multiformats/go-varint v0.0.6
+## explicit; go 1.12
+github.com/multiformats/go-varint
 # github.com/nullstyle/go-xdr v0.0.0-20180726165426-f4c839f75077
 ## explicit
 github.com/nullstyle/go-xdr/xdr3
 # github.com/oklog/ulid v1.3.1
 ## explicit
 github.com/oklog/ulid
+# github.com/opentracing/opentracing-go v1.2.0
+## explicit; go 1.14
+github.com/opentracing/opentracing-go
+github.com/opentracing/opentracing-go/ext
+github.com/opentracing/opentracing-go/log
 # github.com/pelletier/go-toml v1.9.3
 ## explicit; go 1.12
 github.com/pelletier/go-toml
@@ -128,6 +291,16 @@ github.com/pkg/errors
 # github.com/pmezard/go-difflib v1.0.0
 ## explicit
 github.com/pmezard/go-difflib/difflib
+# github.com/polydawn/refmt v0.0.0-20201211092308-30ac6d18308e
+## explicit
+github.com/polydawn/refmt
+github.com/polydawn/refmt/cbor
+github.com/polydawn/refmt/json
+github.com/polydawn/refmt/obj
+github.com/polydawn/refmt/obj/atlas
+github.com/polydawn/refmt/pretty
+github.com/polydawn/refmt/shared
+github.com/polydawn/refmt/tok
 # github.com/rubenv/sql-migrate v1.2.0
 ## explicit; go 1.16
 github.com/rubenv/sql-migrate
@@ -135,6 +308,9 @@ github.com/rubenv/sql-migrate/sqlparse
 # github.com/sirupsen/logrus v1.8.1
 ## explicit; go 1.13
 github.com/sirupsen/logrus
+# github.com/spaolacci/murmur3 v1.1.0
+## explicit
+github.com/spaolacci/murmur3
 # github.com/spf13/afero v1.6.0
 ## explicit; go 1.13
 github.com/spf13/afero
@@ -215,6 +391,12 @@ github.com/unidoc/unipdf/v3/ps
 ## explicit; go 1.11
 github.com/unidoc/unitype
 github.com/unidoc/unitype/internal/strutils
+# github.com/whyrusleeping/cbor-gen v0.0.0-20200123233031-1cdf64d27158
+## explicit; go 1.12
+github.com/whyrusleeping/cbor-gen
+# github.com/whyrusleeping/chunker v0.0.0-20181014151217-fe64bd25879f
+## explicit
+github.com/whyrusleeping/chunker
 # gitlab.com/distributed_lab/ape v1.7.1
 ## explicit; go 1.14
 gitlab.com/distributed_lab/ape
@@ -281,8 +463,24 @@ gitlab.com/tokend/keypair/internal/strkey
 gitlab.com/tokend/nft-books/blob-svc/connector
 gitlab.com/tokend/nft-books/blob-svc/connector/models
 gitlab.com/tokend/nft-books/blob-svc/resources
+# go.uber.org/atomic v1.9.0
+## explicit; go 1.13
+go.uber.org/atomic
+# go.uber.org/multierr v1.7.0
+## explicit; go 1.14
+go.uber.org/multierr
+# go.uber.org/zap v1.19.0
+## explicit; go 1.13
+go.uber.org/zap
+go.uber.org/zap/buffer
+go.uber.org/zap/internal/bufferpool
+go.uber.org/zap/internal/color
+go.uber.org/zap/internal/exit
+go.uber.org/zap/zapcore
 # golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 ## explicit; go 1.17
+golang.org/x/crypto/blake2b
+golang.org/x/crypto/blake2s
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/ocsp
 golang.org/x/crypto/sha3
@@ -315,6 +513,11 @@ golang.org/x/text/unicode/norm
 ## explicit; go 1.17
 golang.org/x/xerrors
 golang.org/x/xerrors/internal
+# google.golang.org/protobuf v1.27.1
+## explicit; go 1.9
+google.golang.org/protobuf/encoding/protowire
+google.golang.org/protobuf/internal/detrand
+google.golang.org/protobuf/internal/errors
 # gopkg.in/ini.v1 v1.62.0
 ## explicit
 gopkg.in/ini.v1
@@ -324,3 +527,6 @@ gopkg.in/yaml.v2
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
+# lukechampine.com/blake3 v1.1.6
+## explicit; go 1.13
+lukechampine.com/blake3
