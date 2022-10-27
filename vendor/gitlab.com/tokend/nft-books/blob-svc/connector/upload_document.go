@@ -4,53 +4,76 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
 	"net/url"
+	"strings"
 
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
-func (c *Connector) UploadDocument(file io.Reader, key string) (int, error) {
+func (c *Connector) UploadDocument(raw []byte, key string) (int, error) {
+	// forming endpoint
 	parsedUrl, err := url.Parse(DocumentEndpoint)
 	if err != nil {
-		return 0, errors.Wrap(err, "failed to parse document url")
+		return http.StatusBadRequest, errors.Wrap(err, "failed to parse document url")
 	}
 
 	fullEndpoint, err := c.client.Resolve(parsedUrl)
 	if err != nil {
-		return 0, err
+		return http.StatusBadRequest, err
 	}
 
-	body := new(bytes.Buffer)
-	mp := multipart.NewWriter(body)
-
+	// forming multipart/form-data request : setting headers
 	h := make(textproto.MIMEHeader)
-	h.Set("Content-Disposition", fmt.Sprintf(`form-data; name="Document"; filename="1.pdf"`))
+	h.Set("Content-Disposition", fmt.Sprintf(`form-data; name="Document"; filename="document.pdf"`))
 	h.Set("Content-Type", "application/pdf")
 
-	part, err := mp.CreatePart(h)
+	// forming multipart/form-data request : adding file
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+
+	part, err := writer.CreatePart(h)
 	if err != nil {
 		return http.StatusBadRequest, err
 	}
 
-	bd, err := ioutil.ReadAll(file)
+	_, err = part.Write(raw)
 	if err != nil {
 		return http.StatusBadRequest, err
 	}
 
-	part.Write(bd)
-	mp.Close()
+	// forming multipart/form-data request : adding `Key` field
+	fw, err := writer.CreateFormField("Key")
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
+	_, err = io.Copy(fw, strings.NewReader(key))
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
 
+	writer.Close()
+
+	// creating request
 	req, err := http.NewRequest(http.MethodPost, fullEndpoint, body)
-	req.Header.Add("Content-Type", mp.FormDataContentType())
-	req.Form.Set("Key", key)
-
-	resp, err := c.client.Do(req)
 	if err != nil {
-		return resp.StatusCode, err
+		return http.StatusBadRequest, errors.Wrap(err, "failed to build request")
+	}
+
+	//  setting headers
+	req.Header.Add("Content-Type", writer.FormDataContentType())
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
+
+	// creating new client (!) and sending request
+	newCli := http.Client{}
+	resp, err := newCli.Do(req)
+	if err != nil {
+		if resp != nil {
+			return resp.StatusCode, err
+		}
+		return http.StatusBadRequest, err
 	}
 
 	return resp.StatusCode, nil

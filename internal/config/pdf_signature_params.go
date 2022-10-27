@@ -7,16 +7,16 @@ import (
 )
 
 type PdfSignatureConfig struct {
-	ApiKey          string          `json:"api_key"`
-	SignatureParams SignatureParams `json:"params"`
+	ApiKey          string          `fig:"api_key,required"`
+	SignatureParams SignatureParams `fig:"params,required"`
 }
 
 type SignatureParams struct {
-	MainHeightIndent     float64 `json:"main_height_indent"`
-	LineWidthIndent      float64 `json:"line_width_indent"`
-	ParagraphWidthIndent float64 `json:"paragraph_width_indent"`
-	UpperLineHeightIdent float64 `json:"upper_line_height_ident"`
-	LowerLineHeightIdent float64 `json:"lower_line_height_Ident"`
+	MainHeightIndent      float64 `fig:"main_height_indent,required"`
+	LineWidthIndent       float64 `fig:"line_width_indent,required"`
+	ParagraphWidthIndent  float64 `fig:"paragraph_width_indent,required"`
+	UpperLineHeightIndent float64 `fig:"upper_line_height_indent,required"`
+	LowerLineHeightIndent float64 `fig:"lower_line_height_indent,required"`
 }
 
 func (c *config) PdfSignatureParams() *SignatureParams {

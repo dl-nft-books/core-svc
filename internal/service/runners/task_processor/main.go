@@ -28,7 +28,7 @@ type TaskProcessor struct {
 	runnerCfg       config.RunnerData
 	signatureParams *config.SignatureParams
 
-	documenerConnector *connector.Connector
+	documenterConnector *connector.Connector
 }
 
 func New(cfg config.Config) *TaskProcessor {
@@ -44,12 +44,12 @@ func New(cfg config.Config) *TaskProcessor {
 			},
 			Status: &status,
 		},
-		logger:             cfg.Log(),
-		booksDB:            postgres.NewBooksQ(cfg.BookDB().DB),
-		generatorDB:        postgres.NewGeneratorDB(cfg.GeneratorDB().DB),
-		runnerCfg:          cfg.TaskProcessorCfg().Runner,
-		signatureParams:    cfg.PdfSignatureParams(),
-		documenerConnector: cfg.DocumenterConnector(),
+		logger:              cfg.Log(),
+		booksDB:             postgres.NewBooksQ(cfg.BookDB().DB),
+		generatorDB:         postgres.NewGeneratorDB(cfg.GeneratorDB().DB),
+		runnerCfg:           cfg.TaskProcessorCfg().Runner,
+		signatureParams:     cfg.PdfSignatureParams(),
+		documenterConnector: cfg.DocumenterConnector(),
 	}
 }
 

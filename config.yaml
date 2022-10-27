@@ -1,4 +1,5 @@
 log:
+  level: debug
   disable_sentry: true
 
 database:
@@ -17,17 +18,17 @@ task_processor:
     max_abnormal_period: 10s
 
 eth_minter:
-  eth_signer:
+  eth_signer: 25bbb5d1c7a8d6a554146bb9b97b91b653681199da9d19b6780292642f94ed0b
   chain_id: 1
   precision: 18
   expiration: 5m
 
 coingecko:
-  host:
-  endpoint:
+  host: localhost
+  endpoint: 8022
 
 listener:
-  addr: :8000
+  addr: :8765
 
 cop:
   disabled: true
@@ -38,6 +39,7 @@ cop:
 
 documenter:
   url: http://localhost:8000
+  token: #doorman auth token
 
 pdf_signature_params:
   api_key: b367178b5ddb3ea2cc9add1c9989b1eec155ffce4160b5b8c9777dbe28b9f3a6 #100 free uses only
@@ -45,8 +47,8 @@ pdf_signature_params:
     main_height_indent: 441.2381
     line_width_indent: 79.8757
     paragraph_width_indent: 33.821
-    upper_line_height_ident: 7.198
-    lower_line_height_Ident: 12.9564
+    upper_line_height_indent: 7.198
+    lower_line_height_indent: 12.9564
 
 #  +-----------BDS-BOOK--------------+
 #  |	|        			   		 |

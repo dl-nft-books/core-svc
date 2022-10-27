@@ -8,15 +8,21 @@ import (
 	"gitlab.com/distributed_lab/json-api-connector/client"
 )
 
+const (
+	DocumentEndpoint = "/integrations/documents"
+)
+
 type Connector struct {
 	base   *base.Connector
 	client client.Client
+	token  string
 }
 
-func NewConnector(client client.Client) *Connector {
+func NewConnector(client client.Client, token string) *Connector {
 	return &Connector{
 		client: client,
 		base:   base.NewConnector(client),
+		token:  token,
 	}
 }
 

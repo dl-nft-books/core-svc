@@ -8,10 +8,6 @@ import (
 	"gitlab.com/tokend/nft-books/blob-svc/connector/models"
 )
 
-const (
-	DocumentEndpoint = "/integrations/documents"
-)
-
 func (c *Connector) GetDocumentLink(key string) (models.LinkResponse, error) {
 	var response models.LinkResponse
 

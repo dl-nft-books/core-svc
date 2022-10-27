@@ -12,6 +12,7 @@ import (
 
 const (
 	baseFont       = "Times-Italic"
+	fontSize       = 14
 	paragraphColor = "#2E2E2E"
 	lineColor      = "#BCBCBC"
 )
@@ -26,7 +27,7 @@ func New(sigParams *config.SignatureParams) *PdfSignatureGenerator {
 	}
 }
 
-func (g *PdfSignatureGenerator) GenerateSignature(document io.ReadSeeker, signature string) (io.Reader, error) {
+func (g *PdfSignatureGenerator) GenerateSignature(document io.ReadSeeker, signature string) ([]byte, error) {
 	pdfReader, err := model.NewPdfReader(document)
 	if err != nil {
 		return nil, err
@@ -70,11 +71,11 @@ func (g *PdfSignatureGenerator) GenerateSignature(document io.ReadSeeker, signat
 		return nil, err
 	}
 
-	return bytes.NewReader(buff.Bytes()), nil
+	return buff.Bytes(), nil
 }
 
 func (g *PdfSignatureGenerator) addSignature(cr *creator.Creator, pageWidth float64, signature string) error {
-	upperLineYPos := g.signatureParams.MainHeightIndent - g.signatureParams.UpperLineHeightIdent
+	upperLineYPos := g.signatureParams.MainHeightIndent - g.signatureParams.UpperLineHeightIndent
 	upperLine := g.createLine(
 		cr,
 		g.signatureParams.LineWidthIndent,
@@ -91,7 +92,7 @@ func (g *PdfSignatureGenerator) addSignature(cr *creator.Creator, pageWidth floa
 		signature,
 	)
 
-	lowerLineYPos := g.signatureParams.MainHeightIndent + paragraph.Height() + g.signatureParams.LowerLineHeightIdent
+	lowerLineYPos := g.signatureParams.MainHeightIndent + paragraph.Height() + g.signatureParams.LowerLineHeightIndent
 	lowerLine := g.createLine(
 		cr,
 		g.signatureParams.LineWidthIndent,
@@ -134,7 +135,7 @@ func (g *PdfSignatureGenerator) createSignatureParagraph(cr *creator.Creator, xp
 	paragraph.SetPos(xpos, ypos)
 	// Setting font
 	paragraph.SetFont(paragraphFont)
-	paragraph.SetFontSize(15)
+	paragraph.SetFontSize(fontSize)
 	// Setting text aligment
 	paragraph.SetTextAlignment(creator.TextAlignmentCenter)
 	// Setting text color

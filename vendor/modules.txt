@@ -276,7 +276,7 @@ gitlab.com/tokend/keypair/figurekeypair
 gitlab.com/tokend/keypair/internal
 gitlab.com/tokend/keypair/internal/crc16
 gitlab.com/tokend/keypair/internal/strkey
-# gitlab.com/tokend/nft-books/blob-svc v0.0.1
+# gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221027124230-96d2bab5ea13
 ## explicit; go 1.18
 gitlab.com/tokend/nft-books/blob-svc/connector
 gitlab.com/tokend/nft-books/blob-svc/connector/models

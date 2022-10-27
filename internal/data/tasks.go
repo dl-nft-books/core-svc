@@ -7,7 +7,7 @@ import (
 
 type Task struct {
 	Id        int64                `db:"id" structs:"-" json:"-"`
-	BookId    int64                `db:"book_id" structs:"-" json:"-"`
+	BookId    int64                `db:"book_id" structs:"book_id" json:"book_id"`
 	TokenId   int64                `db:"token_id" structs:"token_id"`
 	Account   string               `db:"account" structs:"account"`
 	Signature string               `db:"signature" structs:"signature"`

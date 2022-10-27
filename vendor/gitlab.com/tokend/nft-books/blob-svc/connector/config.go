@@ -27,7 +27,8 @@ func NewDocumenter(getter kv.Getter) Documenter {
 }
 
 type documenterConfig struct {
-	URL *url.URL `fig:"url,required"`
+	URL   *url.URL `fig:"url,required"`
+	Token string   `fig:"token,required"`
 }
 
 func (c *documenter) DocumenterConnector() *Connector {
@@ -45,6 +46,6 @@ func (c *documenter) DocumenterConnector() *Connector {
 
 		cli := signed.NewClient(http.DefaultClient, config.URL)
 
-		return NewConnector(cli)
+		return NewConnector(cli, config.Token)
 	}).(*Connector)
 }

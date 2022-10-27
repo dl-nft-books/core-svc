@@ -21,7 +21,7 @@ require (
 	gitlab.com/distributed_lab/logan v3.8.1+incompatible
 	gitlab.com/distributed_lab/running v1.6.0
 	gitlab.com/distributed_lab/urlval v3.0.0+incompatible
-	gitlab.com/tokend/nft-books/blob-svc v0.0.1
+	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221027124230-96d2bab5ea13
 )
 
 require (
