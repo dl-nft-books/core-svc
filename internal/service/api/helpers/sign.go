@@ -12,6 +12,7 @@ import (
 	"github.com/ethersphere/bee/pkg/crypto/eip712"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
+	"golang.org/x/crypto/sha3"
 )
 
 const defaultAddress = "0x0000000000000000000000000000000000000000"
@@ -31,12 +32,18 @@ type SignInfo struct {
 	Price           *big.Int
 	ChainID         int64
 	EndTimestamp    int64
+	HashedTokenURI  []byte
 }
 
 func Sign(info *SignInfo, config *config.EthMinterConfig) (*SignatureParameters, error) {
 	privateKey := config.PrivateKey
 
 	info.EndTimestamp = time.Now().Add(config.Expiration).Unix()
+
+	// hashing token uri
+	hash := sha3.New256()
+	hash.Write([]byte(info.TokenURI))
+	info.HashedTokenURI = hash.Sum(nil)
 
 	if info.TokenAddress == "" {
 		info.TokenAddress = defaultAddress
@@ -77,7 +84,7 @@ func signEIP712(privateKey *ecdsa.PrivateKey, info *SignInfo) ([]byte, error) {
 			"paymentTokenAddress": info.TokenAddress,
 			"paymentTokenPrice":   info.Price.String(),
 			"endTimestamp":        math.NewHexOrDecimal256(info.EndTimestamp),
-			"tokenURI":            []byte(info.TokenURI),
+			"tokenURI":            info.HashedTokenURI,
 		},
 	}
 

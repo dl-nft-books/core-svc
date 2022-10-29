@@ -8,8 +8,6 @@ import (
 	"gitlab.com/distributed_lab/urlval"
 )
 
-const maxTokenURILength = 32
-
 var AddressRegexp = regexp.MustCompile("^(0x)?[0-9a-fA-F]{40}$")
 
 type GetPriceRequest struct {
@@ -39,8 +37,7 @@ func (r GetPriceRequest) validate() error {
 		"platform=": validation.Validate(r.Platform, validation.Required),
 		"token_uri": validation.Validate(
 			r.TokenURI,
-			validation.Required,
-			validation.Length(1, maxTokenURILength)),
+			validation.Required),
 	}.Filter()
 
 	if err != nil {
