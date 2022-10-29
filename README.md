@@ -64,4 +64,4 @@ You can [install it locally](https://www.postgresql.org/download/) or use [docke
 ## Contact
 
 Responsible Max
-The primary contact for this project is  slbmax
+The primary contact for this project is @slbmax
