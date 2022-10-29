@@ -10,9 +10,9 @@ import (
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	signer "github.com/ethersphere/bee/pkg/crypto"
 	"github.com/ethersphere/bee/pkg/crypto/eip712"
+	sha3 "github.com/miguelmota/go-solidity-sha3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
-	"golang.org/x/crypto/sha3"
 )
 
 const defaultAddress = "0x0000000000000000000000000000000000000000"
@@ -39,9 +39,8 @@ func Sign(info *SignInfo, config *config.EthMinterConfig) (*SignatureParameters,
 	privateKey := config.PrivateKey
 
 	// hashing token uri
-	hash := sha3.New256()
-	hash.Write([]byte(info.TokenURI))
-	info.HashedTokenURI = hash.Sum(nil)
+	tokenURIsha3 := sha3.String(info.TokenURI)
+	info.HashedTokenURI = sha3.SoliditySHA3(tokenURIsha3)
 
 	if info.TokenAddress == "" {
 		info.TokenAddress = defaultAddress

@@ -30,12 +30,16 @@ require (
 )
 
 require (
+	github.com/davecgh/go-spew v1.1.1
+	github.com/miguelmota/go-solidity-sha3 v0.1.1
+)
+
+require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
 	github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137 // indirect
 	github.com/btcsuite/btcd v0.22.1 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.0 // indirect
 	github.com/certifi/gocertifi v0.0.0-20200211180108-c7c1fbc02894 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/getsentry/raven-go v0.2.0 // indirect
