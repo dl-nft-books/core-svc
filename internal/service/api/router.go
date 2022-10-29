@@ -25,9 +25,7 @@ func (s *service) router() chi.Router {
 	)
 	r.Route("/integrations/generator", func(r chi.Router) {
 		r.Route("/price", func(r chi.Router) {
-			r.Route("/{id}", func(r chi.Router) {
-				r.Get("/", handlers.GetPrice)
-			})
+			r.Get("/", handlers.GetPrice)
 		})
 
 		r.Route("/tasks", func(r chi.Router) {
