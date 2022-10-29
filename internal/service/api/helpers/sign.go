@@ -3,7 +3,6 @@ package helpers
 import (
 	"crypto/ecdsa"
 	"math/big"
-	"time"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/common/math"
@@ -37,8 +36,6 @@ type SignInfo struct {
 
 func Sign(info *SignInfo, config *config.EthMinterConfig) (*SignatureParameters, error) {
 	privateKey := config.PrivateKey
-
-	info.EndTimestamp = time.Now().Add(config.Expiration).Unix()
 
 	// hashing token uri
 	hash := sha3.New256()

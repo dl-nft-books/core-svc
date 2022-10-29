@@ -5,7 +5,9 @@
 package resources
 
 type SignatureAttributes struct {
-	R string `json:"r"`
-	S string `json:"s"`
-	V int32  `json:"v"`
+	// Timestamp when signature will expire
+	EndTimestamp int32  `json:"end_timestamp"`
+	R            string `json:"r"`
+	S            string `json:"s"`
+	V            int32  `json:"v"`
 }

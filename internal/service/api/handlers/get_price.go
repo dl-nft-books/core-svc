@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"time"
 
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
@@ -51,11 +52,13 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	info.EndTimestamp = time.Now().Add(mintConfig.Expiration).Unix()
+
 	signature, err := helpers.Sign(&info, &mintConfig)
 	if err != nil {
 		ape.Render(w, problems.InternalError())
 		return
 	}
 
-	ape.Render(w, responses.NewGetPriceResponse(info.Price.String(), signature))
+	ape.Render(w, responses.NewGetPriceResponse(info.Price.String(), signature, info.EndTimestamp))
 }

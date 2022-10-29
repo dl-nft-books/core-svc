@@ -5,7 +5,7 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
-func NewGetPriceResponse(tokenAmount string, signature *helpers.SignatureParameters) resources.PriceResponse {
+func NewGetPriceResponse(price string, signature *helpers.SignatureParameters, endTimestamp int64) resources.PriceResponse {
 	priceKey := resources.NewKeyInt64(1, resources.PRICES)
 	signatureKey := resources.NewKeyInt64(1, resources.SIGNATURES)
 
@@ -13,9 +13,10 @@ func NewGetPriceResponse(tokenAmount string, signature *helpers.SignatureParamet
 	included.Add(&resources.Signature{
 		Key: signatureKey,
 		Attributes: resources.SignatureAttributes{
-			R: signature.R,
-			S: signature.S,
-			V: int32(signature.V),
+			R:            signature.R,
+			S:            signature.S,
+			V:            int32(signature.V),
+			EndTimestamp: int32(endTimestamp),
 		},
 	})
 
@@ -23,7 +24,7 @@ func NewGetPriceResponse(tokenAmount string, signature *helpers.SignatureParamet
 		Data: resources.Price{
 			Key: priceKey,
 			Attributes: resources.PriceAttributes{
-				Price: tokenAmount,
+				Price: price,
 			},
 			Relationships: resources.PriceRelationships{
 				Signature: resources.Relation{
