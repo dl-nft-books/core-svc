@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"math/big"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
@@ -55,6 +56,8 @@ func Sign(info *SignInfo, config *config.EthMinterConfig) (*SignatureParameters,
 }
 
 func signEIP712(privateKey *ecdsa.PrivateKey, info *SignInfo) ([]byte, error) {
+	spew.Dump(info)
+
 	data := &eip712.TypedData{
 		Types: apitypes.Types{
 			"Mint": []apitypes.Type{
