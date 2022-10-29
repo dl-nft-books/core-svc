@@ -3,6 +3,7 @@ package pdf_signature_generator
 import (
 	"bytes"
 	"io"
+	"math/rand"
 
 	"github.com/unidoc/unipdf/v3/contentstream/draw"
 	"github.com/unidoc/unipdf/v3/creator"
@@ -15,6 +16,7 @@ const (
 	fontSize       = 14
 	paragraphColor = "#2E2E2E"
 	lineColor      = "#BCBCBC"
+	dx             = 0.01
 )
 
 type PdfSignatureGenerator struct {
@@ -128,6 +130,9 @@ func (g *PdfSignatureGenerator) createLine(cr *creator.Creator, x1, y1, x2, y2 f
 func (g *PdfSignatureGenerator) createSignatureParagraph(cr *creator.Creator, xpos, ypos, pageWidth float64, signature string) *creator.Paragraph {
 	paragraphFont, _ := model.NewStandard14Font(baseFont)
 	paragraphColor := creator.ColorRGBFromHex(paragraphColor)
+
+	// pseudo-randomization to avoid hash collision
+	xpos += rand.Float64() * dx
 
 	paragraph := cr.NewParagraph(signature)
 	paragraph.SetWidth(pageWidth - xpos*2)
