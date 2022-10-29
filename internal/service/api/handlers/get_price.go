@@ -6,6 +6,7 @@ import (
 
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
@@ -15,6 +16,19 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 	req, err := requests.NewGetPriceRequest(r)
 	if err != nil {
 		ape.RenderErr(w, problems.BadRequest(err)...)
+		return
+	}
+
+	// checking tokenURI existence
+	tasks, err := helpers.GeneratorDB(r).Tasks().Select(data.TaskSelector{
+		IpfsHash: &req.TokenURI,
+	})
+	if err != nil {
+		ape.Render(w, problems.InternalError())
+		return
+	}
+	if len(tasks) != 1 {
+		ape.Render(w, problems.NotFound())
 		return
 	}
 
