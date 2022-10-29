@@ -463,6 +463,11 @@ gitlab.com/tokend/keypair/internal/strkey
 gitlab.com/tokend/nft-books/blob-svc/connector
 gitlab.com/tokend/nft-books/blob-svc/connector/models
 gitlab.com/tokend/nft-books/blob-svc/resources
+# gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022125247-81cac705a28c
+## explicit; go 1.17
+gitlab.com/tokend/nft-books/price-svc/connector
+gitlab.com/tokend/nft-books/price-svc/connector/models
+gitlab.com/tokend/nft-books/price-svc/resources
 # go.uber.org/atomic v1.9.0
 ## explicit; go 1.13
 go.uber.org/atomic

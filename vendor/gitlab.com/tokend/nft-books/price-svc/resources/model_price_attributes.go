@@ -5,6 +5,5 @@
 package resources
 
 type PriceAttributes struct {
-	// price required to buy the nft
 	Price string `json:"price"`
 }

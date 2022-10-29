@@ -1220,6 +1220,8 @@ gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312 h1:u8pxrNw8QKIsrmCl
 gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312/go.mod h1:vdlhN5/oQR7uY8EsGSqPf8bwnmQxxpaq7qrQn5Y3U/w=
 gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221027124230-96d2bab5ea13 h1:gnUAOJvggjhjqaFHEr/mXIuzFAhIn69PwjzlAeCNdPc=
 gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221027124230-96d2bab5ea13/go.mod h1:ex+/kgOjFVWYSXMoSTtfsW8KkOa54vVP1cAy52wj9Mc=
+gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022125247-81cac705a28c h1:csZbaYFrTNVQDcg1VB+cNMOnT9jeS4eKIFodYGCgONY=
+gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022125247-81cac705a28c/go.mod h1:SMym7B40PLAweAAUAr1/pF88s5YxpwwSCf2OowPpwmY=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/etcd v0.0.0-20191023171146-3cf2f69b5738/go.mod h1:dnLIgRNXwCJa5e+c6mIZCrds/GIG4ncV9HhK5PX7jPg=
 go.etcd.io/etcd/api/v3 v3.5.0/go.mod h1:cbVKeC6lCfl7j/8jBhAK6aIYO9XOjdptoxU/nLQcPvs=

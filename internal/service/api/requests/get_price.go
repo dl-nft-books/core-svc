@@ -4,50 +4,57 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/go-chi/chi"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/spf13/cast"
-	"gitlab.com/distributed_lab/logan/v3/errors"
+	"gitlab.com/distributed_lab/urlval"
 )
+
+const maxTokenURILength = 32
 
 var AddressRegexp = regexp.MustCompile("^(0x)?[0-9a-fA-F]{40}$")
 
 type GetPriceRequest struct {
-	ID           int64  `json:"id"`
-	Platform     string `json:"platform"`
-	TokenAddress string `json:"token_address"`
+	BookID       int64  `url:"book_id"`
+	Platform     string `url:"platform"`
+	TokenAddress string `url:"token_address"`
+	TokenURI     string `url:"token_uri"`
 }
 
 func NewGetPriceRequest(r *http.Request) (*GetPriceRequest, error) {
 	var result GetPriceRequest
 	var err error
 
-	result.ID, err = cast.ToInt64E(chi.URLParam(r, "id"))
-	if err != nil {
-		return nil, validation.Errors{
-			"id": err,
-		}
+	if err = urlval.Decode(r.URL.Query(), &result); err != nil {
+		return &result, err
 	}
-
-	result.Platform = r.URL.Query().Get("platform")
-	if result.Platform == "" {
-		return nil, errors.New("failed to retrieve platform parameter")
-	}
-
-	result.TokenAddress = r.URL.Query().Get("token_address")
 
 	return &result, result.validate()
 }
 
 func (r GetPriceRequest) validate() error {
-	if r.TokenAddress == "" {
-		return nil
+	err := validation.Errors{
+		"book_id=": validation.Validate(
+			r.BookID,
+			validation.Required,
+			validation.Min(1)),
+		"platform=": validation.Validate(r.Platform, validation.Required),
+		"token_uri": validation.Validate(
+			r.TokenURI,
+			validation.Required,
+			validation.Length(1, maxTokenURILength)),
+	}.Filter()
+
+	if err != nil {
+		return err
 	}
 
-	return validation.Errors{
-		"token_address": validation.Validate(
-			&r.TokenAddress,
-			validation.Required,
-			validation.Match(AddressRegexp)),
-	}.Filter()
+	if r.TokenAddress != "" {
+		return validation.Errors{
+			"token_address=": validation.Validate(
+				r.TokenAddress,
+				validation.Required,
+				validation.Match(AddressRegexp)),
+		}.Filter()
+	}
+
+	return nil
 }

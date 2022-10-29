@@ -23,7 +23,7 @@ func NewGetPriceResponse(tokenAmount string, signature *helpers.SignatureParamet
 		Data: resources.Price{
 			Key: priceKey,
 			Attributes: resources.PriceAttributes{
-				Amount: &tokenAmount,
+				Price: tokenAmount,
 			},
 			Relationships: resources.PriceRelationships{
 				Signature: resources.Relation{

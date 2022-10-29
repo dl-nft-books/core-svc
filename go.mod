@@ -16,7 +16,7 @@ require (
 	github.com/lib/pq v1.10.0
 	github.com/pkg/errors v0.9.1
 	github.com/rubenv/sql-migrate v1.2.0
-	github.com/spf13/cast v1.4.1
+	github.com/spf13/cast v1.4.1 // indirect
 	github.com/unidoc/unipdf/v3 v3.39.0
 	gitlab.com/distributed_lab/ape v1.7.1
 	gitlab.com/distributed_lab/figure v2.1.0+incompatible
@@ -25,6 +25,8 @@ require (
 	gitlab.com/distributed_lab/running v1.6.0
 	gitlab.com/distributed_lab/urlval v3.0.0+incompatible
 	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221027124230-96d2bab5ea13
+	gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022125247-81cac705a28c
+
 )
 
 require (

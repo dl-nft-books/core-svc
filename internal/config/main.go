@@ -6,6 +6,7 @@ import (
 	"gitlab.com/distributed_lab/kit/copus/types"
 	"gitlab.com/distributed_lab/kit/kv"
 	blobconnector "gitlab.com/tokend/nft-books/blob-svc/connector"
+	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 )
 
 type Config interface {
@@ -17,10 +18,9 @@ type Config interface {
 	TaskProcessor
 
 	DocumenterConnector() *blobconnector.Connector
-	Coingecko() *CoingeckoConfig
 	PdfSignatureParams() *SignatureParams
+	pricer.Pricer
 }
-
 type config struct {
 	comfig.Logger
 	types.Copuser
@@ -30,8 +30,8 @@ type config struct {
 	EthMinterConfigurator
 	TaskProcessor
 	blobconnector.Documenter
-	coingecko          comfig.Once
 	pdfSignatureParams comfig.Once
+	pricer.Pricer
 }
 
 func New(getter kv.Getter) Config {
@@ -44,5 +44,6 @@ func New(getter kv.Getter) Config {
 		Databaser:             NewDatabaser(getter),
 		TaskProcessor:         NewTaskProcessor(getter),
 		Documenter:            blobconnector.NewDocumenter(getter),
+		Pricer:                pricer.NewPricer(getter),
 	}
 }

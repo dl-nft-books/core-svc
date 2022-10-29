@@ -1,14 +1,13 @@
 package handlers
 
 import (
-	"fmt"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
 	"net/http"
 
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
 )
 
 func GetPrice(w http.ResponseWriter, r *http.Request) {
@@ -18,7 +17,7 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := helpers.BooksQ(r).FilterActual().FilterByID(req.ID).Get()
+	book, err := helpers.BooksQ(r).FilterActual().FilterByID(req.BookID).Get()
 	if err != nil {
 		ape.Render(w, problems.InternalError())
 		return
@@ -36,15 +35,17 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 		ContractVersion: book.ContractVersion,
 		TokenAddress:    req.TokenAddress,
 		ChainID:         mintConfig.ChainID,
+		TokenURI:        req.TokenURI,
 	}
 
-	rawPrice, err := helpers.GetPrice(r, info.TokenAddress, req.Platform)
+	priceRes, err := helpers.Pricer(r).GetPrice(req.Platform, req.TokenAddress)
 	if err != nil {
+		helpers.Log(r).WithError(err).Error("error")
 		ape.Render(w, problems.InternalError())
 		return
 	}
 
-	info.Price, err = helpers.ConvertPrice(rawPrice, mintConfig.Precision)
+	info.Price, err = helpers.ConvertPrice(priceRes.Data.Attributes.Price, mintConfig.Precision)
 	if err != nil {
 		ape.Render(w, problems.InternalError())
 		return
@@ -52,7 +53,6 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 
 	signature, err := helpers.Sign(&info, &mintConfig)
 	if err != nil {
-		fmt.Println(err)
 		ape.Render(w, problems.InternalError())
 		return
 	}

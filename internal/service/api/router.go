@@ -20,7 +20,7 @@ func (s *service) router() chi.Router {
 			helpers.CtxBooksQ(postgres.NewBooksQ(s.booksDB)),
 			helpers.CtxGeneratorDB(postgres.NewGeneratorDB(s.generatorDB)),
 			helpers.CtxMinter(*s.ethMinterConfig),
-			helpers.CtxCoingecko(*s.coingeckoConfig),
+			helpers.CtxPricer(s.pricer),
 		),
 	)
 	r.Route("/integrations/generator", func(r chi.Router) {
