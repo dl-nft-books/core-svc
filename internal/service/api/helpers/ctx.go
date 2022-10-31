@@ -61,11 +61,11 @@ func Minter(r *http.Request) config.EthMinterConfig {
 }
 
 func BooksQ(r *http.Request) data.BookQ {
-	return r.Context().Value(booksQCtxKey).(data.BookQ)
+	return r.Context().Value(booksQCtxKey).(data.BookQ).New()
 }
 
 func GeneratorDB(r *http.Request) data.GeneratorDB {
-	return r.Context().Value(generatorDBCtxKey).(data.GeneratorDB)
+	return r.Context().Value(generatorDBCtxKey).(data.GeneratorDB).New()
 }
 
 func Log(r *http.Request) *logan.Entry {
