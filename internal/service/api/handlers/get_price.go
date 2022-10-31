@@ -60,7 +60,8 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 		ContractVersion: book.ContractVersion,
 		TokenAddress:    req.TokenAddress,
 		ChainID:         mintConfig.ChainID,
-		TokenURI:        task.IpfsHash,
+		// TODO: remove
+		TokenURI: "https://ipfs.io/ipfs/" + task.IpfsHash,
 	}
 
 	info.Price, err = helpers.ConvertPrice(priceRes.Data.Attributes.Price, mintConfig.Precision)
