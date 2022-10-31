@@ -12,26 +12,28 @@ import (
 )
 
 func GetPrice(w http.ResponseWriter, r *http.Request) {
+	logger := helpers.Log(r)
+
 	req, err := requests.NewGetPriceRequest(r)
 	if err != nil {
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
 
-	// checking tokenURI existence
-	//tasks, err := helpers.GeneratorDB(r).Tasks().Select(data.TaskSelector{
-	//	IpfsHash: &req.TokenURI,
-	//})
-	//if err != nil {
-	//	ape.Render(w, problems.InternalError())
-	//	return
-	//}
-	//if len(tasks) != 1 {
-	//	ape.Render(w, problems.NotFound())
-	//	return
-	//}
+	// getting task info
+	task, err := helpers.GeneratorDB(r).Tasks().GetById(req.TaskID)
+	if err != nil {
+		logger.WithError(err).Debug("failed to get task")
+		ape.Render(w, problems.InternalError())
+		return
+	}
+	if task == nil {
+		ape.Render(w, problems.NotFound())
+		return
+	}
 
-	book, err := helpers.BooksQ(r).FilterActual().FilterByID(req.BookID).Get()
+	// getting book info
+	book, err := helpers.BooksQ(r).FilterActual().FilterByID(task.BookId).Get()
 	if err != nil {
 		ape.Render(w, problems.InternalError())
 		return
@@ -41,6 +43,15 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// getting price in $
+	priceRes, err := helpers.Pricer(r).GetPrice(req.Platform, req.TokenAddress)
+	if err != nil {
+		helpers.Log(r).WithError(err).Error("failed to get price")
+		ape.Render(w, problems.InternalError())
+		return
+	}
+
+	// forming signature info
 	mintConfig := helpers.Minter(r)
 
 	info := helpers.SignInfo{
@@ -49,14 +60,7 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 		ContractVersion: book.ContractVersion,
 		TokenAddress:    req.TokenAddress,
 		ChainID:         mintConfig.ChainID,
-		TokenURI:        req.TokenURI,
-	}
-
-	priceRes, err := helpers.Pricer(r).GetPrice(req.Platform, req.TokenAddress)
-	if err != nil {
-		helpers.Log(r).WithError(err).Error("error")
-		ape.Render(w, problems.InternalError())
-		return
+		TokenURI:        task.IpfsHash,
 	}
 
 	info.Price, err = helpers.ConvertPrice(priceRes.Data.Attributes.Price, mintConfig.Precision)
@@ -67,6 +71,7 @@ func GetPrice(w http.ResponseWriter, r *http.Request) {
 
 	info.EndTimestamp = time.Now().Add(mintConfig.Expiration).Unix()
 
+	// signing
 	signature, err := helpers.Sign(&info, &mintConfig)
 	if err != nil {
 		ape.Render(w, problems.InternalError())

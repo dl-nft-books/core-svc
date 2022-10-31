@@ -4,10 +4,9 @@ get:
   summary: Get Price ($) of nft with signature
   operationId: getPrice
   parameters:
-    - $ref: '#/components/parameters/BookIDParam'
     - $ref: '#/components/parameters/PlatformParam'
     - $ref: '#/components/parameters/TokenAddressParam'
-    - $ref: '#/components/parameters/TokenURIParam'
+    - $ref: '#/components/parameters/TaskIDParam'
   responses:
     '200':
       description: Success

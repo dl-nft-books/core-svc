@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/pdf_signature_generator"
@@ -12,16 +13,20 @@ import (
 )
 
 func (p *TaskProcessor) handleTask(task data.Task) error {
+	// updating db
+	p.booksDB = p.booksDB.New()
+
 	p.logger.Debugf("Started processing task with id of %d", task.Id)
 
 	p.logger.Debug("Retrieving book...")
 
 	book, err := p.booksDB.FilterActual().FilterByID(task.BookId).Get()
+
 	if err != nil {
 		return err
 	}
 	if book == nil {
-		return errors.Wrap(err, fmt.Sprintf("failed to get book with id %v", task.Id))
+		return errors.From(errors.New("book not found"), logan.F{"book_id": task.BookId})
 	}
 
 	p.logger.Debug("Book retrieved successfully")

@@ -11,10 +11,9 @@ import (
 var AddressRegexp = regexp.MustCompile("^(0x)?[0-9a-fA-F]{40}$")
 
 type GetPriceRequest struct {
-	BookID       int64  `url:"book_id"`
+	TaskID       int64  `url:"task_id"`
 	Platform     string `url:"platform"`
 	TokenAddress string `url:"token_address"`
-	TokenURI     string `url:"token_uri"`
 }
 
 func NewGetPriceRequest(r *http.Request) (*GetPriceRequest, error) {
@@ -30,14 +29,11 @@ func NewGetPriceRequest(r *http.Request) (*GetPriceRequest, error) {
 
 func (r GetPriceRequest) validate() error {
 	err := validation.Errors{
-		"book_id=": validation.Validate(
-			r.BookID,
+		"task_id=": validation.Validate(
+			r.TaskID,
 			validation.Required,
 			validation.Min(1)),
 		"platform=": validation.Validate(r.Platform, validation.Required),
-		"token_uri": validation.Validate(
-			r.TokenURI,
-			validation.Required),
 	}.Filter()
 
 	if err != nil {

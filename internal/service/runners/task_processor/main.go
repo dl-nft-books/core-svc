@@ -93,7 +93,7 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 			}
 		}
 
-		p.logger.Debugf("Successfully finished processing a batch of tasks", len(tasks))
+		p.logger.Debugf("Successfully finished processing a batch of tasks (%d tasks)", len(tasks))
 		return nil
 	})
 }

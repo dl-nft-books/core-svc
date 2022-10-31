@@ -42,6 +42,7 @@ func Sign(info *SignInfo, config *config.EthMinterConfig) (*SignatureParameters,
 	tokenURIsha3 := sha3.String(info.TokenURI)
 	info.HashedTokenURI = sha3.SoliditySHA3(tokenURIsha3)
 
+	// if token address is not specified -- setting default address
 	if info.TokenAddress == "" {
 		info.TokenAddress = defaultAddress
 	}
