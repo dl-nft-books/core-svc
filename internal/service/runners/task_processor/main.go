@@ -8,7 +8,7 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/running"
-	"gitlab.com/tokend/nft-books/blob-svc/connector"
+	s3connector "gitlab.com/tokend/nft-books/blob-svc/connector/api"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
@@ -18,17 +18,14 @@ import (
 const cursorKey = "task_processor_cursor"
 
 type TaskProcessor struct {
-	name   string
-	logger *logan.Entry
-
-	booksDB     data.BookQ
-	generatorDB data.GeneratorDB
-	selector    data.TaskSelector
-
-	runnerCfg       config.RunnerData
-	signatureParams *config.SignatureParams
-
-	documenterConnector *connector.Connector
+	name                string
+	logger              *logan.Entry
+	booksDB             data.BookQ
+	generatorDB         data.GeneratorDB
+	selector            data.TaskSelector
+	runnerCfg           config.RunnerData
+	signatureParams     *config.SignatureParams
+	documenterConnector *s3connector.Connector
 }
 
 func New(cfg config.Config) *TaskProcessor {

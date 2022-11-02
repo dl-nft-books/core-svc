@@ -10,7 +10,10 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/pdf_signature_generator"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/runners/helpers"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/runners/models"
 )
+
+const baseURI = "https://ipfs.io/ipfs/"
 
 func (p *TaskProcessor) handleTask(task data.Task) error {
 	// updating db
@@ -33,11 +36,11 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 
 	p.logger.Debug("Retrieving document key...")
 
-	key, err := helpers.GetDocumentKey(book.File)
+	fileKey, err := helpers.GetDocumentKey(book.File)
 	if err != nil {
 		return err
 	}
-	if key == nil {
+	if fileKey == nil {
 		return errors.Wrap(err, "failed to get document key")
 	}
 
@@ -45,7 +48,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 
 	p.logger.Debug("Retrieving document link from S3...")
 
-	linkResponse, err := p.documenterConnector.GetDocumentLink(*key)
+	fileLink, err := p.documenterConnector.GetDocumentLink(*fileKey)
 	if err != nil {
 		return err
 	}
@@ -54,7 +57,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 
 	p.logger.Debug("Downloading document...")
 
-	rawDocument, err := helpers.DownloadDocument(linkResponse.Data.Attributes.Url)
+	rawDocument, err := helpers.DownloadDocument(fileLink.Data.Attributes.Url)
 	if err != nil {
 		return errors.Wrap(err, "failed to download document")
 	}
@@ -72,25 +75,25 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 
 	p.logger.Debug("Signature generated successfully")
 
-	p.logger.Debug("Calculating IPFS Hash...")
+	p.logger.Debug("Calculating document IPFS Hash...")
 
-	ipfsHash, err := helpers.PrecalculateIPFSHash(rawDocumentWithSignature)
+	ipfsFileHash, err := helpers.PrecalculateIPFSHash(rawDocumentWithSignature)
 	if err != nil {
 		return errors.Wrap(err, "failed to precalculate IPFS hash")
 	}
 
-	p.logger.Debug(fmt.Sprintf("Precalculated IPFS hash: %s", ipfsHash))
+	p.logger.Debug(fmt.Sprintf("Precalculated IPFS hash: %s", ipfsFileHash))
 
-	err = p.generatorDB.Tasks().UpdateIpfsHash(ipfsHash, task.Id)
+	err = p.generatorDB.Tasks().UpdateFileIpfsHash(ipfsFileHash, task.Id)
 	if err != nil {
 		return errors.Wrap(err, "failed to update ipfs hash")
 	}
 
-	p.logger.Debug("IPFS Hash calculated successfully")
+	p.logger.Debug("Document IPFS Hash calculated successfully")
 
 	p.logger.Debug("Uploading document to S3...")
 
-	statusCode, err := p.documenterConnector.UploadDocument(rawDocumentWithSignature, ipfsHash)
+	statusCode, err := p.documenterConnector.UploadDocument(rawDocumentWithSignature, ipfsFileHash)
 	if err != nil {
 		return errors.Wrap(err, "failed to upload file")
 	}
@@ -99,6 +102,48 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	}
 
 	p.logger.Debug("Document downloaded successfully")
+
+	p.logger.Debug("Retrieving banner key...")
+
+	bannerKey, err := helpers.GetDocumentKey(book.Banner)
+	if err != nil {
+		return err
+	}
+	if bannerKey == nil {
+		return errors.Wrap(err, "failed to get document key")
+	}
+
+	p.logger.Debug("Key retrieved successfully")
+
+	p.logger.Debug("Retrieving banner link for metadata...")
+
+	bannerLink, err := p.documenterConnector.GetReadableLink(*bannerKey)
+	if err != nil {
+		return err
+	}
+
+	p.logger.Debug("Banner link retrieved successfully")
+
+	p.logger.Debug("Calculating metadata IPFS Hash...")
+
+	ipfsMetadataHash, err := helpers.PrecalculateMetadataIPFSHash(models.Metadata{
+		Name:        book.Title,
+		Description: book.Description,
+		Image:       bannerLink.Data.Attributes.Url,
+		FileURL:     baseURI + ipfsFileHash,
+	})
+	if err != nil {
+		return err
+	}
+
+	p.logger.Debug(fmt.Sprintf("Precalculated IPFS hash: %s", ipfsMetadataHash))
+
+	err = p.generatorDB.Tasks().UpdateMetadataIpfsHash(ipfsMetadataHash, task.Id)
+	if err != nil {
+		return errors.Wrap(err, "failed to update ipfs hash")
+	}
+
+	p.logger.Debug("Metadata IPFS Hash calculated successfully")
 
 	p.logger.Debugf("Successfully finished processing task with id of %d", task.Id)
 

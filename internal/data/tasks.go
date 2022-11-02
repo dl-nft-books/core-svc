@@ -6,13 +6,14 @@ import (
 )
 
 type Task struct {
-	Id        int64                `db:"id" structs:"-" json:"-"`
-	BookId    int64                `db:"book_id" structs:"book_id" json:"book_id"`
-	TokenId   int64                `db:"token_id" structs:"token_id"`
-	Account   string               `db:"account" structs:"account"`
-	Signature string               `db:"signature" structs:"signature"`
-	IpfsHash  string               `db:"ipfs_hash" structs:"ipfs_hash"`
-	Status    resources.TaskStatus `db:"status" structs:"status"`
+	Id               int64                `db:"id" structs:"-" json:"-"`
+	BookId           int64                `db:"book_id" structs:"book_id" json:"book_id"`
+	TokenId          int64                `db:"token_id" structs:"token_id"`
+	Account          string               `db:"account" structs:"account"`
+	Signature        string               `db:"signature" structs:"signature"`
+	FileIpfsHash     string               `db:"file_ipfs_hash" structs:"file_ipfs_hash"`
+	MetadataIpfsHash string               `db:"metadata_ipfs_hash" structs:"metadata_ipfs_hash"`
+	Status           resources.TaskStatus `db:"status" structs:"status"`
 }
 
 // TaskSelector is a structure for all applicable filters and params on tasksQ `Select`
@@ -37,7 +38,8 @@ type TasksQ interface {
 	Delete(id int64) error
 	Transaction(fn func(q TasksQ) error) error
 
-	UpdateIpfsHash(newIpfsHash string, id int64) error
+	UpdateFileIpfsHash(newIpfsHash string, id int64) error
+	UpdateMetadataIpfsHash(newIpfsHash string, id int64) error
 	UpdateTokenId(newTokenId, id int64) error
 	UpdateStatus(newStatus resources.TaskStatus, id int64) error
 }
@@ -46,11 +48,12 @@ func (t Task) Resource() resources.Task {
 	return resources.Task{
 		Key: resources.NewKeyInt64(t.Id, resources.TASKS),
 		Attributes: resources.TaskAttributes{
-			TokenId:   int32(t.TokenId),
-			BookId:    int32(t.BookId),
-			IpfsHash:  t.IpfsHash,
-			Signature: t.Signature,
-			Status:    t.Status,
+			TokenId:          int32(t.TokenId),
+			BookId:           int32(t.BookId),
+			FileIpfsHash:     t.FileIpfsHash,
+			MetadataIpfsHash: t.MetadataIpfsHash,
+			Signature:        t.Signature,
+			Status:           t.Status,
 		},
 	}
 }

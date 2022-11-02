@@ -10,7 +10,8 @@ allOf:
           - token_id
           - book_id
           - signature
-          - ipfs_hash
+          - file_ipfs_hash
+          - metadata_ipfs_hash
           - status
         properties:
           token_id:
@@ -22,7 +23,10 @@ allOf:
           signature:
             type: string
             example: I love Distributed Lab!!!
-          ipfs_hash:
+          file_ipfs_hash:
+            type: string
+            example: QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
+          metadata_ipfs_hash:
             type: string
             example: QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
           status:

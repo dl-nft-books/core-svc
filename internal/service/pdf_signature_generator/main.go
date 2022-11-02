@@ -141,7 +141,7 @@ func (g *PdfSignatureGenerator) createSignatureParagraph(cr *creator.Creator, xp
 	// Setting font
 	paragraph.SetFont(paragraphFont)
 	paragraph.SetFontSize(fontSize)
-	// Setting text aligment
+	// Setting text alignment
 	paragraph.SetTextAlignment(creator.TextAlignmentCenter)
 	// Setting text color
 	paragraph.SetColor(paragraphColor)

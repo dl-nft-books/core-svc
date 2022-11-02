@@ -5,9 +5,10 @@
 package resources
 
 type TaskAttributes struct {
-	BookId    int32      `json:"book_id"`
-	IpfsHash  string     `json:"ipfs_hash"`
-	Signature string     `json:"signature"`
-	Status    TaskStatus `json:"status"`
-	TokenId   int32      `json:"token_id"`
+	BookId           int32      `json:"book_id"`
+	FileIpfsHash     string     `json:"file_ipfs_hash"`
+	MetadataIpfsHash string     `json:"metadata_ipfs_hash"`
+	Signature        string     `json:"signature"`
+	Status           TaskStatus `json:"status"`
+	TokenId          int32      `json:"token_id"`
 }

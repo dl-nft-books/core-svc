@@ -330,7 +330,7 @@ github.com/spf13/pflag
 # github.com/spf13/viper v1.8.1
 ## explicit; go 1.12
 github.com/spf13/viper
-# github.com/stretchr/testify v1.7.2
+# github.com/stretchr/testify v1.8.1
 ## explicit; go 1.13
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
@@ -461,11 +461,6 @@ gitlab.com/tokend/keypair/figurekeypair
 gitlab.com/tokend/keypair/internal
 gitlab.com/tokend/keypair/internal/crc16
 gitlab.com/tokend/keypair/internal/strkey
-# gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221027124230-96d2bab5ea13
-## explicit; go 1.18
-gitlab.com/tokend/nft-books/blob-svc/connector
-gitlab.com/tokend/nft-books/blob-svc/connector/models
-gitlab.com/tokend/nft-books/blob-svc/resources
 # gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022125247-81cac705a28c
 ## explicit; go 1.17
 gitlab.com/tokend/nft-books/price-svc/connector

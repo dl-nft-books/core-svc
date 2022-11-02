@@ -5,7 +5,8 @@ import (
 	"gitlab.com/distributed_lab/kit/copus"
 	"gitlab.com/distributed_lab/kit/copus/types"
 	"gitlab.com/distributed_lab/kit/kv"
-	blobconnector "gitlab.com/tokend/nft-books/blob-svc/connector"
+	s3connector "gitlab.com/tokend/nft-books/blob-svc/connector/api"
+	s3config "gitlab.com/tokend/nft-books/blob-svc/connector/config"
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 )
 
@@ -17,7 +18,7 @@ type Config interface {
 	EthMinterConfigurator
 	TaskProcessor
 
-	DocumenterConnector() *blobconnector.Connector
+	DocumenterConnector() *s3connector.Connector
 	PdfSignatureParams() *SignatureParams
 	pricer.Pricer
 }
@@ -29,7 +30,7 @@ type config struct {
 	Databaser
 	EthMinterConfigurator
 	TaskProcessor
-	blobconnector.Documenter
+	s3config.Documenter
 	pdfSignatureParams comfig.Once
 	pricer.Pricer
 }
@@ -43,7 +44,7 @@ func New(getter kv.Getter) Config {
 		EthMinterConfigurator: NewEthMinterConfigurator(getter),
 		Databaser:             NewDatabaser(getter),
 		TaskProcessor:         NewTaskProcessor(getter),
-		Documenter:            blobconnector.NewDocumenter(getter),
+		Documenter:            s3config.NewDocumenter(getter),
 		Pricer:                pricer.NewPricer(getter),
 	}
 }

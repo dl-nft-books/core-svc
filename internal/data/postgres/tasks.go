@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/Masterminds/squirrel"
 	"github.com/fatih/structs"
 	"gitlab.com/distributed_lab/kit/pgdb"
@@ -13,12 +14,13 @@ import (
 const (
 	tasksTable = "tasks"
 
-	tasksId        = "id"
-	tasksAccount   = "account"
-	tasksSignature = "signature"
-	tasksIpfsHash  = "ipfs_hash"
-	tasksTokenId   = "token_id"
-	tasksStatus    = "status"
+	tasksId               = "id"
+	tasksAccount          = "account"
+	tasksSignature        = "signature"
+	tasksFileIpfsHash     = "file_ipfs_hash"
+	tasksMetadataIpfsHash = "metadata_ipfs_hash"
+	tasksTokenId          = "token_id"
+	tasksStatus           = "status"
 )
 
 type tasksQ struct {
@@ -87,9 +89,17 @@ func (q *tasksQ) Update(task data.Task, id int64) error {
 	return q.database.Exec(statement)
 }
 
-func (q *tasksQ) UpdateIpfsHash(newIpfsHash string, id int64) error {
+func (q *tasksQ) UpdateFileIpfsHash(newIpfsHash string, id int64) error {
+	return q.updateHash(tasksFileIpfsHash, newIpfsHash, id)
+}
+
+func (q *tasksQ) UpdateMetadataIpfsHash(newIpfsHash string, id int64) error {
+	return q.updateHash(tasksMetadataIpfsHash, newIpfsHash, id)
+}
+
+func (q *tasksQ) updateHash(fieldName, newIpfsHash string, id int64) error {
 	statement := squirrel.Update(tasksTable).
-		Set(tasksIpfsHash, newIpfsHash).
+		Set(fieldName, newIpfsHash).
 		Where(squirrel.Eq{tasksId: id})
 	return q.database.Exec(statement)
 }
@@ -126,7 +136,7 @@ func applyTasksSelector(sql squirrel.SelectBuilder, selector data.TaskSelector) 
 		sql = sql.Where(squirrel.Eq{tasksAccount: *selector.Account})
 	}
 	if selector.IpfsHash != nil {
-		sql = sql.Where(squirrel.Eq{tasksIpfsHash: *selector.IpfsHash})
+		sql = sql.Where(squirrel.Eq{tasksMetadataIpfsHash: *selector.IpfsHash})
 	}
 	if selector.Status != nil {
 		sql = sql.Where(squirrel.Eq{tasksStatus: *selector.Status})
