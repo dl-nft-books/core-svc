@@ -9,6 +9,7 @@ create table tasks
     signature          text      not null default '',
     file_ipfs_hash     text      not null default '',
     metadata_ipfs_hash text      not null default '',
+    uri                text      not null default '',
     status             int8      not null default 0
 );
 

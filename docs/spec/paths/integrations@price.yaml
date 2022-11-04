@@ -1,7 +1,7 @@
 get:
   tags:
-    - Price
-  summary: Get Price ($) of nft with signature
+    - Signature
+  summary: Get mint signature
   operationId: getPrice
   parameters:
     - $ref: '#/components/parameters/PlatformParam'

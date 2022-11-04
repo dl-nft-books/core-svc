@@ -21,6 +21,7 @@ const (
 	tasksMetadataIpfsHash = "metadata_ipfs_hash"
 	tasksTokenId          = "token_id"
 	tasksStatus           = "status"
+	tasksUri              = "uri"
 )
 
 type tasksQ struct {
@@ -107,6 +108,13 @@ func (q *tasksQ) updateHash(fieldName, newIpfsHash string, id int64) error {
 func (q *tasksQ) UpdateTokenId(newTokenId, id int64) error {
 	statement := squirrel.Update(tasksTable).
 		Set(tasksTokenId, newTokenId).
+		Where(squirrel.Eq{tasksId: id})
+	return q.database.Exec(statement)
+}
+
+func (q *tasksQ) UpdateUri(newUri string, id int64) error {
+	statement := squirrel.Update(tasksTable).
+		Set(tasksUri, newUri).
 		Where(squirrel.Eq{tasksId: id})
 	return q.database.Exec(statement)
 }
