@@ -10,7 +10,6 @@ import (
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/connectors/signed"
 	"gitlab.com/tokend/nft-books/blob-svc/connector/api"
-	"gitlab.com/tokend/nft-books/blob-svc/internal/config"
 )
 
 type Documenter interface {
@@ -37,8 +36,6 @@ func (c *documenter) DocumenterConnector() *api.Connector {
 	return c.once.Do(func() interface{} {
 		var conf documenterConfig
 
-		var awsConf config.AWSConfig
-
 		if err := figure.
 			Out(&conf).
 			With(figure.BaseHooks).
@@ -47,15 +44,8 @@ func (c *documenter) DocumenterConnector() *api.Connector {
 			panic(errors.Wrap(err, "failed to figure out documenter"))
 		}
 
-		if err := figure.
-			Out(&awsConf).
-			From(kv.MustGetStringMap(c.getter, "aws")).
-			Please(); err != nil {
-			panic(errors.Wrap(err, "failed to figure out aws config"))
-		}
-
 		cli := signed.NewClient(http.DefaultClient, conf.URL)
 
-		return api.NewConnector(cli, awsConf, conf.Token)
+		return api.NewConnector(cli, conf.Token)
 	}).(*api.Connector)
 }

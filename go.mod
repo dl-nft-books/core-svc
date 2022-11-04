@@ -31,18 +31,16 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/miguelmota/go-solidity-sha3 v0.1.1
-	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221102115043-8fc374c84afc
+	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221104125850-7e8369e2ce8a
 )
 
 require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
 	github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137 // indirect
-	github.com/aws/aws-sdk-go v1.44.114 // indirect
 	github.com/btcsuite/btcd v0.22.1 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.0 // indirect
 	github.com/certifi/gocertifi v0.0.0-20200211180108-c7c1fbc02894 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/getsentry/raven-go v0.2.0 // indirect
 	github.com/getsentry/sentry-go v0.7.0 // indirect
@@ -75,7 +73,6 @@ require (
 	github.com/ipld/go-codec-dagpb v1.3.1 // indirect
 	github.com/ipld/go-ipld-prime v0.16.0 // indirect
 	github.com/jbenet/goprocess v0.1.4 // indirect
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/jmoiron/sqlx v1.2.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
@@ -116,8 +113,6 @@ require (
 	gitlab.com/tokend/connectors v0.1.9 // indirect
 	gitlab.com/tokend/go v3.15.0+incompatible // indirect
 	gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312 // indirect
-	gitlab.com/tokend/nft-books/doorman v0.1.0-rc.1.0.20221024153252-83b51d5f1691 // indirect
-	gitlab.com/tokend/nft-books/go-sdk v0.1.2 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.19.0 // indirect

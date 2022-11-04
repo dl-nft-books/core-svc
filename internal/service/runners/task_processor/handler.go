@@ -117,7 +117,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 
 	p.logger.Debug("Retrieving banner link for metadata...")
 
-	bannerLink, err := p.documenterConnector.GetReadableLink(*bannerKey)
+	bannerLink, err := p.documenterConnector.GetDocumentLink(*bannerKey)
 	if err != nil {
 		return err
 	}
