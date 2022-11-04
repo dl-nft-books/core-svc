@@ -11,6 +11,10 @@ import (
 	"gitlab.com/distributed_lab/ape/problems"
 )
 
+type KeyResponse struct {
+	Data resources.Key `json:"data"`
+}
+
 func CreateTask(w http.ResponseWriter, r *http.Request) {
 	request, err := requests.NewCreateTaskRequest(r)
 	if err != nil {
@@ -25,5 +29,5 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		Status:    resources.TaskPending,
 	})
 
-	ape.Render(w, resources.NewKeyInt64(createdTaskId, resources.TASKS))
+	ape.Render(w, KeyResponse{Data: resources.NewKeyInt64(createdTaskId, resources.TASKS)})
 }
