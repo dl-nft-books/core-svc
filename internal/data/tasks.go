@@ -13,6 +13,7 @@ type Task struct {
 	Signature        string               `db:"signature" structs:"signature"`
 	FileIpfsHash     string               `db:"file_ipfs_hash" structs:"file_ipfs_hash"`
 	MetadataIpfsHash string               `db:"metadata_ipfs_hash" structs:"metadata_ipfs_hash"`
+	Uri              string               `db:"uri" structs:"uri"`
 	Status           resources.TaskStatus `db:"status" structs:"status"`
 }
 
@@ -40,6 +41,7 @@ type TasksQ interface {
 
 	UpdateFileIpfsHash(newIpfsHash string, id int64) error
 	UpdateMetadataIpfsHash(newIpfsHash string, id int64) error
+	UpdateUri(newUri string, id int64) error
 	UpdateTokenId(newTokenId, id int64) error
 	UpdateStatus(newStatus resources.TaskStatus, id int64) error
 }
@@ -52,6 +54,7 @@ func (t Task) Resource() resources.Task {
 			BookId:           int32(t.BookId),
 			FileIpfsHash:     t.FileIpfsHash,
 			MetadataIpfsHash: t.MetadataIpfsHash,
+			Uri:              t.Uri,
 			Signature:        t.Signature,
 			Status:           t.Status,
 		},

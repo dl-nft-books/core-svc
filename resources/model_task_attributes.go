@@ -11,4 +11,5 @@ type TaskAttributes struct {
 	Signature        string     `json:"signature"`
 	Status           TaskStatus `json:"status"`
 	TokenId          int32      `json:"token_id"`
+	Uri              string     `json:"uri"`
 }
