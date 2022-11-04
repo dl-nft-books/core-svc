@@ -4,7 +4,7 @@ parameters:
     required: true
     schema:
       type: string
-      description: account id of a task to be requested
+      description: Account id of a task to be requested
 get:
   tags:
     - Tasks

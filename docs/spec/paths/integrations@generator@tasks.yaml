@@ -63,10 +63,16 @@ get:
         items:
           type: integer
           enum:
-            - name: active
+            - name: pending
               value: 1
-            - name: deleted
+            - name: generating
               value: 2
+            - name: finished_generation
+              value: 3
+            - name: uploading
+              value: 4
+            - name: finished_uploading
+              value: 5
   responses:
     '201':
       description: Success
