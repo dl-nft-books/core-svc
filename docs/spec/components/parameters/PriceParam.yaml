@@ -1,0 +1,6 @@
+in: query
+name: price
+required: true
+schema:
+  type: string
+  description: Price per one token ($)

@@ -10,7 +10,6 @@ allOf:
           - r
           - s
           - v
-          - end_timestamp
         properties:
           r:
             type: string
@@ -19,6 +18,3 @@ allOf:
           v:
             type: integer
             example: 0
-          end_timestamp:
-            type: integer
-            description: Timestamp when signature will expire

@@ -24,9 +24,6 @@ func (s *service) router() chi.Router {
 		),
 	)
 	r.Route("/integrations/generator", func(r chi.Router) {
-		r.Route("/price", func(r chi.Router) {
-			r.Get("/", handlers.GetPrice)
-		})
 
 		r.Route("/tasks", func(r chi.Router) {
 			r.Post("/", handlers.CreateTask)
@@ -35,6 +32,11 @@ func (s *service) router() chi.Router {
 			r.Route("/{id}", func(r chi.Router) {
 				r.Get("/", handlers.GetTaskByID)
 			})
+		})
+
+		r.Route("/signature", func(r chi.Router) {
+			r.Get("/mint", handlers.SignMint)
+			r.Get("/create", handlers.SignCreate)
 		})
 	})
 

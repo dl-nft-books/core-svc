@@ -5,6 +5,8 @@
 package resources
 
 type PriceAttributes struct {
-	// price required to buy the nft
+	// Timestamp when signature will expire
+	EndTimestamp int32 `json:"end_timestamp"`
+	// price per one token ($)
 	Price string `json:"price"`
 }

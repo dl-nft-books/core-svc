@@ -1,0 +1,6 @@
+in: query
+name: token_symbol
+required: true
+schema:
+  type: string
+  description: Token contract symbol

@@ -10,14 +10,14 @@ import (
 
 var AddressRegexp = regexp.MustCompile("^(0x)?[0-9a-fA-F]{40}$")
 
-type GetPriceRequest struct {
+type SignMintRequest struct {
 	TaskID       int64  `url:"task_id"`
 	Platform     string `url:"platform"`
 	TokenAddress string `url:"token_address"`
 }
 
-func NewGetPriceRequest(r *http.Request) (*GetPriceRequest, error) {
-	var result GetPriceRequest
+func NewSignMintRequest(r *http.Request) (*SignMintRequest, error) {
+	var result SignMintRequest
 	var err error
 
 	if err = urlval.Decode(r.URL.Query(), &result); err != nil {
@@ -27,7 +27,7 @@ func NewGetPriceRequest(r *http.Request) (*GetPriceRequest, error) {
 	return &result, result.validate()
 }
 
-func (r GetPriceRequest) validate() error {
+func (r SignMintRequest) validate() error {
 	err := validation.Errors{
 		"task_id=": validation.Validate(
 			r.TaskID,

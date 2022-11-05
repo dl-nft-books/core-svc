@@ -1,5 +1,5 @@
 allOf:
-  - $ref: '#/components/schemas/PriceKey'
+  - $ref: '#/components/schemas/CreateSignatureKey'
   - type: object
     required:
       - attributes
@@ -8,15 +8,11 @@ allOf:
       attributes:
         type: object
         required:
-          - price
-          - end_timestamp
+          - token_id
         properties:
-          price:
-            type: string
-            description: price per one token ($)
-          end_timestamp:
+          token_id:
             type: integer
-            description: Timestamp when signature will expire
+            description: ID of new token contract
       relationships:
         type: object
         required:
