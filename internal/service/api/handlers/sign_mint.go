@@ -78,6 +78,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	// signing
 	signature, err := signature.SignMintInfo(&mintInfo, &domainData, &mintConfig)
 	if err != nil {
+		logger.WithError(err).Debug("failed to generate eip712 mint signature")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}

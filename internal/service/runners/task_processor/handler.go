@@ -38,10 +38,10 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 
 	fileKey, err := helpers.GetDocumentKey(book.File)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to get document key")
 	}
 	if fileKey == nil {
-		return errors.Wrap(err, "failed to get document key")
+		return errors.New("failed to get document key")
 	}
 
 	p.logger.Debug("Key retrieved successfully")
@@ -50,7 +50,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 
 	fileLink, err := p.documenterConnector.GetDocumentLink(*fileKey)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to get document link")
 	}
 
 	p.logger.Debug("Link retrieved successfully")
@@ -97,7 +97,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 		return errors.Wrap(err, "failed to upload file")
 	}
 	if statusCode != http.StatusOK {
-		return errors.New(fmt.Sprintf("failed to upload file: status %v", statusCode))
+		return errors.From(errors.New("failed to upload file"), logan.F{"status code": statusCode})
 	}
 
 	p.logger.Debug("Document downloaded successfully")
@@ -106,10 +106,10 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 
 	bannerKey, err := helpers.GetDocumentKey(book.Banner)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to get document key")
 	}
 	if bannerKey == nil {
-		return errors.Wrap(err, "failed to get document key")
+		return errors.New("failed to get document key")
 	}
 
 	p.logger.Debug("Key retrieved successfully")
@@ -118,7 +118,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 
 	bannerLink, err := p.documenterConnector.GetDocumentLink(*bannerKey)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to get document link")
 	}
 
 	p.logger.Debug("Banner link retrieved successfully")

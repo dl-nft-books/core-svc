@@ -1,8 +1,10 @@
-package helpers
+package test
 
 import (
 	"strings"
 	"testing"
+
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 )
 
 const (
@@ -19,7 +21,7 @@ func TestConverter(t *testing.T) {
 
 		logInput(t, price, defaultPrecision)
 
-		res, err := ConvertPrice(price, defaultPrecision)
+		res, err := helpers.ConvertPrice(price, defaultPrecision)
 		failOnError(t, err)
 
 		expected = "1299" + strings.Repeat("0", defaultPrecision)
@@ -35,7 +37,7 @@ func TestConverter(t *testing.T) {
 
 		logInput(t, price, defaultPrecision)
 
-		res, err := ConvertPrice(price, defaultPrecision)
+		res, err := helpers.ConvertPrice(price, defaultPrecision)
 		failOnError(t, err)
 
 		expected = "178411856734" + strings.Repeat("0", defaultPrecision-defaultResponsePrecision)
@@ -51,7 +53,7 @@ func TestConverter(t *testing.T) {
 
 		logInput(t, price, defaultPrecision)
 
-		res, err := ConvertPrice(price, defaultPrecision)
+		res, err := helpers.ConvertPrice(price, defaultPrecision)
 		failOnError(t, err)
 
 		expected = "1000001" + strings.Repeat("0", defaultPrecision-defaultResponsePrecision)
@@ -67,7 +69,7 @@ func TestConverter(t *testing.T) {
 
 		logInput(t, price, defaultPrecision)
 
-		res, err := ConvertPrice(price, defaultPrecision)
+		res, err := helpers.ConvertPrice(price, defaultPrecision)
 		failOnError(t, err)
 
 		expected = "555555" + strings.Repeat("0", defaultPrecision-defaultResponsePrecision)
@@ -85,7 +87,7 @@ func TestConverter(t *testing.T) {
 
 		logInput(t, price, newPrecision)
 
-		res, err := ConvertPrice(price, newPrecision)
+		res, err := helpers.ConvertPrice(price, newPrecision)
 		failOnError(t, err)
 
 		expected = "123000001" + strings.Repeat("0", newPrecision-defaultResponsePrecision)
@@ -103,7 +105,7 @@ func TestConverter(t *testing.T) {
 
 		logInput(t, price, newPrecision)
 
-		res, err := ConvertPrice(price, newPrecision)
+		res, err := helpers.ConvertPrice(price, newPrecision)
 		failOnError(t, err)
 
 		expected = "1000001" + strings.Repeat("0", newPrecision-defaultResponsePrecision)
@@ -121,7 +123,7 @@ func TestConverter(t *testing.T) {
 
 		logInput(t, price, newPrecision)
 
-		res, err := ConvertPrice(price, newPrecision)
+		res, err := helpers.ConvertPrice(price, newPrecision)
 		failOnError(t, err)
 
 		expected = "11243"
@@ -137,7 +139,7 @@ func TestConverter(t *testing.T) {
 
 		logInput(t, price, defaultPrecision)
 
-		res, err := ConvertPrice(price, defaultPrecision)
+		res, err := helpers.ConvertPrice(price, defaultPrecision)
 		failOnError(t, err)
 
 		expected = "123" + strings.Repeat("0", defaultPrecision-2)
@@ -153,7 +155,7 @@ func TestConverter(t *testing.T) {
 
 		logInput(t, price, defaultPrecision)
 
-		res, err := ConvertPrice(price, defaultPrecision)
+		res, err := helpers.ConvertPrice(price, defaultPrecision)
 		failOnError(t, err)
 
 		expected = "12345" + strings.Repeat("0", defaultPrecision-4)
@@ -170,7 +172,7 @@ func TestConverter(t *testing.T) {
 
 		logInput(t, price, newPrec)
 
-		res, err := ConvertPrice(price, newPrec)
+		res, err := helpers.ConvertPrice(price, newPrec)
 		failOnError(t, err)
 
 		expected = "1234" + strings.Repeat("0", newPrec-3)
