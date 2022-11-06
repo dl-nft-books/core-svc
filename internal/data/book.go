@@ -2,6 +2,7 @@ package data
 
 import (
 	"encoding/json"
+	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"gitlab.com/tokend/nft-books/generator-svc/resources/book_resources"
 	"time"
 )
@@ -35,11 +36,11 @@ func (b *Book) Resource() (*book_resources.Book, error) {
 		return nil, err
 	}
 
-	media[0].Key = book_resources.NewKeyInt64(b.ID, book_resources.BANNERS)
-	media[1].Key = book_resources.NewKeyInt64(b.ID, book_resources.FILES)
+	media[0].Key = resources.NewKeyInt64(b.ID, resources.ResourceType(book_resources.BANNERS))
+	media[1].Key = resources.NewKeyInt64(b.ID, resources.ResourceType(book_resources.FILES))
 
 	res := book_resources.Book{
-		Key: book_resources.NewKeyInt64(b.ID, book_resources.BOOKS),
+		Key: resources.NewKeyInt64(b.ID, resources.ResourceType(book_resources.BOOKS)),
 		Attributes: book_resources.BookAttributes{
 			Title:           b.Title,
 			Description:     b.Description,
