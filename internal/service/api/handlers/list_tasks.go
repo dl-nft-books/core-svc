@@ -20,8 +20,9 @@ func ListTasks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tasks, err := helpers.GeneratorDB(r).Tasks().Select(data.TaskSelector{
-		Account: request.Account,
-		Status:  request.Status,
+		Account:      request.Account,
+		Status:       request.Status,
+		OffsetParams: &request.OffsetPageParams,
 	})
 	if err != nil {
 		helpers.Log(r).WithError(err).Error("unable to select tasks from database")
@@ -29,5 +30,12 @@ func ListTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ape.Render(w, responses.NewTaskListResponse(tasks))
+	taskListResponse, err := responses.NewTaskListResponse(r, request, tasks, helpers.BooksQ(r))
+	if err != nil {
+		helpers.Log(r).WithError(err).Error("unable to form task list response")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+
+	ape.Render(w, *taskListResponse)
 }

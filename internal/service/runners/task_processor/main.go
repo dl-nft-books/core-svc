@@ -34,7 +34,7 @@ func New(cfg config.Config) *TaskProcessor {
 	return &TaskProcessor{
 		name: cfg.TaskProcessorCfg().Name,
 		selector: data.TaskSelector{
-			PageParams: pgdb.CursorPageParams{
+			PageParams: &pgdb.CursorPageParams{
 				Cursor: cfg.TaskProcessorCfg().Cursor,
 				Order:  pgdb.OrderTypeAsc,
 				Limit:  cfg.TaskProcessorCfg().Limit,

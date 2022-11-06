@@ -1,13 +1,13 @@
 package handlers
 
 import (
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
 	"net/http"
 
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
 func GetTaskByID(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +28,12 @@ func GetTaskByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ape.Render(w, resources.TaskResponse{
-		Data: task.Resource(),
-	})
+	taskResponse, err := responses.NewGetTaskResponse(*task, helpers.BooksQ(r))
+	if err != nil {
+		helpers.Log(r).WithError(err).Error("failed to get task response")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+
+	ape.Render(w, *taskResponse)
 }

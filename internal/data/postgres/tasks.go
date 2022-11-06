@@ -138,8 +138,6 @@ func (q *tasksQ) selectByQuery(query squirrel.Sqlizer) (subtasks []data.Task, er
 }
 
 func applyTasksSelector(sql squirrel.SelectBuilder, selector data.TaskSelector) squirrel.SelectBuilder {
-	sql = selector.PageParams.ApplyTo(sql, tasksId)
-
 	if selector.Account != nil {
 		sql = sql.Where(squirrel.Eq{tasksAccount: *selector.Account})
 	}
@@ -148,6 +146,12 @@ func applyTasksSelector(sql squirrel.SelectBuilder, selector data.TaskSelector) 
 	}
 	if selector.Status != nil {
 		sql = sql.Where(squirrel.Eq{tasksStatus: *selector.Status})
+	}
+	if selector.OffsetParams != nil {
+		return selector.OffsetParams.ApplyTo(sql, tasksId)
+	}
+	if selector.PageParams != nil {
+		return selector.PageParams.ApplyTo(sql, tasksId)
 	}
 
 	return sql

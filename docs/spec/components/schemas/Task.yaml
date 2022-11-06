@@ -3,6 +3,7 @@ allOf:
   - type: object
     required:
       - attributes
+      - relationships
     properties:
       attributes:
         type: object
@@ -48,3 +49,13 @@ allOf:
               - name: finished_uploading
                 value: 5
             example: 2
+      relationships:
+        type: object
+        properties:
+          book:
+            type: object
+            description: Book relation
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/BookKey'

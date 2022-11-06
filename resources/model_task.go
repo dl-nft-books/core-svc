@@ -6,7 +6,8 @@ package resources
 
 type Task struct {
 	Key
-	Attributes TaskAttributes `json:"attributes"`
+	Attributes    TaskAttributes    `json:"attributes"`
+	Relationships TaskRelationships `json:"relationships"`
 }
 type TaskResponse struct {
 	Data     Task     `json:"data"`

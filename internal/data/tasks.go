@@ -19,10 +19,11 @@ type Task struct {
 
 // TaskSelector is a structure for all applicable filters and params on tasksQ `Select`
 type TaskSelector struct {
-	PageParams pgdb.CursorPageParams
-	Account    *string
-	IpfsHash   *string
-	Status     *resources.TaskStatus
+	PageParams   *pgdb.CursorPageParams
+	OffsetParams *pgdb.OffsetPageParams
+	Account      *string
+	IpfsHash     *string
+	Status       *resources.TaskStatus
 }
 
 type TasksQ interface {
