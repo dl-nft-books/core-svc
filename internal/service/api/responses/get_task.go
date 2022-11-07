@@ -6,7 +6,9 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
-func NewGetTaskResponse(task data.Task, q data.BookQ) (response *resources.TaskResponse, err error) {
+func NewGetTaskResponse(task data.Task, q data.BookQ) (*resources.TaskResponse, error) {
+	var response resources.TaskResponse
+
 	taskResource := task.Resource()
 	taskResource.Relationships = getTaskRelationships(task)
 
@@ -23,5 +25,5 @@ func NewGetTaskResponse(task data.Task, q data.BookQ) (response *resources.TaskR
 	response.Data = taskResource
 	response.Included.Add(bookResource)
 
-	return
+	return &response, nil
 }
