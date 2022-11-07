@@ -126,7 +126,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug("Calculating metadata IPFS Hash...")
 
 	ipfsMetadataHash, err := helpers.PrecalculateMetadataIPFSHash(models.Metadata{
-		Name:        book.Title,
+		Name:        fmt.Sprintf("%s #%v", book.Title, task.Id),
 		Description: book.Description,
 		Image:       bannerLink.Data.Attributes.Url,
 		FileURL:     baseURI + ipfsFileHash,

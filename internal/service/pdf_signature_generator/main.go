@@ -16,7 +16,6 @@ const (
 	fontSize       = 14
 	paragraphColor = "#2E2E2E"
 	lineColor      = "#BCBCBC"
-	dx             = 0.01
 )
 
 type PdfSignatureGenerator struct {
@@ -131,8 +130,8 @@ func (g *PdfSignatureGenerator) createSignatureParagraph(cr *creator.Creator, xp
 	paragraphFont, _ := model.NewStandard14Font(baseFont)
 	paragraphColor := creator.ColorRGBFromHex(paragraphColor)
 
-	// pseudo-randomization to avoid hash collision
-	xpos += rand.Float64() * dx
+	// pseudo-randomization to avoid ipfs hash collision
+	xpos += dx()
 
 	paragraph := cr.NewParagraph(signature)
 	paragraph.SetWidth(pageWidth - xpos*2)
@@ -147,4 +146,16 @@ func (g *PdfSignatureGenerator) createSignatureParagraph(cr *creator.Creator, xp
 	paragraph.SetColor(paragraphColor)
 
 	return paragraph
+}
+
+func dx() float64 {
+	var dx float64
+
+	// each time in the loop we will have different value
+	for i := 0; i < 3; i++ {
+		dx += float64(rand.Int31n(100)) / 300 // max is 1/3
+	}
+
+	// max dx is 1 which is still `invisible`
+	return dx
 }
