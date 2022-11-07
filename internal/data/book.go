@@ -2,9 +2,10 @@ package data
 
 import (
 	"encoding/json"
+	"time"
+
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"gitlab.com/tokend/nft-books/generator-svc/resources/book_resources"
-	"time"
 )
 
 type BookQ interface {
@@ -50,8 +51,8 @@ func (b *Book) Resource() (*book_resources.Book, error) {
 			ContractName:    b.ContractName,
 			ContractSymbol:  b.ContractSymbol,
 			ContractVersion: b.ContractVersion,
-			File:            media[0],
-			Banner:          media[1],
+			File:            media[1],
+			Banner:          media[0],
 		},
 	}
 
