@@ -1,0 +1,27 @@
+get:
+  tags:
+    - Signature
+  summary: Get create signature
+  operationId: getCreateSignature
+  parameters:
+    - $ref: '#/components/parameters/TokenNameParam'
+    - $ref: '#/components/parameters/TokenSymbolParam'
+    - $ref: '#/components/parameters/PriceParam'
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/CreateSignature'
+              included:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Signature'
+    '400':
+      $ref: '#/components/responses/BadRequestError'
+    '500':
+      $ref: '#/components/responses/InternalError'

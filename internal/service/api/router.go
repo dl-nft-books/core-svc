@@ -36,6 +36,7 @@ func (s *service) router() chi.Router {
 
 		r.Route("/signature", func(r chi.Router) {
 			r.Get("/mint", handlers.SignMint)
+			r.Get("/create", handlers.SignCreate)
 		})
 	})
 

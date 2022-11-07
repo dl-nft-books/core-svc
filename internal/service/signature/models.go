@@ -23,3 +23,13 @@ type MintInfo struct {
 
 	HashedTokenURI []byte
 }
+
+type CreateInfo struct {
+	TokenContractId  int64
+	TokenName        string
+	TokenSymbol      string
+	PricePerOneToken *big.Int
+
+	HashedTokenName   []byte
+	HashedTokenSymbol []byte
+}

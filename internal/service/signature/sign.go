@@ -43,6 +43,74 @@ func SignMintInfo(
 	return parseSignatureParameters(signature)
 }
 
+func SignCreateInfo(
+	createInfo *CreateInfo,
+	domainData *EIP712DomainData,
+	config *config.EthMinterConfig,
+) (
+	*SignatureParameters,
+	error,
+) {
+	privateKey := config.PrivateKey
+
+	// hashing token params
+	tokenNameRaw := sha3.String(createInfo.TokenName)
+	createInfo.HashedTokenName = sha3.SoliditySHA3(tokenNameRaw)
+
+	tokenSymbolRaw := sha3.String(createInfo.TokenSymbol)
+	createInfo.HashedTokenSymbol = sha3.SoliditySHA3(tokenSymbolRaw)
+
+	signature, err := signCreateInfoByEIP712(privateKey, createInfo, domainData)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to sign EIP712 hash")
+	}
+
+	return parseSignatureParameters(signature)
+}
+
+func signCreateInfoByEIP712(
+	privateKey *ecdsa.PrivateKey,
+	createInfo *CreateInfo,
+	domainData *EIP712DomainData,
+) (
+	[]byte,
+	error,
+) {
+	spew.Dump(createInfo)
+
+	data := &eip712.TypedData{
+		Types: apitypes.Types{
+			"Create": []apitypes.Type{
+				{Name: "tokenContractId", Type: "uint256"},
+				{Name: "tokenName", Type: "bytes32"},
+				{Name: "tokenSymbol", Type: "bytes32"},
+				{Name: "pricePerOneToken", Type: "uint256"},
+			},
+			"EIP712Domain": []apitypes.Type{
+				{Name: "name", Type: "string"},
+				{Name: "version", Type: "string"},
+				{Name: "chainId", Type: "uint256"},
+				{Name: "verifyingContract", Type: "address"},
+			},
+		},
+		PrimaryType: "Create",
+		Domain: apitypes.TypedDataDomain{
+			Name:              domainData.ContractName,
+			Version:           domainData.ContractVersion,
+			ChainId:           math.NewHexOrDecimal256(domainData.ChainID),
+			VerifyingContract: domainData.VerifyingAddress,
+		},
+		Message: apitypes.TypedDataMessage{
+			"tokenContractId":  math.NewHexOrDecimal256(createInfo.TokenContractId),
+			"tokenName":        createInfo.HashedTokenName,
+			"tokenSymbol":      createInfo.HashedTokenSymbol,
+			"pricePerOneToken": createInfo.PricePerOneToken.String(),
+		},
+	}
+
+	return signer.NewDefaultSigner(privateKey).SignTypedData(data)
+}
+
 func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 	mintInfo *MintInfo,
 	domainData *EIP712DomainData,
