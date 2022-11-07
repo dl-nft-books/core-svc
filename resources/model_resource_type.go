@@ -8,7 +8,7 @@ type ResourceType string
 
 // List of ResourceType
 const (
-	BOOK              ResourceType = "book"
+	BOOKS             ResourceType = "books"
 	CREATE_SIGNATURES ResourceType = "create_signatures"
 	TASKS             ResourceType = "tasks"
 	PRICES            ResourceType = "prices"
