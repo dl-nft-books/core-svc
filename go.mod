@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/Masterminds/squirrel v1.4.0
 	github.com/alecthomas/kingpin v2.2.6+incompatible
-	github.com/ethereum/go-ethereum v1.10.26
+	github.com/ethereum/go-ethereum v1.10.25
 	github.com/ethersphere/bee v1.9.0
 	github.com/fatih/structs v1.1.0
 	github.com/go-chi/chi v4.1.2+incompatible
@@ -32,7 +32,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/miguelmota/go-solidity-sha3 v0.1.1
 	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221104125850-7e8369e2ce8a
-	gitlab.com/tokend/nft-books/book-svc v0.0.0-20221107121556-a2db4c327bd2
 )
 
 require (

@@ -2,7 +2,7 @@
  * GENERATED. Do not modify. Your changes might be overwritten!
  */
 
-package resources
+package book_resources
 
 type MediaAttributes struct {
 	// S3 key

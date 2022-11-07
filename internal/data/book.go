@@ -2,10 +2,9 @@ package data
 
 import (
 	"encoding/json"
+	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"gitlab.com/tokend/nft-books/generator-svc/resources/book_resources"
 	"time"
-
-	book_resources "gitlab.com/tokend/nft-books/book-svc/resources"
-	"gitlab.com/tokend/nft-books/contract-tracker/resources"
 )
 
 type BookQ interface {
@@ -16,21 +15,19 @@ type BookQ interface {
 }
 
 type Book struct {
-	ID              int64                  `db:"id" structs:"-"`
-	Title           string                 `db:"title" structs:"title"`
-	Description     string                 `db:"description" structs:"description"`
-	CreatedAt       time.Time              `db:"created_at" structs:"created_at"`
-	Price           string                 `db:"price" structs:"price"`
-	ContractAddress string                 `db:"contract_address" structs:"contract_address"`
-	ContractName    string                 `db:"contract_name" structs:"contract_name"`
-	ContractSymbol  string                 `db:"contract_symbol" structs:"contract_symbol"`
-	ContractVersion string                 `db:"contract_version" structs:"contract_version"`
-	Banner          string                 `db:"banner" structs:"banner"`
-	File            string                 `db:"file" structs:"file"`
-	Deleted         bool                   `db:"deleted" structs:"-"`
-	TokenId         int64                  `db:"token_id" structs:"token_id"`
-	DeployStatus    resources.DeployStatus `db:"deploy_status" structs:"deploy_status"`
-	LastBlock       uint64                 `db:"last_block" structs:"last_block"`
+	ID              int64     `db:"id" structs:"-"`
+	Title           string    `db:"title" structs:"title"`
+	Description     string    `db:"description" structs:"description"`
+	CreatedAt       time.Time `db:"created_at" structs:"created_at"`
+	Price           string    `db:"price" structs:"price"`
+	ContractAddress string    `db:"contract_address" structs:"contract_address"`
+	ContractName    string    `db:"contract_name" structs:"contract_name"`
+	ContractSymbol  string    `db:"contract_symbol" structs:"contract_symbol"`
+	ContractVersion string    `db:"contract_version" structs:"contract_version"`
+	Banner          string    `db:"banner" structs:"banner"`
+	File            string    `db:"file" structs:"file"`
+	Deleted         bool      `db:"deleted" structs:"-"`
+	LastBlock       uint64    `db:"last_block" structs:"last_block"`
 }
 
 func (b *Book) Resource() (*book_resources.Book, error) {
@@ -39,11 +36,11 @@ func (b *Book) Resource() (*book_resources.Book, error) {
 		return nil, err
 	}
 
-	media[0].Key = book_resources.NewKeyInt64(b.ID, book_resources.BANNERS)
-	media[1].Key = book_resources.NewKeyInt64(b.ID, book_resources.FILES)
+	media[0].Key = resources.NewKeyInt64(b.ID, resources.ResourceType(book_resources.BANNERS))
+	media[1].Key = resources.NewKeyInt64(b.ID, resources.ResourceType(book_resources.FILES))
 
 	res := book_resources.Book{
-		Key: book_resources.NewKeyInt64(b.ID, book_resources.BOOKS),
+		Key: resources.NewKeyInt64(b.ID, resources.ResourceType(book_resources.BOOKS)),
 		Attributes: book_resources.BookAttributes{
 			Title:           b.Title,
 			Description:     b.Description,
@@ -55,8 +52,6 @@ func (b *Book) Resource() (*book_resources.Book, error) {
 			ContractVersion: b.ContractVersion,
 			File:            media[0],
 			Banner:          media[1],
-			TokenId:         int32(b.TokenId),
-			DeployStatus:    b.DeployStatus,
 		},
 	}
 
