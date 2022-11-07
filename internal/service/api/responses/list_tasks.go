@@ -46,7 +46,7 @@ func NewTaskListResponse(r *http.Request, request *requests.ListTasksRequest, ta
 }
 
 func getTaskRelationships(task data.Task) resources.TaskRelationships {
-	bookKey := resources.NewKeyInt64(task.BookId, resources.BOOK_DATA)
+	bookKey := resources.NewKeyInt64(task.BookId, resources.BOOK)
 
 	return resources.TaskRelationships{
 		Book: &resources.Relation{

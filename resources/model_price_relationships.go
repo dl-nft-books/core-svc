@@ -5,5 +5,5 @@
 package resources
 
 type PriceRelationships struct {
-	Signature Relation `json:"signature"`
+	Signature CreateSignatureRelationshipsSignature `json:"signature"`
 }
