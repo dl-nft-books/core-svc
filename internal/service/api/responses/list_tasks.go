@@ -1,15 +1,18 @@
 package responses
 
 import (
+	"net/http"
+
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
-	"net/http"
 )
 
-func NewTaskListResponse(r *http.Request, request *requests.ListTasksRequest, tasks []data.Task, q data.BookQ) (response *resources.TaskListResponse, err error) {
+func NewTaskListResponse(r *http.Request, request *requests.ListTasksRequest, tasks []data.Task, q data.BookQ) (*resources.TaskListResponse, error) {
+	response := resources.TaskListResponse{}
+
 	if len(tasks) == 0 {
 		return &resources.TaskListResponse{
 			Data: make([]resources.Task, 0),
@@ -38,7 +41,8 @@ func NewTaskListResponse(r *http.Request, request *requests.ListTasksRequest, ta
 	}
 
 	response.Links = requests.GetOffsetLinksWithSort(r, request.OffsetPageParams, request.Sorts)
-	return
+
+	return &response, nil
 }
 
 func getTaskRelationships(task data.Task) resources.TaskRelationships {
