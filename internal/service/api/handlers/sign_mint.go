@@ -36,6 +36,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	// getting book mintInfo
 	book, err := helpers.BooksQ(r).FilterActual().FilterByID(task.BookId).Get()
 	if err != nil {
+		logger.WithError(err).Debug("failed to get book")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
@@ -47,7 +48,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	// getting price in $
 	priceRes, err := helpers.Pricer(r).GetPrice(req.Platform, req.TokenAddress)
 	if err != nil {
-		helpers.Log(r).WithError(err).Error("failed to get price")
+		logger.WithError(err).Error("failed to get price")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
@@ -69,6 +70,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 
 	mintInfo.PricePerOneToken, err = helpers.ConvertPrice(priceRes.Data.Attributes.Price, mintConfig.Precision)
 	if err != nil {
+		logger.WithError(err).Error("failed to convert price")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}

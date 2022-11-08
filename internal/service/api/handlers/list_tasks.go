@@ -12,9 +12,11 @@ import (
 )
 
 func ListTasks(w http.ResponseWriter, r *http.Request) {
+	logger := helpers.Log(r)
+
 	request, err := requests.NewListTasksRequest(r)
 	if err != nil {
-		helpers.Log(r).WithError(err).Error("invalid request")
+		logger.WithError(err).Error("invalid request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -25,14 +27,14 @@ func ListTasks(w http.ResponseWriter, r *http.Request) {
 		OffsetParams: &request.OffsetPageParams,
 	})
 	if err != nil {
-		helpers.Log(r).WithError(err).Error("unable to select tasks from database")
+		logger.WithError(err).Error("unable to select tasks from database")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 
 	taskListResponse, err := responses.NewTaskListResponse(r, request, tasks, helpers.BooksQ(r))
 	if err != nil {
-		helpers.Log(r).WithError(err).Error("unable to form task list response")
+		logger.WithError(err).Error("unable to form task list response")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
