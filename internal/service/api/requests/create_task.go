@@ -35,5 +35,9 @@ func (r CreateTaskRequest) validate() error {
 			validation.Required,
 			validation.Length(1, maxSignatureLength),
 		),
+		"data/attributes/book_id": validation.Validate(
+			&r.Data.Attributes.BookId,
+			validation.Required,
+		),
 	}.Filter()
 }

@@ -82,9 +82,11 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 			if err = p.generatorDB.Tasks().UpdateStatus(resources.TaskGenerating, task.Id); err != nil {
 				return errors.Wrap(err, "failed to update task status", errFields)
 			}
+
 			if err = p.handleTask(task); err != nil {
 				return errors.Wrap(err, "failed to handle task", errFields)
 			}
+
 			if err = p.generatorDB.Tasks().UpdateStatus(resources.TaskFinishedGeneration, task.Id); err != nil {
 				return errors.Wrap(err, "failed to update task status", errFields)
 			}
