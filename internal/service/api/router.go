@@ -18,6 +18,7 @@ func (s *service) router() chi.Router {
 		ape.CtxMiddleware(
 			helpers.CtxLog(s.log),
 			helpers.CtxBooksQ(postgres.NewBooksQ(s.booksDB)),
+			helpers.CtxPaymentsQ(postgres.NewPaymentsQ(s.trackerDB)),
 			helpers.CtxGeneratorDB(postgres.NewGeneratorDB(s.generatorDB)),
 			helpers.CtxMinter(*s.ethMinterConfig),
 			helpers.CtxPricer(s.pricer),
@@ -31,6 +32,14 @@ func (s *service) router() chi.Router {
 
 			r.Route("/{id}", func(r chi.Router) {
 				r.Get("/", handlers.GetTaskByID)
+			})
+		})
+
+		r.Route("/tokens", func(r chi.Router) {
+			r.Get("/", handlers.ListTokens)
+
+			r.Route("/{id}", func(r chi.Router) {
+				r.Get("/", handlers.GetTokenById)
 			})
 		})
 

@@ -8,9 +8,10 @@ type ResourceType string
 
 // List of ResourceType
 const (
-	BOOKS             ResourceType = "books"
-	CREATE_SIGNATURES ResourceType = "create_signatures"
-	TASKS             ResourceType = "tasks"
-	PRICES            ResourceType = "prices"
-	SIGNATURES        ResourceType = "signatures"
+	BOOKS      ResourceType = "books"
+	TASKS      ResourceType = "tasks"
+	PAYMENT    ResourceType = "payment"
+	PRICES     ResourceType = "prices"
+	SIGNATURES ResourceType = "signatures"
+	TOKENS     ResourceType = "tokens"
 )

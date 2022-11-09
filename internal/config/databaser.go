@@ -23,6 +23,7 @@ type DBConnection struct {
 type Databaser interface {
 	BookDB() *DBConnection
 	GeneratorDB() *DBConnection
+	TrackerDB() *DBConnection
 }
 
 type databaser struct {
@@ -37,8 +38,9 @@ func NewDatabaser(getter kv.Getter) Databaser {
 }
 
 type databaserCfg struct {
-	BookService      DatabaserFields `fig:"book-svc"`
-	GeneratorService DatabaserFields `fig:"generator-svc"`
+	BookService      DatabaserFields `fig:"book_svc"`
+	GeneratorService DatabaserFields `fig:"generator_svc"`
+	TrackerService   DatabaserFields `fig:"tracker_svc"`
 }
 
 type DatabaserFields struct {
@@ -113,5 +115,14 @@ func (d *databaser) GeneratorDB() *DBConnection {
 		DB:       cfg.GeneratorService.DB(),
 		RawDB:    cfg.GeneratorService.RawDB(),
 		Listener: cfg.GeneratorService.NewListener(),
+	}
+}
+
+func (d *databaser) TrackerDB() *DBConnection {
+	cfg := d.readConfig()
+	return &DBConnection{
+		DB:       cfg.TrackerService.DB(),
+		RawDB:    cfg.TrackerService.RawDB(),
+		Listener: cfg.TrackerService.NewListener(),
 	}
 }

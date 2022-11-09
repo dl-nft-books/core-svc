@@ -33,7 +33,8 @@ allOf:
             example: QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
           uri:
             type: string
-            example: https://ipfs.io/ipfs/QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
+            example: >-
+              https://ipfs.io/ipfs/QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
           status:
             type: integer
             format: TaskStatus

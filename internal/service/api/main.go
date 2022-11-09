@@ -19,10 +19,12 @@ type service struct {
 	log             *logan.Entry
 	copus           types.Copus
 	listener        net.Listener
-	booksDB         *pgdb.DB
-	generatorDB     *pgdb.DB
 	ethMinterConfig *config.EthMinterConfig
 	pricer          *pricer.Connector
+
+	booksDB     *pgdb.DB
+	generatorDB *pgdb.DB
+	trackerDB   *pgdb.DB
 }
 
 func (s *service) run() error {
@@ -41,15 +43,17 @@ func newService(cfg config.Config) *service {
 		log:             cfg.Log(),
 		copus:           cfg.Copus(),
 		listener:        cfg.Listener(),
-		booksDB:         cfg.BookDB().DB,
-		generatorDB:     cfg.GeneratorDB().DB,
 		ethMinterConfig: cfg.EthMinter(),
 		pricer:          cfg.PricerConnector(),
+
+		booksDB:     cfg.BookDB().DB,
+		generatorDB: cfg.GeneratorDB().DB,
+		trackerDB:   cfg.TrackerDB().DB,
 	}
 }
 
 func Run(ctx context.Context, cfg config.Config) {
 	if err := newService(cfg).run(); err != nil {
-		panic(err)
+		panic(errors.Wrap(err, "failed to run a service"))
 	}
 }

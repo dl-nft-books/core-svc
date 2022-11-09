@@ -1,0 +1,62 @@
+allOf:
+  - $ref: '#/components/schemas/TokenKey'
+  - type: object
+    required:
+      - attributes
+      - relationships
+    properties:
+      attributes:
+        type: object
+        required:
+          - token_id
+          - metadata
+          - signature
+          - status
+          - name
+          - description
+          - image_url
+        properties:
+          token_id:
+            type: integer
+            example: 13
+          name:
+            type: string
+            description: Token's name retrieved from json metadata
+            example: 本
+          description:
+            type: string
+            description: Token's description retrieved from json metadata
+            example: 本の説明
+          image_url:
+            type: string
+            description: Url to the token's image
+            example: ipfs.io/ipfs/url goes brrrrrrr
+          signature:
+            type: string
+            example: I hate managing 4 backend services in a week
+          status:
+            type: integer
+            format: TokenStatus
+            enum:
+              - name: uploading
+                value: 1
+              - name: finished_uploading
+                value: 2
+            example: 2
+      relationships:
+        type: object
+        properties:
+          book:
+            type: object
+            description: Book relation
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/BookKey'
+          payment:
+            type: object
+            description: Payment relation
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/PaymentKey'

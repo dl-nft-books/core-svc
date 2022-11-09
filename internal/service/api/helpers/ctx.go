@@ -17,6 +17,7 @@ type ctxKey int
 const (
 	logCtxKey ctxKey = iota
 	booksQCtxKey
+	paymentsQCtxKey
 	generatorDBCtxKey
 	minterCtxKey
 	pricerCtxKey
@@ -31,6 +32,12 @@ func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
 func CtxBooksQ(q data.BookQ) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
 		return context.WithValue(ctx, booksQCtxKey, q)
+	}
+}
+
+func CtxPaymentsQ(q data.PaymentsQ) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, paymentsQCtxKey, q)
 	}
 }
 
@@ -62,6 +69,10 @@ func Minter(r *http.Request) config.EthMinterConfig {
 
 func BooksQ(r *http.Request) data.BookQ {
 	return r.Context().Value(booksQCtxKey).(data.BookQ).New()
+}
+
+func PaymentsQ(r *http.Request) data.PaymentsQ {
+	return r.Context().Value(paymentsQCtxKey).(data.PaymentsQ).New()
 }
 
 func GeneratorDB(r *http.Request) data.GeneratorDB {

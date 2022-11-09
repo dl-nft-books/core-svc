@@ -1,0 +1,23 @@
+type: object
+required:
+  - address
+  - decimals
+  - symbol
+  - name
+properties:
+  address:
+    type: string
+    description: Token's address
+    example: '0xcD3C5Ecb0159DFD0B7b338341CF6594224aE2083'
+  symbol:
+    type: string
+    description: Token's symbol
+    example: ETH
+  name:
+    type: string
+    description: Token's name
+    example: Ethereum
+  decimals:
+    type: integer
+    description: Token's decimals
+    example: 18

@@ -1,0 +1,61 @@
+get:
+  tags:
+    - Tokens
+  summary: List all tokens
+  operationId: ListTokens
+  parameters:
+    - $ref: '#/components/parameters/pageNumberParam'
+    - $ref: '#/components/parameters/pageLimitParam'
+    - name: 'filter[account]'
+      in: query
+      description: Array of account addresses to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    - name: 'filter[id]'
+      in: query
+      description: Array of task IDs to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+    - name: 'filter[state]'
+      in: query
+      description: Array of task states to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+          enum:
+            - name: uploading
+              value: 1
+            - name: finished_uploading
+              value: 2
+  responses:
+    '201':
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/TokenArray'
+              included:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+    '400':
+      $ref: '#/components/responses/BadRequestError'
+    '404':
+      $ref: '#/components/responses/NotFoundError'
+    '500':
+      $ref: '#/components/responses/InternalError'
