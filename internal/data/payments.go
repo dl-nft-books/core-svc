@@ -2,10 +2,8 @@ package data
 
 import (
 	"gitlab.com/distributed_lab/kit/pgdb"
-	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
-	"math/big"
 	"time"
 )
 
@@ -26,7 +24,8 @@ type Payment struct {
 	TokenName         string    `db:"token_name" structs:"token_name"`
 	TokenDecimals     uint8     `db:"token_decimals" structs:"token_decimals"`
 	Amount            string    `db:"amount" structs:"amount"`
-	Price             string    `db:"price" structs:"price"`
+	PriceToken        string    `db:"price_token" structs:"price_token"`
+	PriceMinted       string    `db:"price_minted" structs:"price_minted"`
 	BookUrl           string    `db:"book_url" structs:"book_url"`
 	PurchaseTimestamp time.Time `db:"purchase_timestamp" structs:"purchase_timestamp"`
 }
@@ -51,17 +50,13 @@ type PaymentsQ interface {
 }
 
 func (p *Payment) Resource() (*resources.Payment, error) {
-	bookPrice, err := p.GetBookPrice()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get book price")
-	}
-
 	return &resources.Payment{
 		Key: resources.NewKeyInt64(p.Id, resources.PAYMENT),
 		Attributes: resources.PaymentAttributes{
 			Amount:            p.Amount,
 			PayerAddress:      p.PayerAddress,
-			Price:             *bookPrice,
+			PaymentTokenPrice: p.PriceToken,
+			MintedTokenPrice:  p.PriceMinted,
 			PurchaseTimestamp: p.PurchaseTimestamp.Format(timestampFormat),
 			BookUrl:           p.BookUrl,
 			Erc20Data: resources.Erc20Data{
@@ -72,27 +67,4 @@ func (p *Payment) Resource() (*resources.Payment, error) {
 			},
 		},
 	}, nil
-}
-
-func (p *Payment) GetBookPrice() (*string, error) {
-	tokenPrice := new(big.Int)
-	tokenPrice, ok := tokenPrice.SetString(p.Price, 10)
-	if !ok {
-		return nil, errors.From(ConversionFromStringToBigIntErr, logan.F{
-			"token_price": p.Price,
-		})
-	}
-
-	tokenAmount := new(big.Int)
-	tokenAmount, ok = tokenAmount.SetString(p.Amount, 10)
-	if !ok {
-		return nil, errors.From(ConversionFromStringToBigIntErr, logan.F{
-			"token_amount": p.Amount,
-		})
-	}
-
-	bookPrice := new(big.Int)
-	bookPrice = bookPrice.Mul(tokenPrice, tokenAmount)
-	bookPriceAsString := bookPrice.String()
-	return &bookPriceAsString, nil
 }
