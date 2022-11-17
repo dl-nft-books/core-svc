@@ -1,4 +1,4 @@
-package data
+package external
 
 import (
 	"encoding/json"

@@ -2,6 +2,7 @@ package task_processor
 
 import (
 	"context"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 	"strconv"
 
 	"gitlab.com/distributed_lab/kit/pgdb"
@@ -20,7 +21,7 @@ const cursorKey = "task_processor_cursor"
 type TaskProcessor struct {
 	name                string
 	logger              *logan.Entry
-	booksDB             data.BookQ
+	booksDB             external.BookQ
 	generatorDB         data.GeneratorDB
 	selector            data.TaskSelector
 	runnerCfg           config.RunnerData

@@ -1,6 +1,7 @@
 package responses
 
 import (
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 	"net/http"
 
 	"gitlab.com/distributed_lab/logan/v3"
@@ -10,7 +11,7 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
-func NewTaskListResponse(r *http.Request, request *requests.ListTasksRequest, tasks []data.Task, q data.BookQ) (*resources.TaskListResponse, error) {
+func NewTaskListResponse(r *http.Request, request *requests.ListTasksRequest, tasks []data.Task, q external.BookQ) (*resources.TaskListResponse, error) {
 	response := resources.TaskListResponse{}
 
 	if len(tasks) == 0 {

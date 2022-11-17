@@ -2,6 +2,8 @@ package signature
 
 import (
 	"crypto/ecdsa"
+	"github.com/ethereum/go-ethereum/common"
+	"gitlab.com/distributed_lab/logan/v3"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -14,7 +16,10 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 )
 
-const defaultAddress = "0x0000000000000000000000000000000000000000"
+var (
+	defaultAddress          = common.Address{}.String()
+	wrongSignatureLengthErr = errors.New("length of a signature must be 65")
+)
 
 func SignMintInfo(
 	mintInfo *MintInfo,
@@ -87,7 +92,9 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 
 func parseSignatureParameters(signature []byte) (*SignatureParameters, error) {
 	if len(signature) != 65 {
-		return nil, errors.New("bad signature")
+		return nil, errors.From(wrongSignatureLengthErr, logan.F{
+			"signature": string(signature),
+		})
 	}
 
 	params := SignatureParameters{}

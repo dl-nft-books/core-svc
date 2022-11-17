@@ -1,4 +1,4 @@
-package models
+package opensea
 
 type Metadata struct {
 	Name        string `json:"name"`

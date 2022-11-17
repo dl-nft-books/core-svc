@@ -39,7 +39,23 @@ func NewEthMinterConfigurator(getter kv.Getter) EthMinterConfigurator {
 	}
 }
 
-var hooks = figure.Hooks{
+func (c *ethMinterConfigurator) EthMinter() *EthMinterConfig {
+	return c.once.Do(func() interface{} {
+		var cfg EthMinterConfig
+
+		err := figure.Out(&cfg).
+			With(figure.BaseHooks, ecdsaHook).
+			From(kv.MustGetStringMap(c.getter, "eth_minter")).
+			Please()
+		if err != nil {
+			panic(err)
+		}
+
+		return &cfg
+	}).(*EthMinterConfig)
+}
+
+var ecdsaHook = figure.Hooks{
 	"*ecdsa.PrivateKey": func(value interface{}) (reflect.Value, error) {
 		switch v := value.(type) {
 		case string:
@@ -52,20 +68,4 @@ var hooks = figure.Hooks{
 			return reflect.Value{}, fmt.Errorf("unsupported conversion from %T", value)
 		}
 	},
-}
-
-func (c *ethMinterConfigurator) EthMinter() *EthMinterConfig {
-	return c.once.Do(func() interface{} {
-		var cfg EthMinterConfig
-
-		err := figure.Out(&cfg).
-			With(figure.BaseHooks, hooks).
-			From(kv.MustGetStringMap(c.getter, "eth_minter")).
-			Please()
-		if err != nil {
-			panic(err)
-		}
-
-		return &cfg
-	}).(*EthMinterConfig)
 }

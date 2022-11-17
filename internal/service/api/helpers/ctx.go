@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"context"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 	"net/http"
 
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
@@ -29,13 +30,13 @@ func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
 	}
 }
 
-func CtxBooksQ(q data.BookQ) func(context.Context) context.Context {
+func CtxBooksQ(q external.BookQ) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
 		return context.WithValue(ctx, booksQCtxKey, q)
 	}
 }
 
-func CtxPaymentsQ(q data.PaymentsQ) func(context.Context) context.Context {
+func CtxPaymentsQ(q external.PaymentsQ) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
 		return context.WithValue(ctx, paymentsQCtxKey, q)
 	}
@@ -67,12 +68,12 @@ func Minter(r *http.Request) config.EthMinterConfig {
 	return r.Context().Value(minterCtxKey).(config.EthMinterConfig)
 }
 
-func BooksQ(r *http.Request) data.BookQ {
-	return r.Context().Value(booksQCtxKey).(data.BookQ).New()
+func BooksQ(r *http.Request) external.BookQ {
+	return r.Context().Value(booksQCtxKey).(external.BookQ).New()
 }
 
-func PaymentsQ(r *http.Request) data.PaymentsQ {
-	return r.Context().Value(paymentsQCtxKey).(data.PaymentsQ).New()
+func PaymentsQ(r *http.Request) external.PaymentsQ {
+	return r.Context().Value(paymentsQCtxKey).(external.PaymentsQ).New()
 }
 
 func GeneratorDB(r *http.Request) data.GeneratorDB {

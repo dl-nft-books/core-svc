@@ -1,4 +1,4 @@
-package data
+package external
 
 import (
 	"gitlab.com/distributed_lab/kit/pgdb"

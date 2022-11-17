@@ -3,12 +3,12 @@ package helpers
 import (
 	"bytes"
 	"encoding/json"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/opensea"
 
 	chunker "github.com/ipfs/go-ipfs-chunker"
 	dagMock "github.com/ipfs/go-merkledag/test"
 	"github.com/ipfs/go-unixfs/importer"
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/runners/models"
 )
 
 func PrecalculateIPFSHash(raw []byte) (string, error) {
@@ -24,7 +24,7 @@ func PrecalculateIPFSHash(raw []byte) (string, error) {
 	return node.Cid().Hash().B58String(), nil
 }
 
-func PrecalculateMetadataIPFSHash(info models.Metadata) (string, error) {
+func PrecalculateMetadataIPFSHash(info opensea.Metadata) (string, error) {
 	raw, err := json.Marshal(info)
 	if err != nil {
 		return "", err

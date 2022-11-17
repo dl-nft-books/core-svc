@@ -3,10 +3,11 @@ package responses
 import (
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
-func NewGetTaskResponse(task data.Task, q data.BookQ) (*resources.TaskResponse, error) {
+func NewGetTaskResponse(task data.Task, q external.BookQ) (*resources.TaskResponse, error) {
 	var response resources.TaskResponse
 
 	taskResource := task.Resource()

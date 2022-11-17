@@ -4,6 +4,7 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
@@ -12,7 +13,7 @@ const baseUri = "https://ipfs.io/ipfs/"
 
 var MultipleOrNoneTasksErr = errors.New("Either no tasks or duplicate for the given hash were found")
 
-func NewGetTokenResponse(token data.Token, paymentsQ data.PaymentsQ, tasksQ data.TasksQ) (*resources.TokenResponse, error) {
+func NewGetTokenResponse(token data.Token, paymentsQ external.PaymentsQ, tasksQ data.TasksQ) (*resources.TokenResponse, error) {
 	var response resources.TokenResponse
 
 	payment, err := paymentsQ.New().FilterById(token.PaymentId).Get()

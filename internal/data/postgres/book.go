@@ -3,16 +3,18 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 
 	"github.com/Masterminds/squirrel"
 	"gitlab.com/distributed_lab/kit/pgdb"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 )
 
-const booksTableName = "book"
-const priceColumnName = "price"
+const (
+	booksTableName = "book"
+	booksPrice     = "price"
+)
 
-func NewBooksQ(db *pgdb.DB) data.BookQ {
+func NewBooksQ(db *pgdb.DB) external.BookQ {
 	return &BooksQ{
 		db: db.Clone(),
 		sql: squirrel.
@@ -26,12 +28,12 @@ type BooksQ struct {
 	sql squirrel.SelectBuilder
 }
 
-func (b *BooksQ) New() data.BookQ {
+func (b *BooksQ) New() external.BookQ {
 	return NewBooksQ(b.db)
 }
 
-func (b *BooksQ) Get() (*data.Book, error) {
-	var result data.Book
+func (b *BooksQ) Get() (*external.Book, error) {
+	var result external.Book
 
 	err := b.db.Get(&result, b.sql)
 	if err == sql.ErrNoRows {
@@ -41,12 +43,12 @@ func (b *BooksQ) Get() (*data.Book, error) {
 	return &result, err
 }
 
-func (b *BooksQ) FilterByID(id int64) data.BookQ {
+func (b *BooksQ) FilterByID(id int64) external.BookQ {
 	b.sql = b.sql.Where(squirrel.Eq{"b.id": id})
 	return b
 }
 
-func (b *BooksQ) FilterActual() data.BookQ {
+func (b *BooksQ) FilterActual() external.BookQ {
 	b.sql = b.sql.Where(squirrel.Eq{"b.deleted": "f"})
 	return b
 }

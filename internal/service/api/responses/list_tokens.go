@@ -1,6 +1,7 @@
 package responses
 
 import (
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"net/http"
 
@@ -11,7 +12,7 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
-func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, tokens []data.Token, paymentsQ data.PaymentsQ, tasksQ data.TasksQ) (*resources.TokenListResponse, error) {
+func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, tokens []data.Token, paymentsQ external.PaymentsQ, tasksQ data.TasksQ) (*resources.TokenListResponse, error) {
 	response := resources.TokenListResponse{}
 
 	if len(tokens) == 0 {
