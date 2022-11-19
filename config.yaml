@@ -41,6 +41,10 @@ documenter:
   url: http://localhost:8000
   token: #doorman auth token
 
+networker:
+  url:
+  token:
+
 listener:
   addr: :8765
 
