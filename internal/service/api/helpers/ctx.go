@@ -2,13 +2,15 @@ package helpers
 
 import (
 	"context"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 	"net/http"
+
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
+	networkerConnector "gitlab.com/tokend/nft-books/network-svc/connector/api"
 
 	"gitlab.com/distributed_lab/logan/v3"
 )
@@ -22,6 +24,7 @@ const (
 	generatorDBCtxKey
 	minterCtxKey
 	pricerCtxKey
+	networkerConnectorCtxKey
 )
 
 func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
@@ -82,4 +85,14 @@ func GeneratorDB(r *http.Request) data.GeneratorDB {
 
 func Log(r *http.Request) *logan.Entry {
 	return r.Context().Value(logCtxKey).(*logan.Entry)
+}
+
+func CtxNetworkerConnector(entry networkerConnector.Connector) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, networkerConnectorCtxKey, entry)
+	}
+}
+
+func NetworkerConnector(r *http.Request) networkerConnector.Connector {
+	return r.Context().Value(networkerConnectorCtxKey).(networkerConnector.Connector)
 }

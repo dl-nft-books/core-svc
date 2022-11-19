@@ -32,6 +32,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/miguelmota/go-solidity-sha3 v0.1.1
 	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221104125850-7e8369e2ce8a
+	gitlab.com/tokend/nft-books/network-svc v0.0.0-20221118195643-00800f3cf84b
 )
 
 require (

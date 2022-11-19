@@ -7,6 +7,7 @@ import (
 	"gitlab.com/distributed_lab/kit/kv"
 	s3connector "gitlab.com/tokend/nft-books/blob-svc/connector/api"
 	s3config "gitlab.com/tokend/nft-books/blob-svc/connector/config"
+	networkerCfg "gitlab.com/tokend/nft-books/network-svc/connector/config"
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 )
 
@@ -18,6 +19,7 @@ type Config interface {
 	EthMinterConfigurator
 	TaskProcessor
 
+	networkerCfg.NetworkConfigurator
 	DocumenterConnector() *s3connector.Connector
 	PdfSignatureParams() *SignatureParams
 	pricer.Pricer
@@ -33,6 +35,7 @@ type config struct {
 	s3config.Documenter
 	pdfSignatureParams comfig.Once
 	pricer.Pricer
+	networkerCfg.NetworkConfigurator
 }
 
 func New(getter kv.Getter) Config {
@@ -46,5 +49,6 @@ func New(getter kv.Getter) Config {
 		TaskProcessor:         NewTaskProcessor(getter),
 		Documenter:            s3config.NewDocumenter(getter),
 		Pricer:                pricer.NewPricer(getter),
+		NetworkConfigurator:   networkerCfg.NewNetworkConfigurator(getter),
 	}
 }

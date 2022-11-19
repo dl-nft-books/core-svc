@@ -7,6 +7,7 @@ import (
 
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
+	networkerConnector "gitlab.com/tokend/nft-books/network-svc/connector/api"
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
@@ -21,6 +22,7 @@ type service struct {
 	listener        net.Listener
 	ethMinterConfig *config.EthMinterConfig
 	pricer          *pricer.Connector
+	networker       *networkerConnector.Connector
 
 	booksDB     *pgdb.DB
 	generatorDB *pgdb.DB
@@ -45,6 +47,7 @@ func newService(cfg config.Config) *service {
 		listener:        cfg.Listener(),
 		ethMinterConfig: cfg.EthMinter(),
 		pricer:          cfg.PricerConnector(),
+		networker:       cfg.NetworkConnector(),
 
 		booksDB:     cfg.BookDB().DB,
 		generatorDB: cfg.GeneratorDB().DB,
