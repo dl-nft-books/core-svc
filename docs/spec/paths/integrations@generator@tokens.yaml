@@ -1,3 +1,33 @@
+post:
+  tags:
+    - Tokens
+  summary: Create Token
+  operationId: createToken
+  requestBody:
+    content:
+      application/vnd.api+json:
+        schema:
+          type: object
+          required:
+            - data
+          properties:
+            data:
+              type: object
+              $ref: '#/components/schemas/CreateToken'
+  responses:
+    '200':
+      description: Token created successfully
+      content:
+        application/vnd.api+json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/TokenKey'
+    '400':
+      description: bad request
+    '500':
+      description: internal error
 get:
   tags:
     - Tokens

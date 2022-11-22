@@ -1,0 +1,28 @@
+allOf:
+  - $ref: '#/components/schemas/TaskKey'
+  - type: object
+    required:
+      - attributes
+    x-go-is-request: true
+    properties:
+      attributes:
+        type: object
+        properties:
+          token_id:
+            type: integer
+            example: 123
+          status:
+            type: integer
+            format: TaskStatus
+            enum:
+              - name: pending
+                value: 1
+              - name: generating
+                value: 2
+              - name: finished_generation
+                value: 3
+              - name: uploading
+                value: 4
+              - name: finished_uploading
+                value: 5
+            example: 2

@@ -14,16 +14,10 @@ import (
 	"gitlab.com/distributed_lab/ape/problems"
 )
 
-type KeyResponse struct {
-	Data resources.Key `json:"data"`
-}
-
 func CreateTask(w http.ResponseWriter, r *http.Request) {
-	logger := helpers.Log(r)
-
 	request, err := requests.NewCreateTaskRequest(r)
 	if err != nil {
-		logger.WithError(err).Error("failed to fetch create task request")
+		helpers.Log(r).WithError(err).Error("failed to fetch create task request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -37,7 +31,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	// Check if book exists
 	book, err := helpers.BooksQ(r).FilterActual().FilterByID(bookId).Get()
 	if err != nil {
-		logger.WithError(err).Errorf("failed to get book with id #%v", bookId)
+		helpers.Log(r).WithError(err).Errorf("failed to get book with id #%v", bookId)
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
@@ -54,18 +48,22 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		Status:    resources.TaskPending,
 	})
 	if err != nil {
-		logger.WithError(err).Errorf("failed to create new task with book id #%v", bookId)
+		helpers.Log(r).WithError(err).Errorf("failed to create new task with book id #%v", bookId)
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	ape.Render(w, KeyResponse{Data: resources.NewKeyInt64(createdTaskId, resources.TASKS)})
+	ape.Render(w, resources.KeyResponse{
+		Data: resources.NewKeyInt64(createdTaskId, resources.TASKS),
+	})
 }
 
 func validateCreateTaskRequest(request *requests.CreateTaskRequest, w http.ResponseWriter, r *http.Request) (ok bool) {
-	database := helpers.GeneratorDB(r)
-	restrictions := helpers.ApiRestrictions(r)
-	statusFilter := resources.TaskFinishedGeneration
+	var (
+		database     = helpers.GeneratorDB(r)
+		restrictions = helpers.ApiRestrictions(r)
+		statusFilter = resources.TaskFinishedGeneration
+	)
 
 	tasks, err := database.Tasks().
 		Sort(pgdb.Sorts{"created_at"}).

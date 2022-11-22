@@ -10,8 +10,8 @@ type ResourceType string
 const (
 	BOOKS      ResourceType = "books"
 	TASKS      ResourceType = "tasks"
+	TOKENS     ResourceType = "tokens"
 	PAYMENT    ResourceType = "payment"
 	PRICES     ResourceType = "prices"
 	SIGNATURES ResourceType = "signatures"
-	TOKENS     ResourceType = "tokens"
 )

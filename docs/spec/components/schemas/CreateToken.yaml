@@ -1,6 +1,7 @@
 allOf:
-  - $ref: '#/components/schemas/TokenKey'
+  - $ref: '#/components/schemas/CreateTokenKey'
   - type: object
+    x-go-is-request: true
     required:
       - attributes
       - relationships
@@ -8,14 +9,11 @@ allOf:
       attributes:
         type: object
         required:
+          - account
           - token_id
           - metadata_hash
           - signature
           - status
-          - name
-          - description
-          - image_url
-          - owner
         properties:
           token_id:
             type: integer

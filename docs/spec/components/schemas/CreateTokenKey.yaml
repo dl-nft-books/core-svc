@@ -5,8 +5,8 @@ required:
 properties:
   id:
     type: string
-    example: "13"
+    example: '10'
   type:
     type: string
     enum:
-      - tasks
+      - tokens
