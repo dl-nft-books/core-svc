@@ -20,6 +20,10 @@ task_processor:
     min_abnormal_period: 10s
     max_abnormal_period: 10s
 
+api:
+  max_failed_attempts: 10
+  request_delay: 5m
+
 eth_minter:
   eth_signer: "b5b6c7a28756d349ac1e7f7bf11fa885ea7d761c498c6f9803ad6b03675ad4a9"
   chain_id: 1

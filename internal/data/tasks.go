@@ -3,6 +3,7 @@ package data
 import (
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"time"
 )
 
 type Task struct {
@@ -15,6 +16,7 @@ type Task struct {
 	MetadataIpfsHash string               `db:"metadata_ipfs_hash" structs:"metadata_ipfs_hash"`
 	Uri              string               `db:"uri" structs:"uri"`
 	Status           resources.TaskStatus `db:"status" structs:"status"`
+	CreatedAt        time.Time            `db:"created_at" structs:"created_at"`
 }
 
 // TaskSelector is a structure for all applicable filters and params on tasksQ `Select`

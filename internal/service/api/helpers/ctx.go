@@ -25,6 +25,7 @@ const (
 	minterCtxKey
 	pricerCtxKey
 	networkerConnectorCtxKey
+	apiRestrictionsCtxKey
 )
 
 func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
@@ -63,6 +64,12 @@ func CtxPricer(entry *pricer.Connector) func(context.Context) context.Context {
 	}
 }
 
+func CtxApiRestrictions(restrictions config.ApiRestrictions) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, apiRestrictionsCtxKey, restrictions)
+	}
+}
+
 func Pricer(r *http.Request) *pricer.Connector {
 	return r.Context().Value(pricerCtxKey).(*pricer.Connector)
 }
@@ -85,6 +92,10 @@ func GeneratorDB(r *http.Request) data.GeneratorDB {
 
 func Log(r *http.Request) *logan.Entry {
 	return r.Context().Value(logCtxKey).(*logan.Entry)
+}
+
+func ApiRestrictions(r *http.Request) config.ApiRestrictions {
+	return r.Context().Value(apiRestrictionsCtxKey).(config.ApiRestrictions)
 }
 
 func CtxNetworkerConnector(entry networkerConnector.Connector) func(context.Context) context.Context {

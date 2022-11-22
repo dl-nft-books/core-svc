@@ -23,6 +23,7 @@ func (s *service) router() chi.Router {
 			helpers.CtxMinter(*s.ethMinterConfig),
 			helpers.CtxPricer(s.pricer),
 			helpers.CtxNetworkerConnector(*s.networker),
+			helpers.CtxApiRestrictions(s.apiRestrictions),
 		),
 	)
 	r.Route("/integrations/generator", func(r chi.Router) {

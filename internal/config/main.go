@@ -22,13 +22,13 @@ type Config interface {
 	networkerCfg.NetworkConfigurator
 	DocumenterConnector() *s3connector.Connector
 	PdfSignatureParams() *SignatureParams
+	ApiRestrictions() ApiRestrictions
 	pricer.Pricer
 }
 type config struct {
 	comfig.Logger
 	types.Copuser
 	comfig.Listenerer
-	getter kv.Getter
 	Databaser
 	EthMinterConfigurator
 	TaskProcessor
@@ -36,6 +36,9 @@ type config struct {
 	pdfSignatureParams comfig.Once
 	pricer.Pricer
 	networkerCfg.NetworkConfigurator
+
+	getter  kv.Getter
+	apiOnce comfig.Once
 }
 
 func New(getter kv.Getter) Config {

@@ -23,6 +23,7 @@ type service struct {
 	ethMinterConfig *config.EthMinterConfig
 	pricer          *pricer.Connector
 	networker       *networkerConnector.Connector
+	apiRestrictions config.ApiRestrictions
 
 	booksDB     *pgdb.DB
 	generatorDB *pgdb.DB
@@ -48,6 +49,7 @@ func newService(cfg config.Config) *service {
 		ethMinterConfig: cfg.EthMinter(),
 		pricer:          cfg.PricerConnector(),
 		networker:       cfg.NetworkConnector(),
+		apiRestrictions: cfg.ApiRestrictions(),
 
 		booksDB:     cfg.BookDB().DB,
 		generatorDB: cfg.GeneratorDB().DB,

@@ -1,12 +1,14 @@
 package handlers
 
 import (
-	"net/http"
-
+	"gitlab.com/distributed_lab/kit/pgdb"
+	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"net/http"
+	"time"
 
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
@@ -23,6 +25,10 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.WithError(err).Error("failed to fetch create task request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
+		return
+	}
+
+	if !validateCreateTaskRequest(request, w, r) {
 		return
 	}
 
@@ -54,4 +60,44 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ape.Render(w, KeyResponse{Data: resources.NewKeyInt64(createdTaskId, resources.TASKS)})
+}
+
+func validateCreateTaskRequest(request *requests.CreateTaskRequest, w http.ResponseWriter, r *http.Request) (ok bool) {
+	database := helpers.GeneratorDB(r)
+	restrictions := helpers.ApiRestrictions(r)
+	statusFilter := resources.TaskFinishedGeneration
+
+	tasks, err := database.Tasks().
+		Sort(pgdb.Sorts{"created_at"}).
+		Select(data.TaskSelector{
+			Account: &request.Data.Attributes.Account,
+			Status:  &statusFilter,
+		})
+	if err != nil {
+		helpers.Log(r).WithError(err).Error("failed to get select tasks from the database")
+		ape.RenderErr(w, problems.InternalError())
+		return false
+	}
+
+	tasksNumber := len(tasks)
+	if uint64(tasksNumber) >= restrictions.MaxFailedAttempts {
+		// TODO: make via jsonerrors.WithDetails
+		ape.RenderErr(w, problems.BadRequest(errors.New("maximum attempts number exceeded"))[0])
+		return false
+	}
+
+	var lastCreatedAt time.Time
+	if tasksNumber > 0 {
+		lastCreatedAt = tasks[tasksNumber-1].CreatedAt
+	}
+
+	durationAfterPreviousAttempt := time.Now().Sub(lastCreatedAt)
+	if durationAfterPreviousAttempt < restrictions.RequestDelay {
+		// TODO: make via jsonerrors.WithDetails
+		ape.RenderErr(w, problems.BadRequest(errors.New("task delay not passed"))[0])
+		return false
+
+	}
+
+	return true
 }
