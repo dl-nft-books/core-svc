@@ -6,7 +6,6 @@ type GeneratorDB interface {
 	Tasks() TasksQ
 	KeyValue() KeyValueQ
 	Tokens() TokensQ
-	Attempts() AttemptsQ
 
 	Transaction(func() error) error
 }
