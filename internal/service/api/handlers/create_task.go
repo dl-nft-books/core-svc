@@ -21,6 +21,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewCreateTaskRequest(r)
 	if err != nil {
+		logger.WithError(err).Error("failed to fetch create task request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -30,7 +31,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	// Check if book exists
 	book, err := helpers.BooksQ(r).FilterActual().FilterByID(bookId).Get()
 	if err != nil {
-		logger.WithError(err).Debugf("failed to get book with id #%v", bookId)
+		logger.WithError(err).Errorf("failed to get book with id #%v", bookId)
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
@@ -47,7 +48,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		Status:    resources.TaskPending,
 	})
 	if err != nil {
-		logger.WithError(err).Debugf("failed to create new task with book id #%v", bookId)
+		logger.WithError(err).Errorf("failed to create new task with book id #%v", bookId)
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}

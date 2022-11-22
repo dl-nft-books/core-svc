@@ -53,8 +53,10 @@ func Run(args []string) bool {
 		run(waitGroup, ctx, cfg, api.Run)
 		log.Info("started api...")
 	case taskProcessorCommand.FullCommand():
-		run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
-		log.Info("started task processor...")
+		for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
+			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
+			log.Infof("started task processor #%d", i+1)
+		}
 	case migrateUpCommand.FullCommand():
 		err = MigrateUp(cfg)
 	case migrateDownCommand.FullCommand():

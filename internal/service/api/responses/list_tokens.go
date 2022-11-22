@@ -28,10 +28,12 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 				"payment_id": token.PaymentId,
 			})
 		}
-		paymentAsResource, err := payment.Resource()
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to convert payment to the resource format")
+		if payment == nil {
+			return nil, errors.From(PaymentNotFoundErr, logan.F{
+				"payment_id": PaymentNotFoundErr,
+			})
 		}
+		paymentAsResource := payment.Resource()
 
 		tasks, err := tasksQ.New().Select(data.TaskSelector{
 			IpfsHash: &token.MetadataHash,
@@ -42,7 +44,7 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 			})
 		}
 		if len(tasks) != 1 {
-			return nil, errors.From(MultipleOrNoneTasksErr, logan.F{
+			return nil, errors.From(NonSingleTaskErr, logan.F{
 				"metadata_hash": token.MetadataHash,
 			})
 		}
@@ -56,6 +58,7 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 		tokenAsResource := resources.Token{
 			Key: resources.NewKeyInt64(token.Id, resources.TOKENS),
 			Attributes: resources.TokenAttributes{
+				Owner:       token.Account,
 				Description: metadata.Description,
 				ImageUrl:    metadata.Image,
 				Name:        metadata.Name,
@@ -67,7 +70,7 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 		}
 
 		response.Data = append(response.Data, tokenAsResource)
-		response.Included.Add(paymentAsResource)
+		response.Included.Add(&paymentAsResource)
 	}
 
 	response.Links = requests.GetOffsetLinksWithSort(r, request.OffsetPageParams, request.Sorts)

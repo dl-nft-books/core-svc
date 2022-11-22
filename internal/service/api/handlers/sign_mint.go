@@ -15,16 +15,17 @@ import (
 func SignMint(w http.ResponseWriter, r *http.Request) {
 	logger := helpers.Log(r)
 
-	req, err := requests.NewSignMintRequest(r)
+	request, err := requests.NewSignMintRequest(r)
 	if err != nil {
+		logger.WithError(err).Error("failed to fetch new sign mint request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
 
-	// getting task mintInfo
-	task, err := helpers.GeneratorDB(r).Tasks().GetById(req.TaskID)
+	// Getting task's mintInfo
+	task, err := helpers.GeneratorDB(r).Tasks().GetById(request.TaskID)
 	if err != nil {
-		logger.WithError(err).Debug("failed to get task")
+		logger.WithError(err).Error("failed to get task")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
@@ -33,27 +34,28 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// getting book mintInfo
+	// Getting book's mintInfo
 	book, err := helpers.BooksQ(r).FilterActual().FilterByID(task.BookId).Get()
 	if err != nil {
-		logger.WithError(err).Debug("failed to get book")
+		logger.WithError(err).Error("failed to get a book")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 	if book == nil {
+		logger.Warnf("Book with specified id %d was not found", task.BookId)
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
 
-	// getting price in $
-	priceRes, err := helpers.Pricer(r).GetPrice(req.Platform, req.TokenAddress)
+	// Getting price in dollars
+	priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress)
 	if err != nil {
 		logger.WithError(err).Error("failed to get price")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	// forming signature mintInfo
+	// Forming signature mintInfo
 	mintConfig := helpers.Minter(r)
 
 	domainData := signature.EIP712DomainData{
@@ -64,11 +66,11 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	mintInfo := signature.MintInfo{
-		TokenAddress: req.TokenAddress,
+		TokenAddress: request.TokenAddress,
 		TokenURI:     task.MetadataIpfsHash,
 	}
 
-	mintInfo.PricePerOneToken, err = helpers.ConvertPrice(priceRes.Data.Attributes.Price, mintConfig.Precision)
+	mintInfo.PricePerOneToken, err = helpers.ConvertPrice(priceResponse.Data.Attributes.Price, mintConfig.Precision)
 	if err != nil {
 		logger.WithError(err).Error("failed to convert price")
 		ape.RenderErr(w, problems.InternalError())
@@ -77,17 +79,17 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 
 	mintInfo.EndTimestamp = time.Now().Add(mintConfig.Expiration).Unix()
 
-	// signing
-	signature, err := signature.SignMintInfo(&mintInfo, &domainData, &mintConfig)
+	// Signing the mint transaction
+	mintSignature, err := signature.SignMintInfo(&mintInfo, &domainData, &mintConfig)
 	if err != nil {
-		logger.WithError(err).Debug("failed to generate eip712 mint signature")
+		logger.WithError(err).Error("failed to generate eip712 mint signature")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 
 	ape.Render(w, responses.NewSignMintResponse(
 		mintInfo.PricePerOneToken.String(),
-		signature,
+		mintSignature,
 		mintInfo.EndTimestamp,
 	))
 }

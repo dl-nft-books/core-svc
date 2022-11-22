@@ -15,6 +15,7 @@ allOf:
           - name
           - description
           - image_url
+          - owner
         properties:
           token_id:
             type: integer
@@ -43,6 +44,10 @@ allOf:
               - name: finished_uploading
                 value: 2
             example: 2
+          owner:
+            type: string
+            example: '0x77dADb3Ce09Ef981A008fDC1cE40D8A023E0925e'
+            description: Address of a user who purchased this token
       relationships:
         type: object
         properties:

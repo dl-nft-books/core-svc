@@ -33,10 +33,11 @@ func NewTaskProcessor(getter kv.Getter) TaskProcessor {
 }
 
 type TaskProcessorCfg struct {
-	Name   string     `fig:"name"`
-	Cursor uint64     `fig:"cursor"`
-	Limit  uint64     `fig:"limit,non_zero"`
-	Runner RunnerData `fig:"runner,required"`
+	Name            string     `fig:"name"`
+	Cursor          uint64     `fig:"cursor"`
+	Limit           uint64     `fig:"limit,non_zero"`
+	ProcessesNumber uint64     `fig:"processes_number,non_zero"`
+	Runner          RunnerData `fig:"runner,required"`
 }
 
 func (t *taskProcessor) TaskProcessorCfg() TaskProcessorCfg {

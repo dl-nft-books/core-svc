@@ -12,6 +12,7 @@ database:
 
 task_processor:
   name: task_processor # Name to be displayed in logs
+  processes_number: 1 # Number of parallel processes to add
   cursor: 0 # Default cursor value
   limit: 1 # Number of subtasks to be processed during one run (no more than 10)
   runner: # Period settings

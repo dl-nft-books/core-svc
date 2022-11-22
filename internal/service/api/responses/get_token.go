@@ -9,9 +9,10 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
-const baseUri = "https://ipfs.io/ipfs/"
-
-var MultipleOrNoneTasksErr = errors.New("Either no tasks or duplicate for the given hash were found")
+var (
+	NonSingleTaskErr   = errors.New("Either no tasks or duplicate for the given hash were found")
+	PaymentNotFoundErr = errors.New("payment with specified id was not found")
+)
 
 func NewGetTokenResponse(token data.Token, paymentsQ external.PaymentsQ, tasksQ data.TasksQ) (*resources.TokenResponse, error) {
 	var response resources.TokenResponse
@@ -22,10 +23,12 @@ func NewGetTokenResponse(token data.Token, paymentsQ external.PaymentsQ, tasksQ 
 			"payment_id": token.PaymentId,
 		})
 	}
-	paymentAsResource, err := payment.Resource()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to convert payment to the resource format")
+	if payment == nil {
+		return nil, errors.From(PaymentNotFoundErr, logan.F{
+			"payment_id": PaymentNotFoundErr,
+		})
 	}
+	paymentAsResource := payment.Resource()
 
 	tasks, err := tasksQ.New().Select(data.TaskSelector{
 		IpfsHash: &token.MetadataHash,
@@ -36,7 +39,7 @@ func NewGetTokenResponse(token data.Token, paymentsQ external.PaymentsQ, tasksQ 
 		})
 	}
 	if len(tasks) != 1 {
-		return nil, errors.From(MultipleOrNoneTasksErr, logan.F{
+		return nil, errors.From(NonSingleTaskErr, logan.F{
 			"metadata_hash": token.MetadataHash,
 		})
 	}
@@ -50,6 +53,7 @@ func NewGetTokenResponse(token data.Token, paymentsQ external.PaymentsQ, tasksQ 
 	response.Data = resources.Token{
 		Key: resources.NewKeyInt64(token.Id, resources.TOKENS),
 		Attributes: resources.TokenAttributes{
+			Owner:       token.Account,
 			Description: metadata.Description,
 			ImageUrl:    metadata.Image,
 			Name:        metadata.Name,
@@ -60,7 +64,7 @@ func NewGetTokenResponse(token data.Token, paymentsQ external.PaymentsQ, tasksQ 
 		Relationships: getTokenRelationships(token),
 	}
 
-	response.Included.Add(paymentAsResource)
+	response.Included.Add(&paymentAsResource)
 
 	return &response, nil
 }

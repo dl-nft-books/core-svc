@@ -49,8 +49,8 @@ type PaymentsQ interface {
 	Delete(id int64) error
 }
 
-func (p *Payment) Resource() (*resources.Payment, error) {
-	return &resources.Payment{
+func (p *Payment) Resource() resources.Payment {
+	return resources.Payment{
 		Key: resources.NewKeyInt64(p.Id, resources.PAYMENT),
 		Attributes: resources.PaymentAttributes{
 			Amount:            p.Amount,
@@ -66,5 +66,5 @@ func (p *Payment) Resource() (*resources.Payment, error) {
 				Decimals: int32(p.TokenDecimals),
 			},
 		},
-	}, nil
+	}
 }
