@@ -28,6 +28,7 @@ type Book struct {
 	Banner          string                      `db:"banner" structs:"banner"`
 	File            string                      `db:"file" structs:"file"`
 	Deleted         bool                        `db:"deleted" structs:"-"`
+	ChainID         int64                       `db:"chain_id" structs:"chain_id"`
 	TokenId         int64                       `db:"token_id" structs:"token_id"`
 	DeployStatus    book_resources.DeployStatus `db:"deploy_status" structs:"deploy_status"`
 	LastBlock       uint64                      `db:"last_block" structs:"last_block"`
@@ -57,6 +58,7 @@ func (b *Book) Resource() (*book_resources.Book, error) {
 			File:            media[1],
 			TokenId:         int32(b.TokenId),
 			DeployStatus:    b.DeployStatus,
+			ChainId:         int32(b.ChainID),
 		},
 	}
 

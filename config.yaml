@@ -26,7 +26,6 @@ api:
 
 eth_minter:
   eth_signer: "b5b6c7a28756d349ac1e7f7bf11fa885ea7d761c498c6f9803ad6b03675ad4a9"
-  chain_id: 1
   precision: 18
   expiration: 5m
 

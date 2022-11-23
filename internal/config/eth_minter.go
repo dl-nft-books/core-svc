@@ -19,13 +19,8 @@ type EthMinterConfigurator interface {
 
 type EthMinterConfig struct {
 	PrivateKey *ecdsa.PrivateKey `fig:"eth_signer,required"`
-	ChainID    int64             `fig:"chain_id,required"`
 	Precision  int               `fig:"precision,required"`
 	Expiration time.Duration     `fig:"expiration,required"`
-
-	TokenFactoryName    string `fig:"token_factory_name,required"`
-	TokenFactoryAddress string `fig:"token_factory_address,required"`
-	TokenFactoryVersion string `fig:"token_factory_version,required"`
 }
 
 type ethMinterConfigurator struct {
