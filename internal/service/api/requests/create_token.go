@@ -28,11 +28,6 @@ func (r CreateTokenRequest) validate() error {
 			&r.Data.Attributes.TokenId,
 			validation.Required,
 		),
-		"data/attributes/signature": validation.Validate(
-			&r.Data.Attributes.Signature,
-			validation.Required,
-			validation.Length(1, maxSignatureLength),
-		),
 		"data/attributes/status": validation.Validate(
 			&r.Data.Attributes.Status,
 			validation.Required,
