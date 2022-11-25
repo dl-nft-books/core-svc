@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/cast"
+	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
@@ -35,4 +36,35 @@ func (c *Connector) UpdateTask(request resources.UpdateTask) error {
 	}
 
 	return c.update(endpoint, requestAsBytes, nil)
+}
+
+// TODO: add support for filter parameters
+func (c *Connector) ListTasks() (*resources.TaskListResponse, error) {
+	var result resources.TaskListResponse
+
+	// setting full endpoint
+	fullEndpoint := fmt.Sprintf("%s/%s", c.baseUrl, tasksEndpoint)
+
+	// getting response
+	if err := c.get(fullEndpoint, &result); err != nil {
+		// errors are already wrapped
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (c *Connector) GetTaskById(id int64) (*resources.TaskResponse, error) {
+	var result resources.TaskResponse
+
+	// setting full endpoint
+	fullEndpoint := fmt.Sprintf("%s/%s/%d", c.baseUrl, tasksEndpoint, id)
+
+	// getting response
+	if err := c.get(fullEndpoint, &result); err != nil {
+		// errors are already wrapped
+		return nil, errors.From(err, logan.F{"id": id})
+	}
+
+	return &result, nil
 }

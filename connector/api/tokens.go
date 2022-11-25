@@ -3,8 +3,9 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/spf13/cast"
+	"gitlab.com/distributed_lab/logan/v3"
+	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
@@ -35,4 +36,35 @@ func (c *Connector) UpdateToken(request resources.UpdateToken) error {
 	}
 
 	return c.update(endpoint, requestAsBytes, nil)
+}
+
+// TODO: Add support for filter parameters
+func (c *Connector) ListTokens() (*resources.TokenListResponse, error) {
+	var result resources.TokenListResponse
+
+	// setting full endpoint
+	fullEndpoint := fmt.Sprintf("%s/%s", c.baseUrl, tokensEndpoint)
+
+	// getting response
+	if err := c.get(fullEndpoint, &result); err != nil {
+		// errors are already wrapped
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (c *Connector) GetTokenById(id int64) (*resources.TokenResponse, error) {
+	var result resources.TokenResponse
+
+	// setting full endpoint
+	fullEndpoint := fmt.Sprintf("%s/%s/%d", c.baseUrl, tokensEndpoint, id)
+
+	// getting response
+	if err := c.get(fullEndpoint, &result); err != nil {
+		// errors are already wrapped
+		return nil, errors.From(err, logan.F{"id": id})
+	}
+
+	return &result, nil
 }
