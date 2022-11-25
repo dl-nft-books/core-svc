@@ -83,7 +83,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 
 	p.logger.Debug(fmt.Sprintf("Precalculated IPFS hash: %s", ipfsFileHash))
 
-	if err = p.generatorDB.Tasks().UpdateFileIpfsHash(ipfsFileHash, task.Id); err != nil {
+	if err = p.generatorDB.Tasks().UpdateFileIpfsHash(ipfsFileHash).Update(task.Id); err != nil {
 		return errors.Wrap(err, "failed to update ipfs hash")
 	}
 
@@ -132,10 +132,10 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 
 	p.logger.Debug(fmt.Sprintf("Precalculated IPFS hash: %s", ipfsMetadataHash))
 
-	if err = p.generatorDB.Tasks().UpdateMetadataIpfsHash(ipfsMetadataHash, task.Id); err != nil {
+	if err = p.generatorDB.Tasks().UpdateMetadataIpfsHash(ipfsMetadataHash).Update(task.Id); err != nil {
 		return errors.Wrap(err, "failed to update ipfs hash")
 	}
-	if err = p.generatorDB.Tasks().UpdateUri(baseURI+ipfsMetadataHash, task.Id); err != nil {
+	if err = p.generatorDB.Tasks().UpdateUri(baseURI + ipfsMetadataHash).Update(task.Id); err != nil {
 		return errors.Wrap(err, "failed to update task uri")
 	}
 

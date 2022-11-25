@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/spf13/cast"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
@@ -8,11 +9,9 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"net/http"
-	"strconv"
 )
 
 func CreateToken(w http.ResponseWriter, r *http.Request) {
-	// Getting the create token request
 	request, err := requests.NewCreateTokenRequest(r)
 	if err != nil {
 		helpers.Log(r).WithError(err).Error("failed to fetch create task request")
@@ -20,30 +19,21 @@ func CreateToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bookId, err := strconv.Atoi(request.Data.Relationships.Book.Data.ID)
-	if err != nil {
-		helpers.Log(r).WithError(err).Errorf("failed to convert book id from string format to the integer one", bookId)
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
-
-	paymentId, err := strconv.Atoi(request.Data.Relationships.Payment.Data.ID)
-	if err != nil {
-		helpers.Log(r).WithError(err).Errorf("failed to convert book id from string format to the integer one", bookId)
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
+	var (
+		bookId    = cast.ToInt64(request.Data.Relationships.Book.Data.ID)
+		paymentId = cast.ToInt64(request.Data.Relationships.Payment.Data.ID)
+	)
 
 	createdTokenId, err := helpers.GeneratorDB(r).Tokens().Insert(data.Token{
 		Account:      request.Data.Attributes.Account,
 		TokenId:      int64(request.Data.Attributes.TokenId),
-		BookId:       int64(bookId),
-		PaymentId:    int64(paymentId),
+		BookId:       bookId,
+		PaymentId:    paymentId,
 		MetadataHash: request.Data.Attributes.MetadataHash,
 		Status:       request.Data.Attributes.Status,
 	})
 	if err != nil {
-		helpers.Log(r).WithError(err).Errorf("failed to create new task with book id #%v", bookId)
+		helpers.Log(r).WithError(err).Errorf("failed to create new token with id of #%v", bookId)
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}

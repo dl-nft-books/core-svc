@@ -34,6 +34,7 @@ func (s *service) router() chi.Router {
 
 			r.Route("/{id}", func(r chi.Router) {
 				r.Get("/", handlers.GetTaskByID)
+				r.Patch("/", handlers.UpdateTask)
 			})
 		})
 

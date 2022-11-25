@@ -22,6 +22,7 @@ func NewCreateTokenRequest(r *http.Request) (*CreateTokenRequest, error) {
 	return &request, request.validate()
 }
 
+// TODO: Check validation more carefully
 func (r CreateTokenRequest) validate() error {
 	return validation.Errors{
 		"data/attributes/token_id": validation.Validate(

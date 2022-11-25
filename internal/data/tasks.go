@@ -37,16 +37,16 @@ type TasksQ interface {
 	Sort(sort pgdb.Sorts) TasksQ
 	Page(page pgdb.OffsetPageParams) TasksQ
 
-	Update(task Task, id int64) error
 	Insert(task Task) (id int64, err error)
 	Delete(id int64) error
 	Transaction(fn func(q TasksQ) error) error
 
-	UpdateFileIpfsHash(newIpfsHash string, id int64) error
-	UpdateMetadataIpfsHash(newIpfsHash string, id int64) error
-	UpdateUri(newUri string, id int64) error
-	UpdateTokenId(newTokenId, id int64) error
-	UpdateStatus(newStatus resources.TaskStatus, id int64) error
+	UpdateFileIpfsHash(newIpfsHash string) TasksQ
+	UpdateMetadataIpfsHash(newIpfsHash string) TasksQ
+	UpdateUri(newUri string) TasksQ
+	UpdateTokenId(newTokenId int64) TasksQ
+	UpdateStatus(newStatus resources.TaskStatus) TasksQ
+	Update(id int64) error
 }
 
 func (t Task) Resource() resources.Task {

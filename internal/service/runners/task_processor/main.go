@@ -80,7 +80,7 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 				"task_status":    task.Status,
 			}
 
-			if err = p.generatorDB.Tasks().UpdateStatus(resources.TaskGenerating, task.Id); err != nil {
+			if err = p.generatorDB.Tasks().UpdateStatus(resources.TaskGenerating).Update(task.Id); err != nil {
 				return errors.Wrap(err, "failed to update task status", errFields)
 			}
 
@@ -88,7 +88,7 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 				return errors.Wrap(err, "failed to handle task", errFields)
 			}
 
-			if err = p.generatorDB.Tasks().UpdateStatus(resources.TaskFinishedGeneration, task.Id); err != nil {
+			if err = p.generatorDB.Tasks().UpdateStatus(resources.TaskFinishedGeneration).Update(task.Id); err != nil {
 				return errors.Wrap(err, "failed to update task status", errFields)
 			}
 		}

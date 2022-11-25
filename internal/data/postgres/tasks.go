@@ -28,12 +28,14 @@ const (
 type tasksQ struct {
 	database *pgdb.DB
 	selector squirrel.SelectBuilder
+	updater  squirrel.UpdateBuilder
 }
 
 func NewTasksQ(database *pgdb.DB) data.TasksQ {
 	return &tasksQ{
 		database: database,
 		selector: squirrel.Select(fmt.Sprintf("%s.*", tasksTable)).From(tasksTable),
+		updater:  squirrel.Update(tasksTable),
 	}
 }
 
@@ -84,47 +86,38 @@ func (q *tasksQ) Delete(id int64) error {
 	return q.database.Exec(statement)
 }
 
-func (q *tasksQ) Update(task data.Task, id int64) error {
-	statement := squirrel.Update(tasksTable).
-		SetMap(structs.Map(&task)).
-		Where(squirrel.Eq{tasksId: id})
-	return q.database.Exec(statement)
+func (q *tasksQ) UpdateFileIpfsHash(newIpfsHash string) data.TasksQ {
+	q.updater = q.updater.Set(tasksFileIpfsHash, newIpfsHash)
+	return q
 }
 
-func (q *tasksQ) UpdateFileIpfsHash(newIpfsHash string, id int64) error {
-	return q.updateHash(tasksFileIpfsHash, newIpfsHash, id)
+func (q *tasksQ) UpdateMetadataIpfsHash(newIpfsHash string) data.TasksQ {
+	q.updater = q.updater.Set(tasksMetadataIpfsHash, newIpfsHash)
+	return q
 }
 
-func (q *tasksQ) UpdateMetadataIpfsHash(newIpfsHash string, id int64) error {
-	return q.updateHash(tasksMetadataIpfsHash, newIpfsHash, id)
+func (q *tasksQ) updateHash(fieldName, newIpfsHash string) data.TasksQ {
+	q.updater = q.updater.Set(fieldName, newIpfsHash)
+	return q
 }
 
-func (q *tasksQ) updateHash(fieldName, newIpfsHash string, id int64) error {
-	statement := squirrel.Update(tasksTable).
-		Set(fieldName, newIpfsHash).
-		Where(squirrel.Eq{tasksId: id})
-	return q.database.Exec(statement)
+func (q *tasksQ) UpdateTokenId(newTokenId int64) data.TasksQ {
+	q.updater = q.updater.Set(tasksTokenId, newTokenId)
+	return q
 }
 
-func (q *tasksQ) UpdateTokenId(newTokenId, id int64) error {
-	statement := squirrel.Update(tasksTable).
-		Set(tasksTokenId, newTokenId).
-		Where(squirrel.Eq{tasksId: id})
-	return q.database.Exec(statement)
+func (q *tasksQ) UpdateUri(newUri string) data.TasksQ {
+	q.updater = q.updater.Set(tasksUri, newUri)
+	return q
 }
 
-func (q *tasksQ) UpdateUri(newUri string, id int64) error {
-	statement := squirrel.Update(tasksTable).
-		Set(tasksUri, newUri).
-		Where(squirrel.Eq{tasksId: id})
-	return q.database.Exec(statement)
+func (q *tasksQ) UpdateStatus(newStatus resources.TaskStatus) data.TasksQ {
+	q.updater = q.updater.Set(tasksStatus, newStatus)
+	return q
 }
 
-func (q *tasksQ) UpdateStatus(newStatus resources.TaskStatus, id int64) error {
-	statement := squirrel.Update(tasksTable).
-		Set(tasksStatus, newStatus).
-		Where(squirrel.Eq{tasksId: id})
-	return q.database.Exec(statement)
+func (q *tasksQ) Update(id int64) error {
+	return q.database.Exec(q.updater.Where(squirrel.Eq{tasksId: id}))
 }
 
 func (q *tasksQ) Transaction(fn func(q data.TasksQ) error) (err error) {
