@@ -39,6 +39,7 @@ func (s *service) router() chi.Router {
 
 		r.Route("/tokens", func(r chi.Router) {
 			r.Get("/", handlers.ListTokens)
+			r.Post("/", handlers.CreateToken)
 
 			r.Route("/{id}", func(r chi.Router) {
 				r.Get("/", handlers.GetTokenById)

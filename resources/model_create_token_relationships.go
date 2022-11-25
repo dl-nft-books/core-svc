@@ -5,6 +5,6 @@
 package resources
 
 type CreateTokenRelationships struct {
-	Book    *Relation `json:"book,omitempty"`
-	Payment *Relation `json:"payment,omitempty"`
+	Book    Relation `json:"book"`
+	Payment Relation `json:"payment"`
 }
