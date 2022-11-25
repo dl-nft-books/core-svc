@@ -27,12 +27,14 @@ const (
 type tokensQ struct {
 	database *pgdb.DB
 	selector squirrel.SelectBuilder
+	updater  squirrel.UpdateBuilder
 }
 
 func NewTokensQ(database *pgdb.DB) data.TokensQ {
 	return &tokensQ{
 		database: database,
 		selector: squirrel.Select(fmt.Sprintf("%s.*", tokensTable)).From(tokensTable),
+		updater:  squirrel.Update(tokensTable),
 	}
 }
 
@@ -113,9 +115,21 @@ func (q *tokensQ) Transaction(fn func(q data.TokensQ) error) (err error) {
 	})
 }
 
-func (q *tokensQ) UpdateStatus(newStatus resources.TokenStatus, id int64) error {
-	statement := squirrel.Update(tokensTable).
-		Set(tokensStatus, newStatus).
-		Where(squirrel.Eq{tokensId: id})
-	return q.database.Exec(statement)
+func (q *tokensQ) UpdateTokenId(newTokenId int64) data.TokensQ {
+	q.updater = q.updater.Set(tokensTokenId, newTokenId)
+	return q
+}
+
+func (q *tokensQ) UpdateStatus(newStatus resources.TokenStatus) data.TokensQ {
+	q.updater = q.updater.Set(tokensStatus, newStatus)
+	return q
+}
+
+func (q *tokensQ) UpdateOwner(newOwner string) data.TokensQ {
+	q.updater = q.updater.Set(tokensAccount, newOwner)
+	return q
+}
+
+func (q *tokensQ) Update(id int64) error {
+	return q.database.Exec(q.updater.Where(squirrel.Eq{tokensId: id}))
 }

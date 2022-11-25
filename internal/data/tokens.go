@@ -35,5 +35,8 @@ type TokensQ interface {
 	Insert(token Token) (id int64, err error)
 	Transaction(fn func(q TokensQ) error) error
 
-	UpdateStatus(newStatus resources.TokenStatus, id int64) error
+	UpdateStatus(newStatus resources.TokenStatus) TokensQ
+	UpdateTokenId(newTokenId int64) TokensQ
+	UpdateOwner(newOwner string) TokensQ
+	Update(id int64) error
 }
