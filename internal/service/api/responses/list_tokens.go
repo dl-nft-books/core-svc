@@ -1,9 +1,10 @@
 package responses
 
 import (
+	"net/http"
+
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
-	"net/http"
 
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
@@ -66,6 +67,7 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 				Description:  metadata.Description,
 				ImageUrl:     metadata.Image,
 				Signature:    task.Signature,
+				ChainId:      token.ChainID,
 			},
 			Relationships: getTokenRelationships(token),
 		}

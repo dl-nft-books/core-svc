@@ -1,0 +1,9 @@
+-- +migrate Up
+
+ALTER TABLE IF EXISTS tokens
+    ADD COLUMN IF NOT EXISTS chain_id BIGINT NOT NULL DEFAULT 5; -- TODO: SET POLYGON CHAIN_ID (137)
+
+-- +migrate Down
+
+ALTER TABLE IF EXISTS payments
+    DROP COLUMN IF EXISTS chain_id;
