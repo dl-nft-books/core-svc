@@ -45,6 +45,9 @@ func applyTokensQFilters(q data.TokensQ, request *requests.ListTokensRequest) da
 	if len(request.Status) > 0 {
 		q = q.FilterByStatus(request.Status...)
 	}
+	if len(request.ChainID) > 0 {
+		q = q.FilterByChainId(request.ChainID...)
+	}
 
 	q = q.Page(request.OffsetPageParams)
 	q = q.Sort(request.Sorts)

@@ -22,6 +22,7 @@ type TokensQ interface {
 
 	FilterByAccount(account ...string) TokensQ
 	FilterByStatus(status ...resources.TokenStatus) TokensQ
+	FilterByChainId(chainId ...int64) TokensQ
 	FilterById(id ...int64) TokensQ
 	FilterByTokenId(tokenId ...int64) TokensQ
 	FilterByBookId(bookId ...int64) TokensQ

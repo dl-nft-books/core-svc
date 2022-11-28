@@ -45,6 +45,14 @@ get:
         type: array
         items:
           type: string
+    - name: 'filter[chain_id]'
+      in: query
+      description: Array of chain_ids to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: integer
+        example: 5
     - name: 'filter[id]'
       in: query
       description: Array of task IDs to be filtered with
