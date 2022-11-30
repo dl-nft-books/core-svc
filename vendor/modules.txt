@@ -28,7 +28,7 @@ github.com/davecgh/go-spew/spew
 ## explicit; go 1.16
 github.com/decred/dcrd/dcrec/secp256k1/v4
 github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa
-# github.com/ethereum/go-ethereum v1.10.25
+# github.com/ethereum/go-ethereum v1.10.26
 ## explicit; go 1.17
 github.com/ethereum/go-ethereum
 github.com/ethereum/go-ethereum/accounts
@@ -467,7 +467,13 @@ gitlab.com/tokend/nft-books/blob-svc/connector/api
 gitlab.com/tokend/nft-books/blob-svc/connector/config
 gitlab.com/tokend/nft-books/blob-svc/connector/models
 gitlab.com/tokend/nft-books/blob-svc/resources
-# gitlab.com/tokend/nft-books/network-svc v0.0.0-20221118195643-00800f3cf84b
+# gitlab.com/tokend/nft-books/book-svc v0.0.0-20221130223519-5d229580ae9d
+## explicit; go 1.18
+gitlab.com/tokend/nft-books/book-svc/connector/api
+gitlab.com/tokend/nft-books/book-svc/connector/config
+gitlab.com/tokend/nft-books/book-svc/internal/service/api/requests
+gitlab.com/tokend/nft-books/book-svc/resources
+# gitlab.com/tokend/nft-books/network-svc v0.0.0-20221128140430-36aff79cbc1f
 ## explicit; go 1.18
 gitlab.com/tokend/nft-books/network-svc/connector/api
 gitlab.com/tokend/nft-books/network-svc/connector/config

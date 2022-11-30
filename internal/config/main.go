@@ -7,6 +7,7 @@ import (
 	"gitlab.com/distributed_lab/kit/kv"
 	s3connector "gitlab.com/tokend/nft-books/blob-svc/connector/api"
 	s3config "gitlab.com/tokend/nft-books/blob-svc/connector/config"
+	booksConnector "gitlab.com/tokend/nft-books/book-svc/connector/config"
 	networkerCfg "gitlab.com/tokend/nft-books/network-svc/connector/config"
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 )
@@ -20,6 +21,8 @@ type Config interface {
 	TaskProcessor
 
 	networkerCfg.NetworkConfigurator
+
+	booksConnector.BooksConnectorConfigurator
 	DocumenterConnector() *s3connector.Connector
 	PdfSignatureParams() *SignatureParams
 	ApiRestrictions() ApiRestrictions
@@ -36,6 +39,7 @@ type config struct {
 	pdfSignatureParams comfig.Once
 	pricer.Pricer
 	networkerCfg.NetworkConfigurator
+	booksConnector.BooksConnectorConfigurator
 
 	getter  kv.Getter
 	apiOnce comfig.Once
@@ -43,15 +47,16 @@ type config struct {
 
 func New(getter kv.Getter) Config {
 	return &config{
-		getter:                getter,
-		Copuser:               copus.NewCopuser(getter),
-		Listenerer:            comfig.NewListenerer(getter),
-		Logger:                comfig.NewLogger(getter, comfig.LoggerOpts{}),
-		EthMinterConfigurator: NewEthMinterConfigurator(getter),
-		Databaser:             NewDatabaser(getter),
-		TaskProcessor:         NewTaskProcessor(getter),
-		Documenter:            s3config.NewDocumenter(getter),
-		Pricer:                pricer.NewPricer(getter),
-		NetworkConfigurator:   networkerCfg.NewNetworkConfigurator(getter),
+		getter:                     getter,
+		Copuser:                    copus.NewCopuser(getter),
+		Listenerer:                 comfig.NewListenerer(getter),
+		Logger:                     comfig.NewLogger(getter, comfig.LoggerOpts{}),
+		EthMinterConfigurator:      NewEthMinterConfigurator(getter),
+		Databaser:                  NewDatabaser(getter),
+		TaskProcessor:              NewTaskProcessor(getter),
+		Documenter:                 s3config.NewDocumenter(getter),
+		Pricer:                     pricer.NewPricer(getter),
+		NetworkConfigurator:        networkerCfg.NewNetworkConfigurator(getter),
+		BooksConnectorConfigurator: booksConnector.NewBooksConfigurator(getter),
 	}
 }

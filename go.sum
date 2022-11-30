@@ -200,8 +200,8 @@ github.com/envoyproxy/go-control-plane v0.9.9-0.20201210154907-fd9021fe5dad/go.m
 github.com/envoyproxy/go-control-plane v0.9.9-0.20210217033140-668b12f5399d/go.mod h1:cXg6YxExXjJnVBQHBLXeUAgxn2UodCpnH306RInaBQk=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
 github.com/etcd-io/bbolt v1.3.3/go.mod h1:ZF2nL25h33cCyBtcyWeZ2/I3HQOfTP+0PIEvHjkjCrw=
-github.com/ethereum/go-ethereum v1.10.25 h1:5dFrKJDnYf8L6/5o42abCE6a9yJm9cs4EJVRyYMr55s=
-github.com/ethereum/go-ethereum v1.10.25/go.mod h1:EYFyF19u3ezGLD4RqOkLq+ZCXzYbLoNDdZlMt7kyKFg=
+github.com/ethereum/go-ethereum v1.10.26 h1:i/7d9RBBwiXCEuyduBQzJw/mKmnvzsN14jqBmytw72s=
+github.com/ethereum/go-ethereum v1.10.26/go.mod h1:EYFyF19u3ezGLD4RqOkLq+ZCXzYbLoNDdZlMt7kyKFg=
 github.com/ethersphere/bee v1.9.0 h1:z2udbWoUB250sjy9NZus5WNgKx1YYZ6jS+APqjiH0og=
 github.com/ethersphere/bee v1.9.0/go.mod h1:exDy53guDqm8onpyPai9BWCMjmOawHVly7pscVRiCmQ=
 github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072/go.mod h1:duJ4Jxv5lDcvg4QuQr0oowTf7dz4/CR8NtyCooz9HL8=
@@ -1225,8 +1225,10 @@ gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312 h1:u8pxrNw8QKIsrmCl
 gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312/go.mod h1:vdlhN5/oQR7uY8EsGSqPf8bwnmQxxpaq7qrQn5Y3U/w=
 gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221104125850-7e8369e2ce8a h1:VlP5DyUnhpYof6TpsMLGlypRraXqfUFj63IrY0iFOAE=
 gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221104125850-7e8369e2ce8a/go.mod h1:qtlYMAD07JwjHZnOuCDcjg3mGusqbToMrUFBo69bkqA=
-gitlab.com/tokend/nft-books/network-svc v0.0.0-20221118195643-00800f3cf84b h1:SvQKfHca3HSx43aC5aRqvIVkDWHVzRJK5yR+2gpJ3UM=
-gitlab.com/tokend/nft-books/network-svc v0.0.0-20221118195643-00800f3cf84b/go.mod h1:bdkmHRcDz78p8T7sZSNy5Pvk8z4MlhoVj9ftShzsswY=
+gitlab.com/tokend/nft-books/book-svc v0.0.0-20221130223519-5d229580ae9d h1:KZik2JFFmLVi2xfprFQQwUQ5BpOj4tmdkpObvrcQT00=
+gitlab.com/tokend/nft-books/book-svc v0.0.0-20221130223519-5d229580ae9d/go.mod h1:+VQxTWCqXBh0yMa7N7PJMhvTgP3h6K1IV0WqXW2iG14=
+gitlab.com/tokend/nft-books/network-svc v0.0.0-20221128140430-36aff79cbc1f h1:JO+4xON0bCck6F2hb0sK5BYZoyGs1zEazFHdl3qE0t0=
+gitlab.com/tokend/nft-books/network-svc v0.0.0-20221128140430-36aff79cbc1f/go.mod h1:bdkmHRcDz78p8T7sZSNy5Pvk8z4MlhoVj9ftShzsswY=
 gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022125247-81cac705a28c h1:csZbaYFrTNVQDcg1VB+cNMOnT9jeS4eKIFodYGCgONY=
 gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022125247-81cac705a28c/go.mod h1:SMym7B40PLAweAAUAr1/pF88s5YxpwwSCf2OowPpwmY=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=

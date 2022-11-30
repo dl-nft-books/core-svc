@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/Masterminds/squirrel v1.4.0
 	github.com/alecthomas/kingpin v2.2.6+incompatible
-	github.com/ethereum/go-ethereum v1.10.25
+	github.com/ethereum/go-ethereum v1.10.26
 	github.com/ethersphere/bee v1.9.0
 	github.com/fatih/structs v1.1.0
 	github.com/go-chi/chi v4.1.2+incompatible
@@ -16,7 +16,7 @@ require (
 	github.com/lib/pq v1.10.0
 	github.com/pkg/errors v0.9.1
 	github.com/rubenv/sql-migrate v1.2.0
-	github.com/spf13/cast v1.4.1 // indirect
+	github.com/spf13/cast v1.4.1
 	github.com/unidoc/unipdf/v3 v3.39.0
 	gitlab.com/distributed_lab/ape v1.7.1
 	gitlab.com/distributed_lab/figure v2.1.0+incompatible
@@ -32,7 +32,8 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/miguelmota/go-solidity-sha3 v0.1.1
 	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221104125850-7e8369e2ce8a
-	gitlab.com/tokend/nft-books/network-svc v0.0.0-20221118195643-00800f3cf84b
+	gitlab.com/tokend/nft-books/book-svc v0.0.0-20221130223519-5d229580ae9d
+	gitlab.com/tokend/nft-books/network-svc v0.0.0-20221128140430-36aff79cbc1f
 )
 
 require (

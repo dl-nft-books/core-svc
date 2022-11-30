@@ -1,14 +1,15 @@
 package handlers
 
 import (
+	"net/http"
+	"time"
+
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
-	"net/http"
-	"time"
 
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"

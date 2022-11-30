@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	booksConnector "gitlab.com/tokend/nft-books/book-svc/connector/api"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
@@ -26,6 +27,7 @@ const (
 	pricerCtxKey
 	networkerConnectorCtxKey
 	apiRestrictionsCtxKey
+	bookerConnectorCtxKey
 )
 
 func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
@@ -106,4 +108,14 @@ func CtxNetworkerConnector(entry networkerConnector.Connector) func(context.Cont
 
 func NetworkerConnector(r *http.Request) networkerConnector.Connector {
 	return r.Context().Value(networkerConnectorCtxKey).(networkerConnector.Connector)
+}
+
+func CtxBooksConnector(entry booksConnector.Connector) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, bookerConnectorCtxKey, entry)
+	}
+}
+
+func BooksConnector(r *http.Request) booksConnector.Connector {
+	return r.Context().Value(bookerConnectorCtxKey).(booksConnector.Connector)
 }
