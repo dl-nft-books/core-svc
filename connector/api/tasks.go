@@ -6,6 +6,8 @@ import (
 	"github.com/spf13/cast"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
+	"gitlab.com/distributed_lab/urlval"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
@@ -38,12 +40,11 @@ func (c *Connector) UpdateTask(request resources.UpdateTask) error {
 	return c.update(endpoint, requestAsBytes, nil)
 }
 
-// TODO: add support for filter parameters
-func (c *Connector) ListTasks() (*resources.TaskListResponse, error) {
+func (c *Connector) ListTasks(request requests.ListTasksRequest) (*resources.TaskListResponse, error) {
 	var result resources.TaskListResponse
 
 	// setting full endpoint
-	fullEndpoint := fmt.Sprintf("%s/%s", c.baseUrl, tasksEndpoint)
+	fullEndpoint := fmt.Sprintf("%s/%s?%s", c.baseUrl, tasksEndpoint, urlval.MustEncode(request))
 
 	// getting response
 	if err := c.get(fullEndpoint, &result); err != nil {

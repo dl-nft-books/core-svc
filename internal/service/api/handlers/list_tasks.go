@@ -25,6 +25,7 @@ func ListTasks(w http.ResponseWriter, r *http.Request) {
 		Account:      request.Account,
 		Status:       request.Status,
 		OffsetParams: &request.OffsetPageParams,
+		IpfsHash:     request.IpfsHash,
 	})
 	if err != nil {
 		logger.WithError(err).Error("unable to select tasks from database")

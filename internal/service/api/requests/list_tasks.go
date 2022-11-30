@@ -11,8 +11,9 @@ type ListTasksRequest struct {
 	pgdb.OffsetPageParams
 	Sorts pgdb.Sorts `url:"sort" default:"id"`
 
-	Account *string               `filter:"account"`
-	Status  *resources.TaskStatus `filter:"status"`
+	Account  *string               `filter:"account"`
+	Status   *resources.TaskStatus `filter:"status"`
+	IpfsHash *string               `filter:"ipfs_hash"`
 }
 
 func NewListTasksRequest(r *http.Request) (*ListTasksRequest, error) {

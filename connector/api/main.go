@@ -31,7 +31,7 @@ func (c *Connector) get(endpoint string, dst interface{}) (err error) {
 		return errors.Wrap(err, "failed to create connector request")
 	}
 
-	//  setting headers
+	// setting headers
 	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
 
 	// sending request
@@ -66,6 +66,7 @@ func (c *Connector) post(endpoint string, data []byte, dst interface{}) error {
 	return c.upsert(http.MethodPost, endpoint, data, dst)
 }
 
+// upsert is a function of POST or PATCH depending on what you choose as a method
 func (c *Connector) upsert(method, endpoint string, data []byte, dst interface{}) error {
 	// creating request
 	bodyReader := bytes.NewReader(data)
