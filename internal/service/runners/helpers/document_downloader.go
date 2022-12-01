@@ -1,24 +1,29 @@
 package helpers
 
 import (
+	"github.com/pkg/errors"
+	"io"
 	"io/ioutil"
 	"net/http"
 )
 
-func DownloadDocument(link string) ([]byte, error) {
-	req, err := http.NewRequest(http.MethodGet, link, nil)
+func DownloadDocument(link string) (document []byte, err error) {
+	request, err := http.NewRequest(http.MethodGet, link, nil)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to form a download document request")
 	}
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	client := http.DefaultClient
+	response, err := client.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to perform get operation")
 	}
 
-	defer resp.Body.Close()
-	bytes, err := ioutil.ReadAll(resp.Body)
+	defer func(Body io.ReadCloser) {
+		if tempErr := Body.Close(); tempErr != nil {
+			err = tempErr
+		}
+	}(response.Body)
 
-	return bytes, err
+	return ioutil.ReadAll(response.Body)
 }

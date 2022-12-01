@@ -20,7 +20,7 @@ func UpdateToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokensQ := helpers.GeneratorDB(r).Tokens()
+	tokensQ := helpers.DB(r).Tokens()
 
 	// Validating whether specified task exists
 	tokenId := cast.ToInt64(request.Data.ID)

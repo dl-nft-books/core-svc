@@ -23,7 +23,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Getting task's mintInfo
-	task, err := helpers.GeneratorDB(r).Tasks().GetById(request.TaskID)
+	task, err := helpers.DB(r).Tasks().GetById(request.TaskID)
 	if err != nil {
 		logger.WithError(err).Error("failed to get task")
 		ape.RenderErr(w, problems.InternalError())
@@ -35,13 +35,13 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Getting book's mintInfo
-	book, err := helpers.BooksQ(r).FilterActual().FilterByID(task.BookId).Get()
+	getBookResponse, err := helpers.Booker(r).GetBookById(task.BookId)
 	if err != nil {
 		logger.WithError(err).Error("failed to get a book")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	if book == nil {
+	if getBookResponse == nil {
 		logger.Warnf("Book with specified id %d was not found", task.BookId)
 		ape.RenderErr(w, problems.NotFound())
 		return
@@ -59,10 +59,10 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	mintConfig := helpers.Minter(r)
 
 	domainData := signature.EIP712DomainData{
-		VerifyingAddress: book.ContractAddress,
-		ContractName:     book.ContractName,
-		ContractVersion:  book.ContractVersion,
-		ChainID:          book.ChainID,
+		VerifyingAddress: getBookResponse.Data.Attributes.ContractAddress,
+		ContractName:     getBookResponse.Data.Attributes.ContractName,
+		ContractVersion:  getBookResponse.Data.Attributes.ContractVersion,
+		ChainID:          int64(getBookResponse.Data.Attributes.ChainId),
 	}
 
 	mintInfo := signature.MintInfo{

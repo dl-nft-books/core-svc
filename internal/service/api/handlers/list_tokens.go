@@ -21,14 +21,14 @@ func ListTokens(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokens, err := applyTokensQFilters(helpers.GeneratorDB(r).Tokens(), request).Select()
+	tokens, err := applyTokensQFilters(helpers.DB(r).Tokens(), request).Select()
 	if err != nil {
 		logger.WithError(err).Error("unable to select tokens from database")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	tokensListResponse, err := responses.NewTokenListResponse(r, request, tokens, helpers.PaymentsQ(r), helpers.GeneratorDB(r).Tasks())
+	tokensListResponse, err := responses.NewTokenListResponse(r, request, tokens, helpers.PaymentsQ(r), helpers.DB(r).Tasks())
 	if err != nil {
 		logger.WithError(err).Error("unable to form task list response")
 		ape.RenderErr(w, problems.InternalError())

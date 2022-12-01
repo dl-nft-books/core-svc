@@ -20,7 +20,7 @@ func GetTaskByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	task, err := helpers.GeneratorDB(r).Tasks().GetById(request.Id)
+	task, err := helpers.DB(r).Tasks().GetById(request.Id)
 	if err != nil {
 		logger.WithError(err).Error("failed to get task")
 		ape.RenderErr(w, problems.InternalError())

@@ -1,7 +1,7 @@
 package data
 
-type GeneratorDB interface {
-	New() GeneratorDB
+type DB interface {
+	New() DB
 
 	Tasks() TasksQ
 	KeyValue() KeyValueQ

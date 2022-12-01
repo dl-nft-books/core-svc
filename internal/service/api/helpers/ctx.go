@@ -2,10 +2,8 @@ package helpers
 
 import (
 	"context"
+	booker "gitlab.com/tokend/nft-books/book-svc/connector"
 	"net/http"
-
-	booksConnector "gitlab.com/tokend/nft-books/book-svc/connector/api"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 
@@ -20,14 +18,12 @@ type ctxKey int
 
 const (
 	logCtxKey ctxKey = iota
-	booksQCtxKey
-	paymentsQCtxKey
-	generatorDBCtxKey
+	dbCtxKey
 	minterCtxKey
 	pricerCtxKey
+	bookerCtxKey
 	networkerConnectorCtxKey
 	apiRestrictionsCtxKey
-	bookerConnectorCtxKey
 )
 
 func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
@@ -36,22 +32,14 @@ func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
 	}
 }
 
-func CtxBooksQ(q external.BookQ) func(context.Context) context.Context {
+func CtxDB(db data.DB) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
-		return context.WithValue(ctx, booksQCtxKey, q)
+		return context.WithValue(ctx, dbCtxKey, db)
 	}
 }
 
-func CtxPaymentsQ(q external.PaymentsQ) func(context.Context) context.Context {
-	return func(ctx context.Context) context.Context {
-		return context.WithValue(ctx, paymentsQCtxKey, q)
-	}
-}
-
-func CtxGeneratorDB(db data.GeneratorDB) func(context.Context) context.Context {
-	return func(ctx context.Context) context.Context {
-		return context.WithValue(ctx, generatorDBCtxKey, db)
-	}
+func DB(r *http.Request) data.DB {
+	return r.Context().Value(dbCtxKey).(data.DB).New()
 }
 
 func CtxMinter(entry config.EthMinterConfig) func(context.Context) context.Context {
@@ -80,18 +68,6 @@ func Minter(r *http.Request) config.EthMinterConfig {
 	return r.Context().Value(minterCtxKey).(config.EthMinterConfig)
 }
 
-func BooksQ(r *http.Request) external.BookQ {
-	return r.Context().Value(booksQCtxKey).(external.BookQ).New()
-}
-
-func PaymentsQ(r *http.Request) external.PaymentsQ {
-	return r.Context().Value(paymentsQCtxKey).(external.PaymentsQ).New()
-}
-
-func GeneratorDB(r *http.Request) data.GeneratorDB {
-	return r.Context().Value(generatorDBCtxKey).(data.GeneratorDB).New()
-}
-
 func Log(r *http.Request) *logan.Entry {
 	return r.Context().Value(logCtxKey).(*logan.Entry)
 }
@@ -110,12 +86,12 @@ func NetworkerConnector(r *http.Request) networkerConnector.Connector {
 	return r.Context().Value(networkerConnectorCtxKey).(networkerConnector.Connector)
 }
 
-func CtxBooksConnector(entry booksConnector.Connector) func(context.Context) context.Context {
+func CtxBooker(entry *booker.Connector) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
-		return context.WithValue(ctx, bookerConnectorCtxKey, entry)
+		return context.WithValue(ctx, bookerCtxKey, entry)
 	}
 }
 
-func BooksConnector(r *http.Request) booksConnector.Connector {
-	return r.Context().Value(bookerConnectorCtxKey).(booksConnector.Connector)
+func Booker(r *http.Request) *booker.Connector {
+	return r.Context().Value(bookerCtxKey).(*booker.Connector)
 }

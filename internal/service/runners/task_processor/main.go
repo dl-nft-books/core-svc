@@ -2,7 +2,8 @@ package task_processor
 
 import (
 	"context"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
+	booker "gitlab.com/tokend/nft-books/book-svc/connector"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
 	"strconv"
 
 	"gitlab.com/distributed_lab/kit/pgdb"
@@ -12,17 +13,17 @@ import (
 	s3connector "gitlab.com/tokend/nft-books/blob-svc/connector/api"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
 const cursorKey = "task_processor_cursor"
 
 type TaskProcessor struct {
-	name                string
-	logger              *logan.Entry
-	booksDB             external.BookQ
-	generatorDB         data.GeneratorDB
+	name     string
+	logger   *logan.Entry
+	db       data.DB
+	booksApi *booker.Connector
+
 	selector            data.TaskSelector
 	runnerCfg           config.RunnerData
 	signatureParams     *config.SignatureParams
@@ -33,7 +34,11 @@ func New(cfg config.Config) *TaskProcessor {
 	status := resources.TaskPending
 
 	return &TaskProcessor{
-		name: cfg.TaskProcessorCfg().Name,
+		name:     cfg.TaskProcessorCfg().Name,
+		db:       postgres.NewDB(cfg.DB()),
+		logger:   cfg.Log(),
+		booksApi: cfg.BookerConnector(),
+
 		selector: data.TaskSelector{
 			PageParams: &pgdb.CursorPageParams{
 				Cursor: cfg.TaskProcessorCfg().Cursor,
@@ -42,9 +47,6 @@ func New(cfg config.Config) *TaskProcessor {
 			},
 			Status: &status,
 		},
-		logger:              cfg.Log(),
-		booksDB:             postgres.NewBooksQ(cfg.BookDB().DB),
-		generatorDB:         postgres.NewGeneratorDB(cfg.GeneratorDB().DB),
 		runnerCfg:           cfg.TaskProcessorCfg().Runner,
 		signatureParams:     cfg.PdfSignatureParams(),
 		documenterConnector: cfg.DocumenterConnector(),
@@ -62,8 +64,8 @@ func (p *TaskProcessor) Run(ctx context.Context) {
 }
 
 func (p *TaskProcessor) run(ctx context.Context) error {
-	return p.generatorDB.Transaction(func() error {
-		tasks, err := p.getTasks(p.generatorDB)
+	return p.db.Transaction(func() error {
+		tasks, err := p.getTasks(p.db)
 		if err != nil {
 			return errors.Wrap(err, "failed to get tasks from the database")
 		}
@@ -80,7 +82,7 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 				"task_status":    task.Status,
 			}
 
-			if err = p.generatorDB.Tasks().UpdateStatus(resources.TaskGenerating).Update(task.Id); err != nil {
+			if err = p.db.Tasks().UpdateStatus(resources.TaskGenerating).Update(task.Id); err != nil {
 				return errors.Wrap(err, "failed to update task status", errFields)
 			}
 
@@ -88,7 +90,7 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 				return errors.Wrap(err, "failed to handle task", errFields)
 			}
 
-			if err = p.generatorDB.Tasks().UpdateStatus(resources.TaskFinishedGeneration).Update(task.Id); err != nil {
+			if err = p.db.Tasks().UpdateStatus(resources.TaskFinishedGeneration).Update(task.Id); err != nil {
 				return errors.Wrap(err, "failed to update task status", errFields)
 			}
 		}
@@ -98,7 +100,7 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 	})
 }
 
-func (p *TaskProcessor) getTasks(db data.GeneratorDB) ([]data.Task, error) {
+func (p *TaskProcessor) getTasks(db data.DB) ([]data.Task, error) {
 	cursorKV, err := db.KeyValue().LockingGet(cursorKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get current cursor value")

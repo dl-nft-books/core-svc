@@ -20,7 +20,7 @@ func GetTokenById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := helpers.GeneratorDB(r).Tokens().FilterById(request.Id).Get()
+	token, err := helpers.DB(r).Tokens().FilterById(request.Id).Get()
 	if err != nil {
 		logger.WithError(err).Error("failed to get token")
 		ape.RenderErr(w, problems.InternalError())
@@ -31,7 +31,7 @@ func GetTokenById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenResponse, err := responses.NewGetTokenResponse(*token, helpers.PaymentsQ(r), helpers.GeneratorDB(r).Tasks())
+	tokenResponse, err := responses.NewGetTokenResponse(*token, helpers.PaymentsQ(r), helpers.DB(r).Tasks())
 	if err != nil {
 		logger.WithError(err).Error("failed to get token response")
 		ape.RenderErr(w, problems.InternalError())

@@ -20,7 +20,7 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tasksQ := helpers.GeneratorDB(r).Tasks()
+	tasksQ := helpers.DB(r).Tasks()
 
 	// Validating whether specified task exists
 	taskId := cast.ToInt64(request.Data.ID)

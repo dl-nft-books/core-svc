@@ -25,7 +25,7 @@ func CreateToken(w http.ResponseWriter, r *http.Request) {
 		paymentId = cast.ToInt64(request.Data.Relationships.Payment.Data.ID)
 	)
 
-	createdTokenId, err := helpers.GeneratorDB(r).Tokens().Insert(data.Token{
+	createdTokenId, err := helpers.DB(r).Tokens().Insert(data.Token{
 		Account:      request.Data.Attributes.Account,
 		TokenId:      int64(request.Data.Attributes.TokenId),
 		BookId:       bookId,

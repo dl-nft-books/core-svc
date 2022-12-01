@@ -9,14 +9,14 @@ type db struct {
 	raw *pgdb.DB
 }
 
-func NewGeneratorDB(rawDB *pgdb.DB) data.GeneratorDB {
+func NewDB(rawDB *pgdb.DB) data.DB {
 	return &db{
 		raw: rawDB,
 	}
 }
 
-func (db *db) New() data.GeneratorDB {
-	return NewGeneratorDB(db.raw.Clone())
+func (db *db) New() data.DB {
+	return NewDB(db.raw.Clone())
 }
 
 func (db *db) Tasks() data.TasksQ {

@@ -21,7 +21,7 @@ func ListTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tasks, err := helpers.GeneratorDB(r).Tasks().Select(data.TaskSelector{
+	tasks, err := helpers.DB(r).Tasks().Select(data.TaskSelector{
 		Account:      request.Account,
 		Status:       request.Status,
 		OffsetParams: &request.OffsetPageParams,

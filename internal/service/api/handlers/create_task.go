@@ -30,19 +30,19 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	bookId := int64(request.Data.Attributes.BookId)
 
 	// Check if book exists
-	book, err := helpers.BooksQ(r).FilterActual().FilterByID(bookId).Get()
+	getBookResponse, err := helpers.Booker(r).GetBookById(bookId)
 	if err != nil {
 		helpers.Log(r).WithError(err).Errorf("failed to get book with id #%v", bookId)
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	if book == nil {
+	if getBookResponse == nil {
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
 
 	// Then creating task
-	createdTaskId, err := helpers.GeneratorDB(r).Tasks().Insert(data.Task{
+	createdTaskId, err := helpers.DB(r).Tasks().Insert(data.Task{
 		BookId:    bookId,
 		Signature: request.Data.Attributes.Signature,
 		Account:   request.Data.Attributes.Account,
@@ -61,7 +61,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 
 func validateCreateTaskRequest(request *requests.CreateTaskRequest, w http.ResponseWriter, r *http.Request) (ok bool) {
 	var (
-		database     = helpers.GeneratorDB(r)
+		database     = helpers.DB(r)
 		restrictions = helpers.ApiRestrictions(r)
 		statusFilter = resources.TaskFinishedGeneration
 	)
