@@ -3,6 +3,7 @@ package helpers
 import (
 	"context"
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
+	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
 	"net/http"
 
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
@@ -20,10 +21,12 @@ const (
 	logCtxKey ctxKey = iota
 	dbCtxKey
 	minterCtxKey
+	apiRestrictionsCtxKey
+
 	pricerCtxKey
 	bookerCtxKey
-	networkerConnectorCtxKey
-	apiRestrictionsCtxKey
+	networkerCtxKey
+	trackerCtxKey
 )
 
 func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
@@ -76,14 +79,14 @@ func ApiRestrictions(r *http.Request) config.ApiRestrictions {
 	return r.Context().Value(apiRestrictionsCtxKey).(config.ApiRestrictions)
 }
 
-func CtxNetworkerConnector(entry networkerConnector.Connector) func(context.Context) context.Context {
+func CtxNetworker(entry networkerConnector.Connector) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
-		return context.WithValue(ctx, networkerConnectorCtxKey, entry)
+		return context.WithValue(ctx, networkerCtxKey, entry)
 	}
 }
 
-func NetworkerConnector(r *http.Request) networkerConnector.Connector {
-	return r.Context().Value(networkerConnectorCtxKey).(networkerConnector.Connector)
+func Networker(r *http.Request) networkerConnector.Connector {
+	return r.Context().Value(networkerCtxKey).(networkerConnector.Connector)
 }
 
 func CtxBooker(entry *booker.Connector) func(context.Context) context.Context {
@@ -94,4 +97,14 @@ func CtxBooker(entry *booker.Connector) func(context.Context) context.Context {
 
 func Booker(r *http.Request) *booker.Connector {
 	return r.Context().Value(bookerCtxKey).(*booker.Connector)
+}
+
+func CtxTracker(entry *tracker.Connector) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, trackerCtxKey, entry)
+	}
+}
+
+func Tracker(r *http.Request) *tracker.Connector {
+	return r.Context().Value(trackerCtxKey).(*tracker.Connector)
 }

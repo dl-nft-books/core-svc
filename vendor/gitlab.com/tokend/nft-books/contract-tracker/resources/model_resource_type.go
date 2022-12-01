@@ -2,13 +2,12 @@
  * GENERATED. Do not modify. Your changes might be overwritten!
  */
 
-package book_resources
+package resources
 
 type ResourceType string
 
 // List of ResourceType
 const (
-	BANNERS ResourceType = "banners"
-	BOOKS   ResourceType = "books"
-	FILES   ResourceType = "files"
+	BOOK    ResourceType = "book"
+	PAYMENT ResourceType = "payment"
 )

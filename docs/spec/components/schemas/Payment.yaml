@@ -21,23 +21,25 @@ allOf:
             description: Address of a user who bought a book
           amount:
             type: string
-            example: "100500"
+            example: '100500'
             description: Amount of tokens paid
           minted_token_price:
             type: string
-            example: "103"
+            example: '103'
             description: Price of a minted token in $
           payment_token_price:
             type: string
-            example: "1"
-            description: Price of a payment token (which the minted token was bought by) in $
+            example: '1'
+            description: >-
+              Price of a payment token (which the minted token was bought by) in
+              $
           purchase_timestamp:
             type: string
-            example: "2006-01-02"
+            example: '2006-01-02'
             description: Timestamp when the user have purchased a book
           book_url:
             type: string
-            example: "ipfs.io/ipfs/url goes brrrrrrr"
+            example: ipfs.io/ipfs/url goes brrrrrrr
           erc20_data:
             allOf:
               - $ref: '#/components/schemas/Erc20Data'
@@ -53,4 +55,3 @@ allOf:
               data:
                 type: object
                 $ref: '#/components/schemas/BookKey'
-

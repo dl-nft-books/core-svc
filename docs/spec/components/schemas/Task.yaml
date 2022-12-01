@@ -60,3 +60,4 @@ allOf:
               data:
                 type: object
                 $ref: '#/components/schemas/BookKey'
+

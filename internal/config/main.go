@@ -6,8 +6,10 @@ import (
 	"gitlab.com/distributed_lab/kit/copus/types"
 	"gitlab.com/distributed_lab/kit/kv"
 	"gitlab.com/distributed_lab/kit/pgdb"
+
 	s3config "gitlab.com/tokend/nft-books/blob-svc/connector/config"
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
+	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
 	networkerCfg "gitlab.com/tokend/nft-books/network-svc/connector/config"
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 )
@@ -24,6 +26,7 @@ type Config interface {
 	networkerCfg.NetworkConfigurator
 	pricer.Pricer
 	s3config.Documenter
+	tracker.Tracker
 
 	// Internal service configuration
 	EthMinterConfigurator
@@ -43,6 +46,7 @@ type config struct {
 	booker.Booker
 	pricer.Pricer
 	s3config.Documenter
+	tracker.Tracker
 
 	// Internal service configuration
 	EthMinterConfigurator
@@ -68,6 +72,7 @@ func New(getter kv.Getter) Config {
 		Pricer:              pricer.NewPricer(getter),
 		NetworkConfigurator: networkerCfg.NewNetworkConfigurator(getter),
 		Booker:              booker.NewBooker(getter),
+		Tracker:             tracker.NewTracker(getter),
 
 		// Internal service configuration
 		EthMinterConfigurator: NewEthMinterConfigurator(getter),

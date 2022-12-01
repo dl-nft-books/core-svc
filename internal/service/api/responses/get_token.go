@@ -3,8 +3,8 @@ package responses
 import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
+	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
@@ -14,21 +14,20 @@ var (
 	PaymentNotFoundErr = errors.New("payment with specified id was not found")
 )
 
-func NewGetTokenResponse(token data.Token, paymentsQ external.PaymentsQ, tasksQ data.TasksQ) (*resources.TokenResponse, error) {
+func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, tasksQ data.TasksQ) (*resources.TokenResponse, error) {
 	var response resources.TokenResponse
 
-	payment, err := paymentsQ.New().FilterById(token.PaymentId).Get()
+	paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
 			"payment_id": token.PaymentId,
 		})
 	}
-	if payment == nil {
+	if paymentResponse == nil {
 		return nil, errors.From(PaymentNotFoundErr, logan.F{
 			"payment_id": PaymentNotFoundErr,
 		})
 	}
-	paymentAsResource := payment.Resource()
 
 	tasks, err := tasksQ.New().Select(data.TaskSelector{
 		IpfsHash: &token.MetadataHash,
@@ -64,7 +63,7 @@ func NewGetTokenResponse(token data.Token, paymentsQ external.PaymentsQ, tasksQ 
 		Relationships: getTokenRelationships(token),
 	}
 
-	response.Included.Add(&paymentAsResource)
+	response.Included.Add(convertPaymentToResource(*paymentResponse))
 
 	return &response, nil
 }

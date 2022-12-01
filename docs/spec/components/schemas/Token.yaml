@@ -19,7 +19,8 @@ allOf:
           - owner
         properties:
           chain_id:
-            type: int64
+            type: integer
+            format: int64
             example: 13
           token_id:
             type: integer
@@ -54,7 +55,7 @@ allOf:
             description: Address of a user who purchased this token
           metadata_hash:
             type: string
-            example: 'QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB'
+            example: QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB
             description: Hash of a metadata file
       relationships:
         type: object

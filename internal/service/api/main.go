@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
 	"net"
 	"net/http"
 
@@ -29,6 +30,7 @@ type service struct {
 	pricer    *pricer.Connector
 	networker *networker.Connector
 	booker    *booker.Connector
+	tracker   *tracker.Connector
 }
 
 func (s *service) run() error {
@@ -55,6 +57,7 @@ func newService(cfg config.Config) *service {
 		pricer:    cfg.PricerConnector(),
 		booker:    cfg.BookerConnector(),
 		networker: cfg.NetworkConnector(),
+		tracker:   cfg.TrackerConnector(),
 	}
 }
 

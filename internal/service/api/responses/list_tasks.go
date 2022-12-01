@@ -1,7 +1,7 @@
 package responses
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
+	booker "gitlab.com/tokend/nft-books/book-svc/connector"
 	"net/http"
 
 	"gitlab.com/distributed_lab/logan/v3"
@@ -11,7 +11,7 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
-func NewTaskListResponse(r *http.Request, request *requests.ListTasksRequest, tasks []data.Task, q external.BookQ) (*resources.TaskListResponse, error) {
+func NewTaskListResponse(r *http.Request, request *requests.ListTasksRequest, tasks []data.Task, booksApi booker.Connector) (*resources.TaskListResponse, error) {
 	response := resources.TaskListResponse{}
 
 	if len(tasks) == 0 {
@@ -26,23 +26,17 @@ func NewTaskListResponse(r *http.Request, request *requests.ListTasksRequest, ta
 
 		response.Data = append(response.Data, taskResource)
 
-		book, err := q.New().FilterByID(task.BookId).Get()
+		bookResponse, err := booksApi.GetBookById(task.BookId)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to get book by its id", logan.F{
-				"book_id": book.ID,
+				"book_id": task.BookId,
 			})
 		}
 
-		bookResource, err := book.Resource()
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to convert book to the resource format")
-		}
-
-		response.Included.Add(bookResource)
+		response.Included.Add(convertBookToResource(*bookResponse))
 	}
 
 	response.Links = requests.GetOffsetLinksWithSort(r, request.OffsetPageParams, request.Sorts)
-
 	return &response, nil
 }
 

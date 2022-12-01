@@ -84,6 +84,10 @@ get:
               data:
                 type: object
                 $ref: '#/components/schemas/TasksArray'
+              included:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
     '400':
       $ref: '#/components/responses/BadRequestError'
     '404':

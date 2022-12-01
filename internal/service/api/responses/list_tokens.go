@@ -1,9 +1,9 @@
 package responses
 
 import (
+	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
 	"net/http"
 
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/external"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 
 	"gitlab.com/distributed_lab/logan/v3"
@@ -13,7 +13,7 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
-func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, tokens []data.Token, paymentsQ external.PaymentsQ, tasksQ data.TasksQ) (*resources.TokenListResponse, error) {
+func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, tokens []data.Token, trackerApi *tracker.Connector, tasksQ data.TasksQ) (*resources.TokenListResponse, error) {
 	response := resources.TokenListResponse{}
 
 	if len(tokens) == 0 {
@@ -23,18 +23,18 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 	}
 
 	for _, token := range tokens {
-		payment, err := paymentsQ.New().FilterById(token.PaymentId).Get()
+		paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
+
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
 				"payment_id": token.PaymentId,
 			})
 		}
-		if payment == nil {
+		if paymentResponse == nil {
 			return nil, errors.From(PaymentNotFoundErr, logan.F{
 				"payment_id": PaymentNotFoundErr,
 			})
 		}
-		paymentAsResource := payment.Resource()
 
 		tasks, err := tasksQ.New().Select(data.TaskSelector{
 			IpfsHash: &token.MetadataHash,
@@ -73,7 +73,7 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 		}
 
 		response.Data = append(response.Data, tokenAsResource)
-		response.Included.Add(&paymentAsResource)
+		response.Included.Add(convertPaymentToResource(*paymentResponse))
 	}
 
 	response.Links = requests.GetOffsetLinksWithSort(r, request.OffsetPageParams, request.Sorts)

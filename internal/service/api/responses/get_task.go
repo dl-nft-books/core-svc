@@ -19,8 +19,7 @@ func NewGetTaskResponse(task data.Task, booker *booker.Connector) (*resources.Ta
 	}
 
 	response.Data = taskResource
-	bookResponseData := bookResponse.Data
-	response.Included.Add(&bookResponseData)
+	response.Included.Add(convertBookToResource(*bookResponse))
 
 	return &response, nil
 }

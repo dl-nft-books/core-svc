@@ -1,4 +1,4 @@
-package book_resources
+package resources
 
 type DeployStatus int64
 
