@@ -9,7 +9,7 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/signature"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/signature"
 )
 
 func SignMint(w http.ResponseWriter, r *http.Request) {
@@ -35,19 +35,19 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Getting book's mintInfo
-	getBookResponse, err := helpers.Booker(r).GetBookById(task.BookId)
+	book, err := helpers.Booker(r).GetBookById(task.BookId)
 	if err != nil {
 		logger.WithError(err).Error("failed to get a book")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	if getBookResponse == nil {
+	if book == nil {
 		logger.Warnf("Book with specified id %d was not found", task.BookId)
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
 
-	// Getting price in dollars
+	// Getting price per token in dollars
 	priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress)
 	if err != nil {
 		logger.WithError(err).Error("failed to get price")
@@ -59,10 +59,10 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	mintConfig := helpers.Minter(r)
 
 	domainData := signature.EIP712DomainData{
-		VerifyingAddress: getBookResponse.Data.Attributes.ContractAddress,
-		ContractName:     getBookResponse.Data.Attributes.ContractName,
-		ContractVersion:  getBookResponse.Data.Attributes.ContractVersion,
-		ChainID:          int64(getBookResponse.Data.Attributes.ChainId),
+		VerifyingAddress: book.Data.Attributes.ContractAddress,
+		ContractName:     book.Data.Attributes.ContractName,
+		ContractVersion:  book.Data.Attributes.ContractVersion,
+		ChainID:          mintConfig.ChainID,
 	}
 
 	mintInfo := signature.MintInfo{

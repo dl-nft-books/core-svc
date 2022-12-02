@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/spf13/cast"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
@@ -8,7 +10,6 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
-	"net/http"
 )
 
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
@@ -49,7 +50,7 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 
 func applyTaskUpdateFilters(q data.TasksQ, request resources.UpdateTaskRequest) data.TasksQ {
 	if request.Data.Attributes.TokenId != nil {
-		q = q.UpdateTokenId(int64(*request.Data.Attributes.TokenId))
+		q = q.UpdateTokenId(*request.Data.Attributes.TokenId)
 	}
 	if request.Data.Attributes.Status != nil {
 		q = q.UpdateStatus(*request.Data.Attributes.Status)

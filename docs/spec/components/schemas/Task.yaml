@@ -18,9 +18,11 @@ allOf:
         properties:
           token_id:
             type: integer
+            format: int64
             example: 123
           book_id:
             type: integer
+            format: int64
             example: 2
           signature:
             type: string

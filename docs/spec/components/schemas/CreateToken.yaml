@@ -13,14 +13,10 @@ allOf:
           - token_id
           - metadata_hash
           - status
-          - chain_id
         properties:
-          chain_id:
-            type: integer
-            format: int64
-            example: 13
           token_id:
             type: integer
+            format: int64
             example: 13
           status:
             type: integer

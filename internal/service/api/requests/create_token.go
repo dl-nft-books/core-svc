@@ -22,7 +22,6 @@ func NewCreateTokenRequest(r *http.Request) (*CreateTokenRequest, error) {
 	return &request, request.validate()
 }
 
-// TODO: Check validation more carefully
 func (r CreateTokenRequest) validate() error {
 	return validation.Errors{
 		"data/attributes/token_id": validation.Validate(
@@ -31,6 +30,22 @@ func (r CreateTokenRequest) validate() error {
 		),
 		"data/attributes/status": validation.Validate(
 			&r.Data.Attributes.Status,
+			validation.Required,
+		),
+		"data/attributes/account": validation.Validate(
+			&r.Data.Attributes.Account,
+			validation.Required,
+		),
+		"data/attributes/metadata_hash": validation.Validate(
+			&r.Data.Attributes.MetadataHash,
+			validation.Required,
+		),
+		"data/relationships/book": validation.Validate(
+			&r.Data.Relationships.Book.Data.ID,
+			validation.Required,
+		),
+		"data/relationships/payment": validation.Validate(
+			&r.Data.Relationships.Payment.Data.ID,
 			validation.Required,
 		),
 	}.Filter()

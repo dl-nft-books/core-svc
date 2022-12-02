@@ -6,5 +6,5 @@ package resources
 
 type UpdateTaskAttributes struct {
 	Status  *TaskStatus `json:"status,omitempty"`
-	TokenId *int32      `json:"token_id,omitempty"`
+	TokenId *int64      `json:"token_id,omitempty"`
 }

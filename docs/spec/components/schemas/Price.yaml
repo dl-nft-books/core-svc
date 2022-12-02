@@ -16,6 +16,7 @@ allOf:
             description: price per one token ($)
           end_timestamp:
             type: integer
+            format: int64
             description: Timestamp when signature will expire
       relationships:
         type: object

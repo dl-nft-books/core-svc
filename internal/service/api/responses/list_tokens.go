@@ -1,8 +1,9 @@
 package responses
 
 import (
-	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
 	"net/http"
+
+	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
 
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 
@@ -60,14 +61,13 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 			Key: resources.NewKeyInt64(token.Id, resources.TOKENS),
 			Attributes: resources.TokenAttributes{
 				Owner:        token.Account,
-				TokenId:      int32(token.TokenId),
+				TokenId:      token.TokenId,
 				MetadataHash: token.MetadataHash,
 				Status:       token.Status,
 				Name:         metadata.Name,
 				Description:  metadata.Description,
 				ImageUrl:     metadata.Image,
 				Signature:    task.Signature,
-				ChainId:      token.ChainID,
 			},
 			Relationships: getTokenRelationships(token),
 		}

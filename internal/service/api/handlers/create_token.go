@@ -27,12 +27,11 @@ func CreateToken(w http.ResponseWriter, r *http.Request) {
 
 	createdTokenId, err := helpers.DB(r).Tokens().Insert(data.Token{
 		Account:      request.Data.Attributes.Account,
-		TokenId:      int64(request.Data.Attributes.TokenId),
+		TokenId:      request.Data.Attributes.TokenId,
 		BookId:       bookId,
 		PaymentId:    paymentId,
 		MetadataHash: request.Data.Attributes.MetadataHash,
 		Status:       request.Data.Attributes.Status,
-		ChainID:      request.Data.Attributes.ChainId,
 	})
 	if err != nil {
 		helpers.Log(r).WithError(err).Errorf("failed to create new token with id of #%v", bookId)

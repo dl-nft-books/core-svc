@@ -10,6 +10,7 @@ allOf:
         properties:
           token_id:
             type: integer
+            format: int64
             example: 13
           status:
             type: integer

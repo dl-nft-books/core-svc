@@ -20,7 +20,6 @@ func (s *service) router() chi.Router {
 			helpers.CtxDB(postgres.NewDB(s.db)),
 			helpers.CtxMinter(*s.ethMinterConfig),
 			helpers.CtxPricer(s.pricer),
-			helpers.CtxNetworker(*s.networker),
 			helpers.CtxApiRestrictions(s.apiRestrictions),
 			helpers.CtxBooker(s.booker),
 			helpers.CtxTracker(s.tracker),

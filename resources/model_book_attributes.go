@@ -8,8 +8,6 @@ import "time"
 
 type BookAttributes struct {
 	Banner Media `json:"banner"`
-	// Chain ID
-	ChainId int32 `json:"chain_id"`
 	// Token contract address
 	ContractAddress string `json:"contract_address"`
 	// Token contract name

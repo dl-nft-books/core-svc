@@ -1,9 +1,10 @@
 package data
 
 import (
+	"time"
+
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
-	"time"
 )
 
 type Task struct {
@@ -53,8 +54,8 @@ func (t Task) Resource() resources.Task {
 	return resources.Task{
 		Key: resources.NewKeyInt64(t.Id, resources.TASKS),
 		Attributes: resources.TaskAttributes{
-			TokenId:          int32(t.TokenId),
-			BookId:           int32(t.BookId),
+			TokenId:          t.TokenId,
+			BookId:           t.BookId,
 			FileIpfsHash:     t.FileIpfsHash,
 			MetadataIpfsHash: t.MetadataIpfsHash,
 			Uri:              t.Uri,

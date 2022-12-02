@@ -3,13 +3,14 @@ package task_processor
 import (
 	"bytes"
 	"fmt"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/opensea"
 	"net/http"
+
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/opensea"
 
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/pdf_signature_generator"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/pdf"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/runners/helpers"
 )
 
@@ -39,7 +40,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug("Key retrieved successfully")
 	p.logger.Debug("Retrieving document link from S3...")
 
-	fileLink, err := p.documenterConnector.GetDocumentLink(fileKey)
+	fileLink, err := p.documenter.GetDocumentLink(fileKey)
 	if err != nil {
 		return errors.Wrap(err, "failed to get document link")
 	}
@@ -56,7 +57,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug("Generating signature...")
 
 	reader := bytes.NewReader(rawDocument)
-	pdfSignatureGenerator := pdf_signature_generator.New(p.signatureParams)
+	pdfSignatureGenerator := pdf.New(p.signatureParams)
 	rawDocumentWithSignature, err := pdfSignatureGenerator.GenerateSignature(reader, task.Signature)
 	if err != nil {
 		return errors.Wrap(err, "failed to generate signature")
@@ -79,7 +80,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug("Document IPFS Hash calculated successfully")
 	p.logger.Debug("Uploading document to S3...")
 
-	statusCode, err := p.documenterConnector.UploadDocument(rawDocumentWithSignature, ipfsFileHash)
+	statusCode, err := p.documenter.UploadDocument(rawDocumentWithSignature, ipfsFileHash)
 	if err != nil {
 		return errors.Wrap(err, "failed to upload file")
 	}
@@ -95,7 +96,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug("Key retrieved successfully")
 	p.logger.Debug("Retrieving banner link for metadata...")
 
-	bannerLink, err := p.documenterConnector.GetDocumentLink(bannerKey)
+	bannerLink, err := p.documenter.GetDocumentLink(bannerKey)
 	if err != nil {
 		return errors.Wrap(err, "failed to get document link")
 	}

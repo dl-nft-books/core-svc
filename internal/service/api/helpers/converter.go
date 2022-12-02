@@ -9,6 +9,9 @@ import (
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
+// ConvertPrice will convert raw price into Big.Int
+// corresponding tests for this nightmare you can
+// find in `tests` folder
 func ConvertPrice(raw string, precision int) (*big.Int, error) {
 	floatPriceParts := strings.Split(raw, ".")
 	if len(floatPriceParts) != 2 {

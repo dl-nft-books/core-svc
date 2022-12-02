@@ -13,14 +13,15 @@ import (
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
-type EthMinterConfigurator interface {
-	EthMinter() *EthMinterConfig
+type MintConfigurator interface {
+	MintConfig() *MintConfig
 }
 
-type EthMinterConfig struct {
-	PrivateKey *ecdsa.PrivateKey `fig:"eth_signer,required"`
+type MintConfig struct {
+	PrivateKey *ecdsa.PrivateKey `fig:"signer,required"`
 	Precision  int               `fig:"precision,required"`
 	Expiration time.Duration     `fig:"expiration,required"`
+	ChainID    int64             `fig:"chain_id,required"`
 }
 
 type ethMinterConfigurator struct {
@@ -28,26 +29,26 @@ type ethMinterConfigurator struct {
 	once   comfig.Once
 }
 
-func NewEthMinterConfigurator(getter kv.Getter) EthMinterConfigurator {
+func NewEthMinterConfigurator(getter kv.Getter) MintConfigurator {
 	return &ethMinterConfigurator{
 		getter: getter,
 	}
 }
 
-func (c *ethMinterConfigurator) EthMinter() *EthMinterConfig {
+func (c *ethMinterConfigurator) MintConfig() *MintConfig {
 	return c.once.Do(func() interface{} {
-		var cfg EthMinterConfig
+		var cfg MintConfig
 
 		err := figure.Out(&cfg).
 			With(figure.BaseHooks, ecdsaHook).
-			From(kv.MustGetStringMap(c.getter, "eth_minter")).
+			From(kv.MustGetStringMap(c.getter, "mint")).
 			Please()
 		if err != nil {
 			panic(err)
 		}
 
 		return &cfg
-	}).(*EthMinterConfig)
+	}).(*MintConfig)
 }
 
 var ecdsaHook = figure.Hooks{

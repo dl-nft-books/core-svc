@@ -29,7 +29,7 @@ type Config interface {
 	tracker.Tracker
 
 	// Internal service configuration
-	EthMinterConfigurator
+	MintConfigurator
 	TaskProcessor
 	PdfSignatureParams() *SignatureParams
 	ApiRestrictions() ApiRestrictions
@@ -49,7 +49,7 @@ type config struct {
 	tracker.Tracker
 
 	// Internal service configuration
-	EthMinterConfigurator
+	MintConfigurator
 	TaskProcessor
 	pdfSignatureParams comfig.Once
 
@@ -75,7 +75,7 @@ func New(getter kv.Getter) Config {
 		Tracker:             tracker.NewTracker(getter),
 
 		// Internal service configuration
-		EthMinterConfigurator: NewEthMinterConfigurator(getter),
-		TaskProcessor:         NewTaskProcessor(getter),
+		MintConfigurator: NewEthMinterConfigurator(getter),
+		TaskProcessor:    NewTaskProcessor(getter),
 	}
 }

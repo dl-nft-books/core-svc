@@ -6,7 +6,7 @@ package resources
 
 type PriceAttributes struct {
 	// Timestamp when signature will expire
-	EndTimestamp int32 `json:"end_timestamp"`
+	EndTimestamp int64 `json:"end_timestamp"`
 	// price per one token ($)
 	Price string `json:"price"`
 }

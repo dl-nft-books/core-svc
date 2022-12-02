@@ -1,4 +1,4 @@
-package pdf_signature_generator
+package pdf
 
 import (
 	"bytes"
@@ -18,17 +18,17 @@ const (
 	lineColor      = "#BCBCBC"
 )
 
-type PdfSignatureGenerator struct {
+type SignatureGenerator struct {
 	signatureParams *config.SignatureParams
 }
 
-func New(sigParams *config.SignatureParams) *PdfSignatureGenerator {
-	return &PdfSignatureGenerator{
+func New(sigParams *config.SignatureParams) *SignatureGenerator {
+	return &SignatureGenerator{
 		signatureParams: sigParams,
 	}
 }
 
-func (g *PdfSignatureGenerator) GenerateSignature(document io.ReadSeeker, signature string) ([]byte, error) {
+func (g *SignatureGenerator) GenerateSignature(document io.ReadSeeker, signature string) ([]byte, error) {
 	pdfReader, err := model.NewPdfReader(document)
 	if err != nil {
 		return nil, err
@@ -75,7 +75,7 @@ func (g *PdfSignatureGenerator) GenerateSignature(document io.ReadSeeker, signat
 	return buff.Bytes(), nil
 }
 
-func (g *PdfSignatureGenerator) addSignature(cr *creator.Creator, pageWidth float64, signature string) error {
+func (g *SignatureGenerator) addSignature(cr *creator.Creator, pageWidth float64, signature string) error {
 	upperLineYPos := g.signatureParams.MainHeightIndent - g.signatureParams.UpperLineHeightIndent
 	upperLine := g.createLine(
 		cr,
@@ -115,7 +115,7 @@ func (g *PdfSignatureGenerator) addSignature(cr *creator.Creator, pageWidth floa
 	return cr.Draw(lowerLine)
 }
 
-func (g *PdfSignatureGenerator) createLine(cr *creator.Creator, x1, y1, x2, y2 float64) *creator.Line {
+func (g *SignatureGenerator) createLine(cr *creator.Creator, x1, y1, x2, y2 float64) *creator.Line {
 	lineStyle := draw.LineStyleSolid
 	lineColor := creator.ColorRGBFromHex(lineColor)
 
@@ -126,7 +126,7 @@ func (g *PdfSignatureGenerator) createLine(cr *creator.Creator, x1, y1, x2, y2 f
 	return line
 }
 
-func (g *PdfSignatureGenerator) createSignatureParagraph(cr *creator.Creator, xpos, ypos, pageWidth float64, signature string) *creator.Paragraph {
+func (g *SignatureGenerator) createSignatureParagraph(cr *creator.Creator, xpos, ypos, pageWidth float64, signature string) *creator.Paragraph {
 	paragraphFont, _ := model.NewStandard14Font(baseFont)
 	paragraphColor := creator.ColorRGBFromHex(paragraphColor)
 

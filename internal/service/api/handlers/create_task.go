@@ -7,6 +7,7 @@ import (
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
@@ -27,7 +28,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bookId := int64(request.Data.Attributes.BookId)
+	bookId := request.Data.Attributes.BookId
 
 	// Check if book exists
 	getBookResponse, err := helpers.Booker(r).GetBookById(bookId)
@@ -37,6 +38,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if getBookResponse == nil {
+		helpers.Log(r).Info("corresponding book was not found")
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
@@ -66,8 +68,9 @@ func validateCreateTaskRequest(request *requests.CreateTaskRequest, w http.Respo
 		statusFilter = resources.TaskFinishedGeneration
 	)
 
+	// validating if user have generated a lot of books and did not pay for them
 	tasks, err := database.Tasks().
-		Sort(pgdb.Sorts{"created_at"}).
+		Sort(pgdb.Sorts{postgres.TasksCreatedAt}).
 		Select(data.TaskSelector{
 			Account: &request.Data.Attributes.Account,
 			Status:  &statusFilter,
@@ -79,23 +82,26 @@ func validateCreateTaskRequest(request *requests.CreateTaskRequest, w http.Respo
 	}
 
 	tasksNumber := len(tasks)
+
+	//  if no tasks found -- simply return that everything is ok
+	if tasksNumber == 0 {
+		return true
+	}
+
 	if uint64(tasksNumber) >= restrictions.MaxFailedAttempts {
 		// TODO: make via jsonerrors.WithDetails
 		ape.RenderErr(w, problems.BadRequest(errors.New("maximum attempts number exceeded"))[0])
 		return false
 	}
 
-	var lastCreatedAt time.Time
-	if tasksNumber > 0 {
-		lastCreatedAt = tasks[tasksNumber-1].CreatedAt
-	}
+	// then validating how often user try to buy the book
+	lastCreatedAt := tasks[tasksNumber-1].CreatedAt
 
 	durationAfterPreviousAttempt := time.Now().Sub(lastCreatedAt)
 	if durationAfterPreviousAttempt < restrictions.RequestDelay {
 		// TODO: make via jsonerrors.WithDetails
 		ape.RenderErr(w, problems.BadRequest(errors.New("task delay not passed"))[0])
 		return false
-
 	}
 
 	return true

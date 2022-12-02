@@ -2,17 +2,16 @@ package helpers
 
 import (
 	"context"
+	"net/http"
+
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
 	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
-	"net/http"
 
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 
+	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	networkerConnector "gitlab.com/tokend/nft-books/network-svc/connector/api"
-
-	"gitlab.com/distributed_lab/logan/v3"
 )
 
 type ctxKey int
@@ -25,7 +24,6 @@ const (
 
 	pricerCtxKey
 	bookerCtxKey
-	networkerCtxKey
 	trackerCtxKey
 )
 
@@ -45,7 +43,7 @@ func DB(r *http.Request) data.DB {
 	return r.Context().Value(dbCtxKey).(data.DB).New()
 }
 
-func CtxMinter(entry config.EthMinterConfig) func(context.Context) context.Context {
+func CtxMinter(entry config.MintConfig) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
 		return context.WithValue(ctx, minterCtxKey, entry)
 	}
@@ -67,8 +65,8 @@ func Pricer(r *http.Request) *pricer.Connector {
 	return r.Context().Value(pricerCtxKey).(*pricer.Connector)
 }
 
-func Minter(r *http.Request) config.EthMinterConfig {
-	return r.Context().Value(minterCtxKey).(config.EthMinterConfig)
+func Minter(r *http.Request) config.MintConfig {
+	return r.Context().Value(minterCtxKey).(config.MintConfig)
 }
 
 func Log(r *http.Request) *logan.Entry {
@@ -77,16 +75,6 @@ func Log(r *http.Request) *logan.Entry {
 
 func ApiRestrictions(r *http.Request) config.ApiRestrictions {
 	return r.Context().Value(apiRestrictionsCtxKey).(config.ApiRestrictions)
-}
-
-func CtxNetworker(entry networkerConnector.Connector) func(context.Context) context.Context {
-	return func(ctx context.Context) context.Context {
-		return context.WithValue(ctx, networkerCtxKey, entry)
-	}
-}
-
-func Networker(r *http.Request) networkerConnector.Connector {
-	return r.Context().Value(networkerCtxKey).(networkerConnector.Connector)
 }
 
 func CtxBooker(entry *booker.Connector) func(context.Context) context.Context {

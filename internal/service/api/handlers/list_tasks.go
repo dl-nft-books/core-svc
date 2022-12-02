@@ -33,7 +33,7 @@ func ListTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	taskListResponse, err := responses.NewTaskListResponse(r, request, tasks, helpers.BooksQ(r))
+	taskListResponse, err := responses.NewTaskListResponse(r, request, tasks, *helpers.Booker(r))
 	if err != nil {
 		logger.WithError(err).Error("unable to form task list response")
 		ape.RenderErr(w, problems.InternalError())

@@ -31,7 +31,7 @@ func GetTaskByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	taskResponse, err := responses.NewGetTaskResponse(*task, helpers.BooksQ(r))
+	taskResponse, err := responses.NewGetTaskResponse(*task, helpers.Booker(r))
 	if err != nil {
 		logger.WithError(err).Error("failed to get task response")
 		ape.RenderErr(w, problems.InternalError())

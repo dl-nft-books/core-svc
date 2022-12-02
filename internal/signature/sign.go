@@ -2,6 +2,7 @@ package signature
 
 import (
 	"crypto/ecdsa"
+
 	"github.com/ethereum/go-ethereum/common"
 	"gitlab.com/distributed_lab/logan/v3"
 
@@ -24,9 +25,9 @@ var (
 func SignMintInfo(
 	mintInfo *MintInfo,
 	domainData *EIP712DomainData,
-	config *config.EthMinterConfig,
+	config *config.MintConfig,
 ) (
-	*SignatureParameters,
+	*Parameters,
 	error,
 ) {
 	privateKey := config.PrivateKey
@@ -90,18 +91,18 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 	return signer.NewDefaultSigner(privateKey).SignTypedData(data)
 }
 
-func parseSignatureParameters(signature []byte) (*SignatureParameters, error) {
+func parseSignatureParameters(signature []byte) (*Parameters, error) {
 	if len(signature) != 65 {
 		return nil, errors.From(wrongSignatureLengthErr, logan.F{
 			"signature": string(signature),
 		})
 	}
 
-	params := SignatureParameters{}
+	params := Parameters{}
 
 	params.R = hexutil.Encode(signature[:32])
 	params.S = hexutil.Encode(signature[32:64])
-	params.V = int(signature[64])
+	params.V = int8(signature[64])
 
 	return &params, nil
 }

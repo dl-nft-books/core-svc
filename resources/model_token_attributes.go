@@ -5,7 +5,6 @@
 package resources
 
 type TokenAttributes struct {
-	ChainId int64 `json:"chain_id"`
 	// Token's description retrieved from json metadata
 	Description string `json:"description"`
 	// Url to the token's image
@@ -18,5 +17,5 @@ type TokenAttributes struct {
 	Owner     string      `json:"owner"`
 	Signature string      `json:"signature"`
 	Status    TokenStatus `json:"status"`
-	TokenId   int32       `json:"token_id"`
+	TokenId   int64       `json:"token_id"`
 }

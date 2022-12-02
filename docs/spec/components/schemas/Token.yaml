@@ -13,17 +13,13 @@ allOf:
           - signature
           - status
           - name
-          - chain_id
           - description
           - image_url
           - owner
         properties:
-          chain_id:
-            type: integer
-            format: int64
-            example: 13
           token_id:
             type: integer
+            format: int64
             example: 13
           name:
             type: string

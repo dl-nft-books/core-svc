@@ -44,13 +44,12 @@ func convertBookToResource(bookResponse booker.GetBookResponse) resources.Resour
 					Url:      bookResponse.Data.Attributes.Banner.Attributes.Url,
 				},
 			},
-			ChainId:         bookResponse.Data.Attributes.ChainId,
 			ContractAddress: bookResponse.Data.Attributes.ContractAddress,
 			ContractName:    bookResponse.Data.Attributes.ContractName,
 			ContractSymbol:  bookResponse.Data.Attributes.ContractSymbol,
 			ContractVersion: bookResponse.Data.Attributes.ContractVersion,
 			CreatedAt:       bookResponse.Data.Attributes.CreatedAt,
-			DeployStatus:    bookResponse.Data.Attributes.DeployStatus,
+			DeployStatus:    resources.DeployStatus(bookResponse.Data.Attributes.DeployStatus),
 			Description:     bookResponse.Data.Attributes.Description,
 			File: resources.Media{
 				Key: resources.Key{

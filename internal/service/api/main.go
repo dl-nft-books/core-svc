@@ -2,9 +2,10 @@ package api
 
 import (
 	"context"
-	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
 	"net"
 	"net/http"
+
+	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
 
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
@@ -24,7 +25,7 @@ type service struct {
 	listener net.Listener
 	db       *pgdb.DB
 
-	ethMinterConfig *config.EthMinterConfig
+	ethMinterConfig *config.MintConfig
 	apiRestrictions config.ApiRestrictions
 
 	pricer    *pricer.Connector
@@ -51,7 +52,7 @@ func newService(cfg config.Config) *service {
 		listener: cfg.Listener(),
 		db:       cfg.DB(),
 
-		ethMinterConfig: cfg.EthMinter(),
+		ethMinterConfig: cfg.MintConfig(),
 		apiRestrictions: cfg.ApiRestrictions(),
 
 		pricer:    cfg.PricerConnector(),

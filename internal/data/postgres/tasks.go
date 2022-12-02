@@ -22,7 +22,7 @@ const (
 	tasksTokenId          = "token_id"
 	tasksStatus           = "status"
 	tasksUri              = "uri"
-	tasksCreatedAt        = "created_at"
+	TasksCreatedAt        = "created_at"
 )
 
 type tasksQ struct {

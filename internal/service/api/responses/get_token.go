@@ -58,7 +58,7 @@ func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, tasksQ
 			Name:        metadata.Name,
 			Signature:   task.Signature,
 			Status:      token.Status,
-			TokenId:     int32(token.TokenId),
+			TokenId:     token.TokenId,
 		},
 		Relationships: getTokenRelationships(token),
 	}

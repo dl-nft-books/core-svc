@@ -14,7 +14,6 @@ allOf:
           - contract_name
           - contract_symbol
           - contract_version
-          - chain_id
           - price
           - file
           - banner
@@ -53,10 +52,6 @@ allOf:
             type: string
             description: Token contract version
             example: '1'
-          chain_id:
-            type: integer
-            description: Chain ID
-            example: 137
           banner:
             description: Banner info
             $ref: '#/components/schemas/Media'

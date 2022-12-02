@@ -19,10 +19,11 @@ api:
   max_failed_attempts: 10
   request_delay: 5m
 
-eth_minter:
-  eth_signer: b5b6c7a28756d349ac1e7f7bf11fa885ea7d761c498c6f9803ad6b03675ad4a9
+mint:
+  signer: b5b6c7a28756d349ac1e7f7bf11fa885ea7d761c498c6f9803ad6b03675ad4a9
   precision: 18
   expiration: 5m
+  chain_id: 137
 
 pdf_signature_params:
   api_key: b367178b5ddb3ea2cc9add1c9989b1eec155ffce4160b5b8c9777dbe28b9f3a6 #100 free uses only

@@ -2,15 +2,16 @@ package task_processor
 
 import (
 	"context"
+	"strconv"
+
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
-	"strconv"
 
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/running"
-	s3connector "gitlab.com/tokend/nft-books/blob-svc/connector/api"
+	documenter "gitlab.com/tokend/nft-books/blob-svc/connector/api"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
@@ -24,10 +25,10 @@ type TaskProcessor struct {
 	db       data.DB
 	booksApi *booker.Connector
 
-	selector            data.TaskSelector
-	runnerCfg           config.RunnerData
-	signatureParams     *config.SignatureParams
-	documenterConnector *s3connector.Connector
+	selector        data.TaskSelector
+	runnerCfg       config.RunnerData
+	signatureParams *config.SignatureParams
+	documenter      *documenter.Connector
 }
 
 func New(cfg config.Config) *TaskProcessor {
@@ -47,9 +48,9 @@ func New(cfg config.Config) *TaskProcessor {
 			},
 			Status: &status,
 		},
-		runnerCfg:           cfg.TaskProcessorCfg().Runner,
-		signatureParams:     cfg.PdfSignatureParams(),
-		documenterConnector: cfg.DocumenterConnector(),
+		runnerCfg:       cfg.TaskProcessorCfg().Runner,
+		signatureParams: cfg.PdfSignatureParams(),
+		documenter:      cfg.DocumenterConnector(),
 	}
 }
 
