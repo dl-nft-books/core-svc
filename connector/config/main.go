@@ -30,7 +30,7 @@ func (c *generatorConfigurator) GeneratorConnector() *api.Connector {
 	return c.once.Do(func() interface{} {
 		config := GeneratorConnectorConfig{}
 
-		raw := kv.MustGetStringMap(c.getter, "generator")
+		raw := kv.MustGetStringMap(c.getter, "connector")
 
 		if err := figure.
 			Out(&config).
