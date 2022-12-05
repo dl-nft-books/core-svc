@@ -16,7 +16,7 @@ import (
 
 const baseURI = "https://ipfs.io/ipfs/"
 
-var bookNotFoundErr = errors.New("book not found")
+var bookNotFoundErr = errors.New("book was not found")
 
 func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debugf("Started processing task with id of %d", task.Id)
