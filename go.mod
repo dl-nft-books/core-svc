@@ -13,7 +13,7 @@ require (
 	github.com/ipfs/go-ipfs-chunker v0.0.5
 	github.com/ipfs/go-merkledag v0.8.0
 	github.com/ipfs/go-unixfs v0.4.1
-	github.com/lib/pq v1.10.0
+	github.com/lib/pq v1.10.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/rubenv/sql-migrate v1.2.0
 	github.com/spf13/cast v1.4.1
@@ -32,7 +32,9 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/miguelmota/go-solidity-sha3 v0.1.1
 	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221104125850-7e8369e2ce8a
-	gitlab.com/tokend/nft-books/book-svc v0.0.0-20221130223519-5d229580ae9d
+	gitlab.com/tokend/nft-books/book-svc v0.0.0-20221204140600-bccd09f982be
+	gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221205210819-6d0e50ffe1a3
+	gitlab.com/tokend/nft-books/doorman v0.1.0-rc.1.0.20221202093129-30c17ef04208
 	gitlab.com/tokend/nft-books/network-svc v0.0.0-20221128140430-36aff79cbc1f
 )
 
@@ -42,7 +44,9 @@ require (
 	github.com/btcsuite/btcd v0.22.1 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.0 // indirect
 	github.com/certifi/gocertifi v0.0.0-20200211180108-c7c1fbc02894 // indirect
+	github.com/crackcomm/go-gitignore v0.0.0-20170627025303-887ab5e44cc3 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/getsentry/raven-go v0.2.0 // indirect
 	github.com/getsentry/sentry-go v0.7.0 // indirect
@@ -62,7 +66,7 @@ require (
 	github.com/ipfs/go-ipfs-ds-help v1.1.0 // indirect
 	github.com/ipfs/go-ipfs-exchange-interface v0.1.0 // indirect
 	github.com/ipfs/go-ipfs-exchange-offline v0.2.0 // indirect
-	github.com/ipfs/go-ipfs-files v0.0.3 // indirect
+	github.com/ipfs/go-ipfs-files v0.0.9 // indirect
 	github.com/ipfs/go-ipfs-posinfo v0.0.1 // indirect
 	github.com/ipfs/go-ipfs-util v0.0.2 // indirect
 	github.com/ipfs/go-ipld-cbor v0.0.5 // indirect
@@ -115,6 +119,7 @@ require (
 	gitlab.com/tokend/connectors v0.1.9 // indirect
 	gitlab.com/tokend/go v3.15.0+incompatible // indirect
 	gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312 // indirect
+	gitlab.com/tokend/nft-books/go-sdk v0.1.2 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.19.0 // indirect

@@ -10,6 +10,7 @@ import (
 	s3config "gitlab.com/tokend/nft-books/blob-svc/connector/config"
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
 	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
+	doormanCfg "gitlab.com/tokend/nft-books/doorman/connector/config"
 	networkerCfg "gitlab.com/tokend/nft-books/network-svc/connector/config"
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 )
@@ -27,6 +28,7 @@ type Config interface {
 	pricer.Pricer
 	s3config.Documenter
 	tracker.Tracker
+	doormanCfg.DoormanConfiger
 
 	// Internal service configuration
 	MintConfigurator
@@ -47,6 +49,7 @@ type config struct {
 	pricer.Pricer
 	s3config.Documenter
 	tracker.Tracker
+	doormanCfg.DoormanConfiger
 
 	// Internal service configuration
 	MintConfigurator
@@ -73,6 +76,7 @@ func New(getter kv.Getter) Config {
 		NetworkConfigurator: networkerCfg.NewNetworkConfigurator(getter),
 		Booker:              booker.NewBooker(getter),
 		Tracker:             tracker.NewTracker(getter),
+		DoormanConfiger:     doormanCfg.NewDoormanConfiger(getter),
 
 		// Internal service configuration
 		MintConfigurator: NewEthMinterConfigurator(getter),

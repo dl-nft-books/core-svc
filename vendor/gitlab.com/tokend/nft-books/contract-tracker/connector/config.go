@@ -7,8 +7,6 @@ import (
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
-const trackerYamlKey = "trackerYamlKey"
-
 type Tracker interface {
 	TrackerConnector() *Connector
 }
@@ -31,7 +29,7 @@ func (c *tracker) TrackerConnector() *Connector {
 	return c.once.Do(func() interface{} {
 		var cfg trackerCfg
 
-		raw := kv.MustGetStringMap(c.getter, trackerYamlKey)
+		raw := kv.MustGetStringMap(c.getter, "connector")
 
 		if err := figure.
 			Out(&cfg).

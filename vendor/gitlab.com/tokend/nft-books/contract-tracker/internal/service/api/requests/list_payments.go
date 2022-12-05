@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"github.com/pkg/errors"
 	"net/http"
 
 	"gitlab.com/distributed_lab/kit/pgdb"
@@ -19,9 +20,8 @@ type ListPaymentsRequest struct {
 func NewListPaymentsRequest(r *http.Request) (*ListPaymentsRequest, error) {
 	var request ListPaymentsRequest
 
-	err := urlval.Decode(r.URL.Query(), &request)
-	if err != nil {
-		return nil, err
+	if err := urlval.Decode(r.URL.Query(), &request); err != nil {
+		return nil, errors.Wrap(err, "failed to decode request")
 	}
 
 	return &request, nil

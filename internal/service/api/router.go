@@ -4,6 +4,7 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/handlers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/middlewares"
 
 	"github.com/go-chi/chi"
 	"gitlab.com/distributed_lab/ape"
@@ -18,32 +19,34 @@ func (s *service) router() chi.Router {
 		ape.CtxMiddleware(
 			helpers.CtxLog(s.log),
 			helpers.CtxDB(postgres.NewDB(s.db)),
+
 			helpers.CtxMinter(*s.ethMinterConfig),
 			helpers.CtxPricer(s.pricer),
 			helpers.CtxApiRestrictions(s.apiRestrictions),
 			helpers.CtxBooker(s.booker),
 			helpers.CtxTracker(s.tracker),
+			helpers.CtxDoormanConnector(s.doorman),
 		),
 	)
 
 	r.Route("/integrations/generator", func(r chi.Router) {
 		r.Route("/tasks", func(r chi.Router) {
-			r.Post("/", handlers.CreateTask)
+			r.With(middlewares.CheckAccessToken).Post("/", handlers.CreateTask)
 			r.Get("/", handlers.ListTasks)
 
 			r.Route("/{id}", func(r chi.Router) {
 				r.Get("/", handlers.GetTaskByID)
-				r.Patch("/", handlers.UpdateTask)
+				r.With(middlewares.CheckAccessToken).Patch("/", handlers.UpdateTask)
 			})
 		})
 
 		r.Route("/tokens", func(r chi.Router) {
 			r.Get("/", handlers.ListTokens)
-			r.Post("/", handlers.CreateToken)
+			r.With(middlewares.CheckAccessToken).Post("/", handlers.CreateToken)
 
 			r.Route("/{id}", func(r chi.Router) {
 				r.Get("/", handlers.GetTokenById)
-				r.Patch("/", handlers.UpdateToken)
+				r.With(middlewares.CheckAccessToken).Patch("/", handlers.UpdateToken)
 			})
 		})
 

@@ -10,6 +10,7 @@ import (
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
+	doorman "gitlab.com/tokend/nft-books/doorman/connector"
 	networker "gitlab.com/tokend/nft-books/network-svc/connector/api"
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 
@@ -32,6 +33,7 @@ type service struct {
 	networker *networker.Connector
 	booker    *booker.Connector
 	tracker   *tracker.Connector
+	doorman   doorman.ConnectorI
 }
 
 func (s *service) run() error {
@@ -59,6 +61,7 @@ func newService(cfg config.Config) *service {
 		booker:    cfg.BookerConnector(),
 		networker: cfg.NetworkConnector(),
 		tracker:   cfg.TrackerConnector(),
+		doorman:   cfg.DoormanConnector(),
 	}
 }
 

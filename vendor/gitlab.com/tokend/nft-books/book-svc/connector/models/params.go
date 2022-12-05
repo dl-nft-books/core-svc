@@ -9,7 +9,6 @@ type (
 	// CreateBookParams is a helper struct to be included when calling CreateBook request
 	CreateBookParams struct {
 		Banner      resources.Media
-		ChainId     int32
 		Description string
 		File        resources.Media
 		Price       string
@@ -20,13 +19,15 @@ type (
 
 	// UpdateBookParams is a helper struct to be included when calling UpdateBook request
 	UpdateBookParams struct {
-		Id          int64
-		Banner      *resources.Media `json:"banner,omitempty"`
-		Description *string          `json:"description,omitempty"`
-		File        *resources.Media `json:"file,omitempty"`
-		Title       *string          `json:"title,omitempty"`
+		Id              int64
+		Banner          *resources.Media        `json:"banner,omitempty"`
+		Description     *string                 `json:"description,omitempty"`
+		File            *resources.Media        `json:"file,omitempty"`
+		Title           *string                 `json:"title,omitempty"`
+		ContractAddress *string                 `json:"contract_address,omitempty"`
+		DeployStatus    *resources.DeployStatus `json:"deploy_status,omitempty"`
 	}
 
 	// ListBooksParams is a helper struct to be included when calling ListBooks request
-	ListBooksParams requests.GetBooksRequest
+	ListBooksParams requests.ListBooksRequest
 )
