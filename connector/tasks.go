@@ -1,4 +1,4 @@
-package api
+package connector
 
 import (
 	"encoding/json"
@@ -7,14 +7,24 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/urlval"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
+	"gitlab.com/tokend/nft-books/generator-svc/connector/models"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
 const tasksEndpoint = "tasks"
 
-func (c *Connector) CreateTask(request resources.CreateTask) (id int64, err error) {
-	var response resources.KeyResponse
+func (c *Connector) CreateTask(params models.CreateTaskParams) (id int64, err error) {
+	var (
+		response resources.KeyResponse
+		request  = resources.CreateTask{
+			Key: resources.NewKeyInt64(0, resources.TASKS),
+			Attributes: resources.CreateTaskAttributes{
+				Account:   params.Account,
+				BookId:    params.BookId,
+				Signature: params.Signature,
+			},
+		}
+	)
 
 	endpoint := fmt.Sprintf("%s/%s", c.baseUrl, tasksEndpoint)
 	requestAsBytes, err := json.Marshal(request)
@@ -30,7 +40,15 @@ func (c *Connector) CreateTask(request resources.CreateTask) (id int64, err erro
 	return createdTokenId, nil
 }
 
-func (c *Connector) UpdateTask(request resources.UpdateTask) error {
+func (c *Connector) UpdateTask(params models.UpdateTaskParams) error {
+	request := resources.UpdateTask{
+		Key: resources.NewKeyInt64(params.Id, resources.TASKS),
+		Attributes: resources.UpdateTaskAttributes{
+			Status:  params.Status,
+			TokenId: params.TokenId,
+		},
+	}
+
 	endpoint := fmt.Sprintf("%s/%s/%s", c.baseUrl, tasksEndpoint, request.ID)
 	requestAsBytes, err := json.Marshal(request)
 	if err != nil {
@@ -40,8 +58,8 @@ func (c *Connector) UpdateTask(request resources.UpdateTask) error {
 	return c.update(endpoint, requestAsBytes, nil)
 }
 
-func (c *Connector) ListTasks(request requests.ListTasksRequest) (*resources.TaskListResponse, error) {
-	var result resources.TaskListResponse
+func (c *Connector) ListTasks(request models.ListTasksRequest) (*models.ListTasksResponse, error) {
+	var result models.ListTasksResponse
 
 	// setting full endpoint
 	fullEndpoint := fmt.Sprintf("%s/%s?%s", c.baseUrl, tasksEndpoint, urlval.MustEncode(request))
@@ -55,8 +73,8 @@ func (c *Connector) ListTasks(request requests.ListTasksRequest) (*resources.Tas
 	return &result, nil
 }
 
-func (c *Connector) GetTaskById(id int64) (*resources.TaskResponse, error) {
-	var result resources.TaskResponse
+func (c *Connector) GetTaskById(id int64) (*models.TaskResponse, error) {
+	var result models.TaskResponse
 
 	// setting full endpoint
 	fullEndpoint := fmt.Sprintf("%s/%s/%d", c.baseUrl, tasksEndpoint, id)

@@ -1,4 +1,4 @@
-package api
+package connector
 
 import (
 	"encoding/json"
@@ -7,14 +7,25 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/urlval"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
+	"gitlab.com/tokend/nft-books/generator-svc/connector/models"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
 const tokensEndpoint = "tokens"
 
-func (c *Connector) CreateToken(request resources.CreateToken) (id int64, err error) {
-	var response resources.KeyResponse
+func (c *Connector) CreateToken(params models.CreateTokenParams) (id int64, err error) {
+	var (
+		response resources.KeyResponse
+		request  = resources.CreateToken{
+			Key: resources.NewKeyInt64(0, resources.TOKENS),
+			Attributes: resources.CreateTokenAttributes{
+				Account:      params.Account,
+				MetadataHash: params.MetadataHash,
+				Status:       params.Status,
+				TokenId:      params.TokenId,
+			},
+		}
+	)
 
 	endpoint := fmt.Sprintf("%s/%s", c.baseUrl, tokensEndpoint)
 	requestAsBytes, err := json.Marshal(request)
@@ -30,7 +41,16 @@ func (c *Connector) CreateToken(request resources.CreateToken) (id int64, err er
 	return createdTokenId, nil
 }
 
-func (c *Connector) UpdateToken(request resources.UpdateToken) error {
+func (c *Connector) UpdateToken(params models.UpdateTokenParams) error {
+	request := resources.UpdateToken{
+		Key: resources.NewKeyInt64(params.Id, resources.TOKENS),
+		Attributes: resources.UpdateTokenAttributes{
+			Owner:   params.Owner,
+			Status:  params.Status,
+			TokenId: params.TokenId,
+		},
+	}
+
 	endpoint := fmt.Sprintf("%s/%s/%s", c.baseUrl, tokensEndpoint, request.ID)
 	requestAsBytes, err := json.Marshal(request)
 	if err != nil {
@@ -40,8 +60,8 @@ func (c *Connector) UpdateToken(request resources.UpdateToken) error {
 	return c.update(endpoint, requestAsBytes, nil)
 }
 
-func (c *Connector) ListTokens(request requests.ListTokensRequest) (*resources.TokenListResponse, error) {
-	var result resources.TokenListResponse
+func (c *Connector) ListTokens(request models.ListTokensRequest) (*models.ListTokensResponse, error) {
+	var result models.ListTokensResponse
 
 	// setting full endpoint
 	fullEndpoint := fmt.Sprintf("%s/%s?%s", c.baseUrl, tokensEndpoint, urlval.MustEncode(request))
@@ -55,8 +75,8 @@ func (c *Connector) ListTokens(request requests.ListTokensRequest) (*resources.T
 	return &result, nil
 }
 
-func (c *Connector) GetTokenById(id int64) (*resources.TokenResponse, error) {
-	var result resources.TokenResponse
+func (c *Connector) GetTokenById(id int64) (*models.TokenResponse, error) {
+	var result models.TokenResponse
 
 	// setting full endpoint
 	fullEndpoint := fmt.Sprintf("%s/%s/%d", c.baseUrl, tokensEndpoint, id)

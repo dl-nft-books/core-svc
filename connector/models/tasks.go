@@ -1,14 +1,25 @@
 package models
 
 import (
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
-type ListTasksRequest struct {
-	Limit    *uint64               `structs:"page[limit]"`
-	Cursor   *uint64               `structs:"page[cursor]"`
-	Account  *string               `structs:"filter[account]"`
-	Status   *resources.TaskStatus `structs:"filter[status]"`
-	IpfsHash *string               `structs:"filter[ipfs_hash]"`
-	TokenId  *int64                `structs:"filter[token_id]"`
-}
+type (
+	ListTasksRequest  requests.ListTasksRequest
+	ListTasksResponse resources.TaskListResponse
+
+	UpdateTaskParams struct {
+		Id      int64                 `json:"-"`
+		Status  *resources.TaskStatus `json:"status,omitempty"`
+		TokenId *int64                `json:"token_id,omitempty"`
+	}
+
+	CreateTaskParams struct {
+		Account   string `json:"account"`
+		BookId    int64  `json:"book_id"`
+		Signature string `json:"signature"`
+	}
+
+	TaskResponse resources.TaskResponse
+)

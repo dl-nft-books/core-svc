@@ -1,15 +1,14 @@
-package config
+package connector
 
 import (
 	"gitlab.com/distributed_lab/figure"
 	"gitlab.com/distributed_lab/kit/comfig"
 	"gitlab.com/distributed_lab/kit/kv"
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/connector/api"
 )
 
 type GeneratorConfigurator interface {
-	GeneratorConnector() *api.Connector
+	GeneratorConnector() *Connector
 }
 
 type generatorConfigurator struct {
@@ -26,7 +25,7 @@ func NewGeneratorConfigurator(getter kv.Getter) GeneratorConfigurator {
 	return &generatorConfigurator{getter: getter}
 }
 
-func (c *generatorConfigurator) GeneratorConnector() *api.Connector {
+func (c *generatorConfigurator) GeneratorConnector() *Connector {
 	return c.once.Do(func() interface{} {
 		config := GeneratorConnectorConfig{}
 
@@ -39,6 +38,6 @@ func (c *generatorConfigurator) GeneratorConnector() *api.Connector {
 			panic(errors.Wrap(err, "failed to figure out"))
 		}
 
-		return api.NewConnector(config.Token, config.URL)
-	}).(*api.Connector)
+		return NewConnector(config.Token, config.URL)
+	}).(*Connector)
 }
