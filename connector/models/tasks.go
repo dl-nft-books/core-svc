@@ -10,4 +10,5 @@ type ListTasksRequest struct {
 	Account  *string               `structs:"filter[account]"`
 	Status   *resources.TaskStatus `structs:"filter[status]"`
 	IpfsHash *string               `structs:"filter[ipfs_hash]"`
+	TokenId  *int64                `structs:"filter[token_id]"`
 }

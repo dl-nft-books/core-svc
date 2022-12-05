@@ -135,6 +135,9 @@ func applyTasksSelector(sql squirrel.SelectBuilder, selector data.TaskSelector) 
 	if selector.Account != nil {
 		sql = sql.Where(squirrel.Eq{tasksAccount: *selector.Account})
 	}
+	if selector.TokenId != nil {
+		sql = sql.Where(squirrel.Eq{tasksTokenId: *selector.TokenId})
+	}
 	if selector.IpfsHash != nil {
 		sql = sql.Where(squirrel.Eq{tasksMetadataIpfsHash: *selector.IpfsHash})
 	}

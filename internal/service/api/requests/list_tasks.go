@@ -1,10 +1,11 @@
 package requests
 
 import (
+	"net/http"
+
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/urlval"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
-	"net/http"
 )
 
 type ListTasksRequest struct {
@@ -14,6 +15,7 @@ type ListTasksRequest struct {
 	Account  *string               `filter:"account"`
 	Status   *resources.TaskStatus `filter:"status"`
 	IpfsHash *string               `filter:"ipfs_hash"`
+	TokenId  *int64                `filter:"token_id"`
 }
 
 func NewListTasksRequest(r *http.Request) (*ListTasksRequest, error) {

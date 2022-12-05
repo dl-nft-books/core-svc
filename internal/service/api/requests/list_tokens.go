@@ -14,7 +14,7 @@ type ListTokensRequest struct {
 
 	Account []string                `filter:"account"`
 	Status  []resources.TokenStatus `filter:"status"`
-	ChainID []int64                 `filter:"chain_id"`
+	TokenId *int64                  `filter:"token_id""`
 }
 
 func NewListTokensRequest(r *http.Request) (*ListTokensRequest, error) {

@@ -42,6 +42,9 @@ func applyTokensQFilters(q data.TokensQ, request *requests.ListTokensRequest) da
 	if len(request.Account) > 0 {
 		q = q.FilterByAccount(request.Account...)
 	}
+	if request.TokenId != nil {
+		q = q.FilterByTokenId(*request.TokenId)
+	}
 	if len(request.Status) > 0 {
 		q = q.FilterByStatus(request.Status...)
 	}

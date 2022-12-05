@@ -27,6 +27,7 @@ type TaskSelector struct {
 	Account      *string
 	IpfsHash     *string
 	Status       *resources.TaskStatus
+	TokenId      *int64
 }
 
 type TasksQ interface {
