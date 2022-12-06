@@ -25,6 +25,19 @@ func CreateToken(w http.ResponseWriter, r *http.Request) {
 		paymentId = cast.ToInt64(request.Data.Relationships.Payment.Data.ID)
 	)
 
+	// checking if book exists + retrieving signature
+	bookResponse, err := helpers.Booker(r).GetBookById(bookId)
+	if err != nil {
+		helpers.Log(r).WithError(err).Errorf("failed to fetch book with id %v", bookId)
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	if bookResponse == nil {
+		helpers.Log(r).Errorf("book with id %v was not found", bookId)
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
+
 	createdTokenId, err := helpers.DB(r).Tokens().Insert(data.Token{
 		Account:      request.Data.Attributes.Account,
 		TokenId:      request.Data.Attributes.TokenId,

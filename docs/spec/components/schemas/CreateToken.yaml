@@ -13,6 +13,7 @@ allOf:
           - token_id
           - metadata_hash
           - status
+          - signature
         properties:
           token_id:
             type: integer
@@ -35,6 +36,9 @@ allOf:
             type: string
             example: QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB
             description: Hash of a metadata file
+          signature:
+            type: string
+            example: I hate managing 4 backend services in a week
       relationships:
         type: object
         required:

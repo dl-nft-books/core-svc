@@ -24,6 +24,11 @@ type (
 		MetadataHash string                `json:"metadata_hash"`
 		Status       resources.TokenStatus `json:"status"`
 		TokenId      int64                 `json:"token_id"`
+		Signature    string                `json:"signature"`
+
+		//relations
+		BookId    int64
+		PaymentId int64
 	}
 
 	TokenResponse resources.TokenResponse

@@ -3,6 +3,7 @@ package connector
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/spf13/cast"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
@@ -16,13 +17,26 @@ const tokensEndpoint = "tokens"
 func (c *Connector) CreateToken(params models.CreateTokenParams) (id int64, err error) {
 	var (
 		response resources.KeyResponse
-		request  = resources.CreateToken{
+
+		bookKey    = resources.NewKeyInt64(params.BookId, resources.BOOKS)
+		paymentKey = resources.NewKeyInt64(params.PaymentId, resources.PAYMENT)
+
+		request = resources.CreateToken{
 			Key: resources.NewKeyInt64(0, resources.TOKENS),
 			Attributes: resources.CreateTokenAttributes{
 				Account:      params.Account,
 				MetadataHash: params.MetadataHash,
 				Status:       params.Status,
 				TokenId:      params.TokenId,
+				Signature:    params.Signature,
+			},
+			Relationships: resources.CreateTokenRelationships{
+				Book: resources.Relation{
+					Data: &bookKey,
+				},
+				Payment: resources.Relation{
+					Data: &paymentKey,
+				},
 			},
 		}
 	)

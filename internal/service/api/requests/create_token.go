@@ -48,5 +48,9 @@ func (r CreateTokenRequest) validate() error {
 			&r.Data.Relationships.Payment.Data.ID,
 			validation.Required,
 		),
+		"data/attributes/signature": validation.Validate(
+			&r.Data.Attributes.Signature,
+			validation.Required,
+		),
 	}.Filter()
 }
