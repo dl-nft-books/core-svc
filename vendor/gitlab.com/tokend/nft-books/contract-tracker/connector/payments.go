@@ -6,10 +6,10 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/urlval"
-	models "gitlab.com/tokend/nft-books/contract-tracker/connector/models"
+	"gitlab.com/tokend/nft-books/contract-tracker/connector/models"
 )
 
-const paymentsEndpoint = "runners/payments"
+const paymentsEndpoint = "token-tracker/payments"
 
 func (c *Connector) ListPayments(request models.ListPaymentsParams) (*models.ListPaymentsResponse, error) {
 	var result models.ListPaymentsResponse

@@ -3,10 +3,11 @@ package connector
 import (
 	"encoding/json"
 	"fmt"
-	"gitlab.com/distributed_lab/logan/v3/errors"
 	"io"
 	"io/ioutil"
 	"net/http"
+
+	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
 type Connector struct {

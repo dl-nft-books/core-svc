@@ -467,19 +467,19 @@ gitlab.com/tokend/keypair/figurekeypair
 gitlab.com/tokend/keypair/internal
 gitlab.com/tokend/keypair/internal/crc16
 gitlab.com/tokend/keypair/internal/strkey
-# gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221104125850-7e8369e2ce8a
+# gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221207105353-c6d1df229e8d
 ## explicit; go 1.18
 gitlab.com/tokend/nft-books/blob-svc/connector/api
 gitlab.com/tokend/nft-books/blob-svc/connector/config
 gitlab.com/tokend/nft-books/blob-svc/connector/models
 gitlab.com/tokend/nft-books/blob-svc/resources
-# gitlab.com/tokend/nft-books/book-svc v0.0.0-20221204140600-bccd09f982be
+# gitlab.com/tokend/nft-books/book-svc v0.0.0-20221207110528-6f6ff8a47fac
 ## explicit; go 1.18
 gitlab.com/tokend/nft-books/book-svc/connector
 gitlab.com/tokend/nft-books/book-svc/connector/models
 gitlab.com/tokend/nft-books/book-svc/internal/service/api/requests
 gitlab.com/tokend/nft-books/book-svc/resources
-# gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221205210819-6d0e50ffe1a3
+# gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221207000658-10fc4a16d47f
 ## explicit; go 1.18
 gitlab.com/tokend/nft-books/contract-tracker/connector
 gitlab.com/tokend/nft-books/contract-tracker/connector/models
@@ -495,14 +495,8 @@ gitlab.com/tokend/nft-books/doorman/resources
 # gitlab.com/tokend/nft-books/go-sdk v0.1.2
 ## explicit; go 1.18
 gitlab.com/tokend/nft-books/go-sdk
-# gitlab.com/tokend/nft-books/network-svc v0.0.0-20221128140430-36aff79cbc1f
+# gitlab.com/tokend/nft-books/price-svc v0.0.0-20221202091547-364acb962d10
 ## explicit; go 1.18
-gitlab.com/tokend/nft-books/network-svc/connector/api
-gitlab.com/tokend/nft-books/network-svc/connector/config
-gitlab.com/tokend/nft-books/network-svc/connector/models
-gitlab.com/tokend/nft-books/network-svc/resources
-# gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022125247-81cac705a28c
-## explicit; go 1.17
 gitlab.com/tokend/nft-books/price-svc/connector
 gitlab.com/tokend/nft-books/price-svc/connector/models
 gitlab.com/tokend/nft-books/price-svc/resources

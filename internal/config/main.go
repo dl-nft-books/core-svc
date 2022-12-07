@@ -11,7 +11,6 @@ import (
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
 	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
 	doormanCfg "gitlab.com/tokend/nft-books/doorman/connector/config"
-	networkerCfg "gitlab.com/tokend/nft-books/network-svc/connector/config"
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 )
 
@@ -24,7 +23,6 @@ type Config interface {
 
 	// Connectors
 	booker.Booker
-	networkerCfg.NetworkConfigurator
 	pricer.Pricer
 	s3config.Documenter
 	tracker.Tracker
@@ -44,7 +42,6 @@ type config struct {
 	pgdb.Databaser
 
 	// Connectors
-	networkerCfg.NetworkConfigurator
 	booker.Booker
 	pricer.Pricer
 	s3config.Documenter
@@ -71,12 +68,11 @@ func New(getter kv.Getter) Config {
 		Logger:     comfig.NewLogger(getter, comfig.LoggerOpts{}),
 
 		// Connectors
-		Documenter:          s3config.NewDocumenter(getter),
-		Pricer:              pricer.NewPricer(getter),
-		NetworkConfigurator: networkerCfg.NewNetworkConfigurator(getter),
-		Booker:              booker.NewBooker(getter),
-		Tracker:             tracker.NewTracker(getter),
-		DoormanConfiger:     doormanCfg.NewDoormanConfiger(getter),
+		Documenter:      s3config.NewDocumenter(getter),
+		Pricer:          pricer.NewPricer(getter),
+		Booker:          booker.NewBooker(getter),
+		Tracker:         tracker.NewTracker(getter),
+		DoormanConfiger: doormanCfg.NewDoormanConfiger(getter),
 
 		// Internal service configuration
 		MintConfigurator: NewEthMinterConfigurator(getter),

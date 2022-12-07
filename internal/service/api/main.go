@@ -11,7 +11,6 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
 	doorman "gitlab.com/tokend/nft-books/doorman/connector"
-	networker "gitlab.com/tokend/nft-books/network-svc/connector/api"
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
@@ -29,11 +28,10 @@ type service struct {
 	ethMinterConfig *config.MintConfig
 	apiRestrictions config.ApiRestrictions
 
-	pricer    *pricer.Connector
-	networker *networker.Connector
-	booker    *booker.Connector
-	tracker   *tracker.Connector
-	doorman   doorman.ConnectorI
+	pricer  *pricer.Connector
+	booker  *booker.Connector
+	tracker *tracker.Connector
+	doorman doorman.ConnectorI
 }
 
 func (s *service) run() error {
@@ -57,11 +55,10 @@ func newService(cfg config.Config) *service {
 		ethMinterConfig: cfg.MintConfig(),
 		apiRestrictions: cfg.ApiRestrictions(),
 
-		pricer:    cfg.PricerConnector(),
-		booker:    cfg.BookerConnector(),
-		networker: cfg.NetworkConnector(),
-		tracker:   cfg.TrackerConnector(),
-		doorman:   cfg.DoormanConnector(),
+		pricer:  cfg.PricerConnector(),
+		booker:  cfg.BookerConnector(),
+		tracker: cfg.TrackerConnector(),
+		doorman: cfg.DoormanConnector(),
 	}
 }
 

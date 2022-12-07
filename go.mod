@@ -24,18 +24,17 @@ require (
 	gitlab.com/distributed_lab/logan v3.8.1+incompatible
 	gitlab.com/distributed_lab/running v1.6.0
 	gitlab.com/distributed_lab/urlval v3.0.0+incompatible
-	gitlab.com/tokend/nft-books/price-svc v0.0.0-20221022125247-81cac705a28c
 
 )
 
 require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/miguelmota/go-solidity-sha3 v0.1.1
-	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221104125850-7e8369e2ce8a
-	gitlab.com/tokend/nft-books/book-svc v0.0.0-20221204140600-bccd09f982be
-	gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221205210819-6d0e50ffe1a3
+	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221207105353-c6d1df229e8d
+	gitlab.com/tokend/nft-books/book-svc v0.0.0-20221207110528-6f6ff8a47fac
+	gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221207000658-10fc4a16d47f
 	gitlab.com/tokend/nft-books/doorman v0.1.0-rc.1.0.20221202093129-30c17ef04208
-	gitlab.com/tokend/nft-books/network-svc v0.0.0-20221128140430-36aff79cbc1f
+	gitlab.com/tokend/nft-books/price-svc v0.0.0-20221202091547-364acb962d10
 )
 
 require (
