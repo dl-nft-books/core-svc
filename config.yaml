@@ -15,15 +15,19 @@ task_processor:
     min_abnormal_period: 10s
     max_abnormal_period: 10s
 
-api:
+api: # Api restrictions
   max_failed_attempts: 10
   request_delay: 5m
 
-mint:
+mint: # Parameters for mint signature generation
   signer: b5b6c7a28756d349ac1e7f7bf11fa885ea7d761c498c6f9803ad6b03675ad4a9
   precision: 18
   expiration: 5m
   chain_id: 137
+
+connector: # Connector to other APIs
+  url:
+  token:
 
 pdf_signature_params:
   api_key: b367178b5ddb3ea2cc9add1c9989b1eec155ffce4160b5b8c9777dbe28b9f3a6 #100 free uses only
@@ -34,21 +38,6 @@ pdf_signature_params:
     upper_line_height_indent: 7.198
     lower_line_height_indent: 12.9564
 
-pricer:
-  url: http://localhost:8111/
-
-documenter:
-  url: http://localhost:8000
-  token: #doorman auth token
-
-networker:
-  url:
-  token:
-
-booker:
-  url:
-  token:
-
 listener:
   addr: :8765
 
@@ -58,27 +47,3 @@ cop:
   upstream: "http://..."
   service_name: generator-svc
   service_port: 80
-
-
-#  +-----------BDS-BOOK--------------+
-#  |	|        			   		 |
-#  |	|        					 |
-#  |	|        					 |
-#  |	| MainHeightIndent       	 |
-#  |	|        					 |
-#  |	|        					 |
-#  |	v ---------line----------    |
-#  |						|		 |
-#  |				UpLHI	|		 |
-#  |						|		 |
-#  |	_  [signaturesignature]  --->| ParagraphWidhtIndent
-#  |	|							 |
-#  |	|	LowLHI					 |
-#  |	v							 |
-#  |	  -----------line------ ->   | LineWidthIndent
-#  |								 |
-#  |								 |
-#  +---------------------------------+
-
-
-

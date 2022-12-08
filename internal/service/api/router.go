@@ -17,12 +17,16 @@ func (s *service) router() chi.Router {
 		ape.RecoverMiddleware(s.log),
 		ape.LoganMiddleware(s.log),
 		ape.CtxMiddleware(
+			// Base configs
 			helpers.CtxLog(s.log),
 			helpers.CtxDB(postgres.NewDB(s.db)),
 
+			// Custom configs
 			helpers.CtxMinter(*s.ethMinterConfig),
-			helpers.CtxPricer(s.pricer),
 			helpers.CtxApiRestrictions(s.apiRestrictions),
+
+			// Connectors
+			helpers.CtxPricer(s.pricer),
 			helpers.CtxBooker(s.booker),
 			helpers.CtxTracker(s.tracker),
 			helpers.CtxDoormanConnector(s.doorman),

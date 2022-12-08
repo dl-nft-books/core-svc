@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"gitlab.com/tokend/nft-books/generator-svc/internal/jsonerrors"
 	"net/http"
 	"time"
 
@@ -68,7 +69,7 @@ func validateCreateTaskRequest(request *requests.CreateTaskRequest, w http.Respo
 		statusFilter = resources.TaskFinishedGeneration
 	)
 
-	// validating if user have generated a lot of books and did not pay for them
+	// Validating if a user has generated too many unpaid books
 	tasks, err := database.Tasks().
 		Sort(pgdb.Sorts{postgres.TasksCreatedAt}).
 		Select(data.TaskSelector{
@@ -83,24 +84,28 @@ func validateCreateTaskRequest(request *requests.CreateTaskRequest, w http.Respo
 
 	tasksNumber := len(tasks)
 
-	//  if no tasks found -- simply return that everything is ok
+	// If no tasks were found - simply return that everything is ok
 	if tasksNumber == 0 {
 		return true
 	}
 
 	if uint64(tasksNumber) >= restrictions.MaxFailedAttempts {
-		// TODO: make via jsonerrors.WithDetails
-		ape.RenderErr(w, problems.BadRequest(errors.New("maximum attempts number exceeded"))[0])
+		ape.RenderErr(w, jsonerrors.WithDetails(
+			problems.BadRequest(errors.New("max amount of tries exceeded"))[0],
+			jsonerrors.ApiMaxTriesExceeded,
+		))
 		return false
 	}
 
-	// then validating how often user try to buy the book
+	// Validating how often user tries to buy a book
 	lastCreatedAt := tasks[tasksNumber-1].CreatedAt
 
 	durationAfterPreviousAttempt := time.Now().Sub(lastCreatedAt)
 	if durationAfterPreviousAttempt < restrictions.RequestDelay {
-		// TODO: make via jsonerrors.WithDetails
-		ape.RenderErr(w, problems.BadRequest(errors.New("task delay not passed"))[0])
+		ape.RenderErr(w, jsonerrors.WithDetails(
+			problems.BadRequest(errors.New("task delay not passed"))[0],
+			jsonerrors.TaskDelayNotPassed,
+		))
 		return false
 	}
 

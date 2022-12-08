@@ -16,15 +16,17 @@ import (
 )
 
 var (
-	app = kingpin.New("generator-svc", "service that generates pdf and sends them to the s3")
+	app = kingpin.New("generator-svc", "service responsible for generating a book's pdf with a custom signature on it, handling status of uploading process, and storing tokens")
 
+	// Run commands
 	runCommand           = app.Command("run", "run command")
 	apiCommand           = runCommand.Command("api", "run api")
 	taskProcessorCommand = runCommand.Command("task-processor", "run task processor")
 
+	// Migration commands
 	migrateCommand     = app.Command("migrate", "migrate command")
-	migrateUpCommand   = migrateCommand.Command("up", "migrate db up")
-	migrateDownCommand = migrateCommand.Command("down", "migrate db down")
+	migrateUpCommand   = migrateCommand.Command("up", "migrate database up")
+	migrateDownCommand = migrateCommand.Command("down", "migrate database down")
 )
 
 func Run(args []string) bool {

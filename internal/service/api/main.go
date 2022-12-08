@@ -20,14 +20,17 @@ import (
 )
 
 type service struct {
+	// Base configs
 	log      *logan.Entry
 	copus    types.Copus
 	listener net.Listener
 	db       *pgdb.DB
 
+	// Custom configs
 	ethMinterConfig *config.MintConfig
 	apiRestrictions config.ApiRestrictions
 
+	// Connectors
 	pricer  *pricer.Connector
 	booker  *booker.Connector
 	tracker *tracker.Connector
@@ -47,14 +50,17 @@ func (s *service) run() error {
 
 func newService(cfg config.Config) *service {
 	return &service{
+		// Base configs
 		log:      cfg.Log(),
 		copus:    cfg.Copus(),
 		listener: cfg.Listener(),
 		db:       cfg.DB(),
 
+		// Custom configs
 		ethMinterConfig: cfg.MintConfig(),
 		apiRestrictions: cfg.ApiRestrictions(),
 
+		// Connectors
 		pricer:  cfg.PricerConnector(),
 		booker:  cfg.BookerConnector(),
 		tracker: cfg.TrackerConnector(),

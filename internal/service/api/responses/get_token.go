@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	NonSingleTaskErr   = errors.New("Either no tasks or duplicate for the given hash were found")
+	NonSingleTaskErr   = errors.New("either no tasks or duplicate for the given hash was found")
 	PaymentNotFoundErr = errors.New("payment with specified id was not found")
 )
 
