@@ -44,7 +44,7 @@ func (c *Connector) CreateToken(params models.CreateTokenParams) (id int64, err 
 		}
 	)
 
-	endpoint := fmt.Sprintf("%s/%s", c.baseUrl, tokensEndpoint)
+	endpoint := fmt.Sprintf("%s/%s/%s", c.baseUrl, generatorEndpoint, tokensEndpoint)
 	requestAsBytes, err := json.Marshal(request)
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to marshal request")
@@ -71,7 +71,7 @@ func (c *Connector) UpdateToken(params models.UpdateTokenParams) error {
 		Included: resources.Included{},
 	}
 
-	endpoint := fmt.Sprintf("%s/%s/%s", c.baseUrl, tokensEndpoint, request.Data.Key.ID)
+	endpoint := fmt.Sprintf("%s/%s/%s/%s", c.baseUrl, generatorEndpoint, tokensEndpoint, request.Data.Key.ID)
 	requestAsBytes, err := json.Marshal(request)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal request")
@@ -84,7 +84,7 @@ func (c *Connector) ListTokens(request models.ListTokensRequest) (*models.ListTo
 	var result models.ListTokensResponse
 
 	// setting full endpoint
-	fullEndpoint := fmt.Sprintf("%s/%s?%s", c.baseUrl, tokensEndpoint, urlval.MustEncode(request))
+	fullEndpoint := fmt.Sprintf("%s/%s/%s?%s", c.baseUrl, generatorEndpoint, tokensEndpoint, urlval.MustEncode(request))
 
 	// getting response
 	if _, err := c.get(fullEndpoint, &result); err != nil {
@@ -99,7 +99,7 @@ func (c *Connector) GetTokenById(id int64) (*models.TokenResponse, error) {
 	var result models.TokenResponse
 
 	// setting full endpoint
-	fullEndpoint := fmt.Sprintf("%s/%s/%d", c.baseUrl, tokensEndpoint, id)
+	fullEndpoint := fmt.Sprintf("%s/%s/%s/%d", c.baseUrl, generatorEndpoint, tokensEndpoint, id)
 
 	// getting response
 	found, err := c.get(fullEndpoint, &result)
