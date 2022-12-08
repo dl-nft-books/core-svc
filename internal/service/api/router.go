@@ -31,7 +31,7 @@ func (s *service) router() chi.Router {
 
 	r.Route("/integrations/generator", func(r chi.Router) {
 		r.Route("/tasks", func(r chi.Router) {
-			r.With(middlewares.CheckAccessToken).Post("/", handlers.CreateTask)
+			r.Post("/", handlers.CreateTask)
 			r.Get("/", handlers.ListTasks)
 
 			r.Route("/{id}", func(r chi.Router) {
