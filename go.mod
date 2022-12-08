@@ -31,7 +31,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/miguelmota/go-solidity-sha3 v0.1.1
 	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221207105353-c6d1df229e8d
-	gitlab.com/tokend/nft-books/book-svc v0.0.0-20221207110528-6f6ff8a47fac
+	gitlab.com/tokend/nft-books/book-svc v0.0.0-20221208185019-9f5208af2d9d
 	gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221207000658-10fc4a16d47f
 	gitlab.com/tokend/nft-books/doorman v0.1.0-rc.1.0.20221208122624-848d4fe0422f
 	gitlab.com/tokend/nft-books/price-svc v0.0.0-20221202091547-364acb962d10
