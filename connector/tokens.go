@@ -87,7 +87,7 @@ func (c *Connector) ListTokens(request models.ListTokensRequest) (*models.ListTo
 	fullEndpoint := fmt.Sprintf("%s/%s?%s", c.baseUrl, tokensEndpoint, urlval.MustEncode(request))
 
 	// getting response
-	if err := c.get(fullEndpoint, &result); err != nil {
+	if _, err := c.get(fullEndpoint, &result); err != nil {
 		// errors are already wrapped
 		return nil, err
 	}
@@ -102,9 +102,13 @@ func (c *Connector) GetTokenById(id int64) (*models.TokenResponse, error) {
 	fullEndpoint := fmt.Sprintf("%s/%s/%d", c.baseUrl, tokensEndpoint, id)
 
 	// getting response
-	if err := c.get(fullEndpoint, &result); err != nil {
+	found, err := c.get(fullEndpoint, &result)
+	if err != nil {
 		// errors are already wrapped
 		return nil, errors.From(err, logan.F{"id": id})
+	}
+	if !found {
+		return nil, nil
 	}
 
 	return &result, nil

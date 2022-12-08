@@ -71,7 +71,7 @@ func (c *Connector) ListTasks(request models.ListTasksRequest) (*models.ListTask
 	fullEndpoint := fmt.Sprintf("%s/%s?%s", c.baseUrl, tasksEndpoint, urlval.MustEncode(request))
 
 	// getting response
-	if err := c.get(fullEndpoint, &result); err != nil {
+	if _, err := c.get(fullEndpoint, &result); err != nil {
 		// errors are already wrapped
 		return nil, err
 	}
@@ -86,9 +86,13 @@ func (c *Connector) GetTaskById(id int64) (*models.TaskResponse, error) {
 	fullEndpoint := fmt.Sprintf("%s/%s/%d", c.baseUrl, tasksEndpoint, id)
 
 	// getting response
-	if err := c.get(fullEndpoint, &result); err != nil {
+	found, err := c.get(fullEndpoint, &result)
+	if err != nil {
 		// errors are already wrapped
 		return nil, errors.From(err, logan.F{"id": id})
+	}
+	if !found {
+		return nil, nil
 	}
 
 	return &result, nil
