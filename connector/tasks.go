@@ -16,13 +16,16 @@ const tasksEndpoint = "tasks"
 func (c *Connector) CreateTask(params models.CreateTaskParams) (id int64, err error) {
 	var (
 		response resources.KeyResponse
-		request  = resources.CreateTask{
-			Key: resources.NewKeyInt64(0, resources.TASKS),
-			Attributes: resources.CreateTaskAttributes{
-				Account:   params.Account,
-				BookId:    params.BookId,
-				Signature: params.Signature,
+		request  = resources.CreateTaskRequest{
+			Data: resources.CreateTask{
+				Key: resources.NewKeyInt64(0, resources.TASKS),
+				Attributes: resources.CreateTaskAttributes{
+					Account:   params.Account,
+					BookId:    params.BookId,
+					Signature: params.Signature,
+				},
 			},
+			Included: resources.Included{},
 		}
 	)
 
@@ -41,15 +44,18 @@ func (c *Connector) CreateTask(params models.CreateTaskParams) (id int64, err er
 }
 
 func (c *Connector) UpdateTask(params models.UpdateTaskParams) error {
-	request := resources.UpdateTask{
-		Key: resources.NewKeyInt64(params.Id, resources.TASKS),
-		Attributes: resources.UpdateTaskAttributes{
-			Status:  params.Status,
-			TokenId: params.TokenId,
+	request := resources.UpdateTaskRequest{
+		Data: resources.UpdateTask{
+			Key: resources.NewKeyInt64(params.Id, resources.TASKS),
+			Attributes: resources.UpdateTaskAttributes{
+				Status:  params.Status,
+				TokenId: params.TokenId,
+			},
 		},
+		Included: resources.Included{},
 	}
 
-	endpoint := fmt.Sprintf("%s/%s/%s", c.baseUrl, tasksEndpoint, request.ID)
+	endpoint := fmt.Sprintf("%s/%s/%s", c.baseUrl, tasksEndpoint, request.Data.Key.ID)
 	requestAsBytes, err := json.Marshal(request)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal request")

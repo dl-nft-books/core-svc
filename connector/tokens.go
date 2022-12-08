@@ -21,23 +21,26 @@ func (c *Connector) CreateToken(params models.CreateTokenParams) (id int64, err 
 		bookKey    = resources.NewKeyInt64(params.BookId, resources.BOOKS)
 		paymentKey = resources.NewKeyInt64(params.PaymentId, resources.PAYMENT)
 
-		request = resources.CreateToken{
-			Key: resources.NewKeyInt64(0, resources.TOKENS),
-			Attributes: resources.CreateTokenAttributes{
-				Account:      params.Account,
-				MetadataHash: params.MetadataHash,
-				Status:       params.Status,
-				TokenId:      params.TokenId,
-				Signature:    params.Signature,
-			},
-			Relationships: resources.CreateTokenRelationships{
-				Book: resources.Relation{
-					Data: &bookKey,
+		request = resources.CreateTokenRequest{
+			Data: resources.CreateToken{
+				Key: resources.NewKeyInt64(0, resources.TOKENS),
+				Attributes: resources.CreateTokenAttributes{
+					Account:      params.Account,
+					MetadataHash: params.MetadataHash,
+					Status:       params.Status,
+					TokenId:      params.TokenId,
+					Signature:    params.Signature,
 				},
-				Payment: resources.Relation{
-					Data: &paymentKey,
+				Relationships: resources.CreateTokenRelationships{
+					Book: resources.Relation{
+						Data: &bookKey,
+					},
+					Payment: resources.Relation{
+						Data: &paymentKey,
+					},
 				},
 			},
+			Included: resources.Included{},
 		}
 	)
 
@@ -56,16 +59,19 @@ func (c *Connector) CreateToken(params models.CreateTokenParams) (id int64, err 
 }
 
 func (c *Connector) UpdateToken(params models.UpdateTokenParams) error {
-	request := resources.UpdateToken{
-		Key: resources.NewKeyInt64(params.Id, resources.TOKENS),
-		Attributes: resources.UpdateTokenAttributes{
-			Owner:   params.Owner,
-			Status:  params.Status,
-			TokenId: params.TokenId,
+	request := resources.UpdateTokenRequest{
+		Data: resources.UpdateToken{
+			Key: resources.NewKeyInt64(params.Id, resources.TOKENS),
+			Attributes: resources.UpdateTokenAttributes{
+				Owner:   params.Owner,
+				Status:  params.Status,
+				TokenId: params.TokenId,
+			},
 		},
+		Included: resources.Included{},
 	}
 
-	endpoint := fmt.Sprintf("%s/%s/%s", c.baseUrl, tokensEndpoint, request.ID)
+	endpoint := fmt.Sprintf("%s/%s/%s", c.baseUrl, tokensEndpoint, request.Data.Key.ID)
 	requestAsBytes, err := json.Marshal(request)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal request")
