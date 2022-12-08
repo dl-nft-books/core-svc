@@ -1232,8 +1232,8 @@ gitlab.com/tokend/nft-books/book-svc v0.0.0-20221207110528-6f6ff8a47fac h1:npPUa
 gitlab.com/tokend/nft-books/book-svc v0.0.0-20221207110528-6f6ff8a47fac/go.mod h1:fJJm4F4cDyodinf02Smr0Bq9O/vWSpN50jn40QZyyqY=
 gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221207000658-10fc4a16d47f h1:knA7KY6THc5QOQEl+ZkU609EyZ+9rjYhRjWtPXoVo54=
 gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221207000658-10fc4a16d47f/go.mod h1:gHCbt0qUyfIViqbgdbUZWUutTf8jqCap899k0Gv6nBM=
-gitlab.com/tokend/nft-books/doorman v0.1.0-rc.1.0.20221202093129-30c17ef04208 h1:e4jnCGIjpxx1deC+H9NkOh8hTjvmJ0wU8QpUKz/Z6Nc=
-gitlab.com/tokend/nft-books/doorman v0.1.0-rc.1.0.20221202093129-30c17ef04208/go.mod h1:OP0gfs3KcgJcCAdEadNUT2pMxwBqgEq32bmX9HItFTs=
+gitlab.com/tokend/nft-books/doorman v0.1.0-rc.1.0.20221208122624-848d4fe0422f h1:ddoLuVWHHPCUdMFbcszPNY2Na7wP8/IyqQx/o1upTjU=
+gitlab.com/tokend/nft-books/doorman v0.1.0-rc.1.0.20221208122624-848d4fe0422f/go.mod h1:OP0gfs3KcgJcCAdEadNUT2pMxwBqgEq32bmX9HItFTs=
 gitlab.com/tokend/nft-books/go-sdk v0.1.2 h1:w0+cHanVfAW951iJ4cE/BGy/T/DlukBgf+O7QQjLXkc=
 gitlab.com/tokend/nft-books/go-sdk v0.1.2/go.mod h1:GtEYT+rHPUb5pT8+0PULSnkqkcksmOz7vlfqPxCwhas=
 gitlab.com/tokend/nft-books/price-svc v0.0.0-20221202091547-364acb962d10 h1:zoMQJNcVrc7v+Rg9ldsG+bs157UhgzneVe5M6nkDJto=
