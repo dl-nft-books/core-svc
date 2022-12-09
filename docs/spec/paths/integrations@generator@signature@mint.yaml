@@ -1,0 +1,29 @@
+get:
+  tags:
+    - Signature
+  summary: Get mint signature
+  operationId: getPrice
+  parameters:
+    - $ref: '#/components/parameters/PlatformParam'
+    - $ref: '#/components/parameters/TokenAddressParam'
+    - $ref: '#/components/parameters/TaskIDParam'
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Price'
+              included:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Signature'
+    '400':
+      $ref: '#/components/responses/BadRequestError'
+    '404':
+      $ref: '#/components/responses/NotFoundError'
+    '500':
+      $ref: '#/components/responses/InternalError'

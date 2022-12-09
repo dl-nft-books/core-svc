@@ -1,0 +1,65 @@
+allOf:
+  - $ref: '#/components/schemas/TaskKey'
+  - type: object
+    required:
+      - attributes
+      - relationships
+    properties:
+      attributes:
+        type: object
+        required:
+          - token_id
+          - book_id
+          - signature
+          - file_ipfs_hash
+          - metadata_ipfs_hash
+          - uri
+          - status
+        properties:
+          token_id:
+            type: integer
+            format: int64
+            example: 123
+          book_id:
+            type: integer
+            format: int64
+            example: 2
+          signature:
+            type: string
+            example: I love Distributed Lab!!!
+          file_ipfs_hash:
+            type: string
+            example: QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
+          metadata_ipfs_hash:
+            type: string
+            example: QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
+          uri:
+            type: string
+            example: >-
+              https://ipfs.io/ipfs/QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
+          status:
+            type: integer
+            format: TaskStatus
+            enum:
+              - name: pending
+                value: 1
+              - name: generating
+                value: 2
+              - name: finished_generation
+                value: 3
+              - name: uploading
+                value: 4
+              - name: finished_uploading
+                value: 5
+            example: 2
+      relationships:
+        type: object
+        properties:
+          book:
+            type: object
+            description: Book relation
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/BookKey'
+

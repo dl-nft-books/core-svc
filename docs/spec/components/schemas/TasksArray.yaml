@@ -1,0 +1,6 @@
+type: array
+description: Array of tasks
+items:
+  allOf:
+    - $ref: '#/components/schemas/Task'
+    - type: object

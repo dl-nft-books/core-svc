@@ -1,0 +1,96 @@
+post:
+  tags:
+    - Tasks
+  summary: Create new task
+  operationId: CreateTask
+  requestBody:
+    content:
+      applications/vnd.api+json:
+        schema:
+          type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/CreateTask'
+  responses:
+    '200':
+      description: Task created successfully
+      content:
+        application/vnd.api+json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/TaskKey'
+    '400':
+      description: bad request
+    '500':
+      description: internal error
+get:
+  tags:
+    - Tasks
+  summary: List all active tasks
+  operationId: ListTasks
+  parameters:
+    - $ref: '#/components/parameters/pageNumberParam'
+    - $ref: '#/components/parameters/pageLimitParam'
+    - name: 'filter[account]'
+      in: query
+      description: Array of account addresses to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    - name: 'filter[id]'
+      in: query
+      description: Array of task IDs to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+    - name: 'filter[state]'
+      in: query
+      description: Array of task states to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+          enum:
+            - name: pending
+              value: 1
+            - name: generating
+              value: 2
+            - name: finished_generation
+              value: 3
+            - name: uploading
+              value: 4
+            - name: finished_uploading
+              value: 5
+  responses:
+    '201':
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/TasksArray'
+              included:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+    '400':
+      $ref: '#/components/responses/BadRequestError'
+    '404':
+      $ref: '#/components/responses/NotFoundError'
+    '500':
+      $ref: '#/components/responses/InternalError'

@@ -1,0 +1,24 @@
+allOf:
+  - $ref: '#/components/schemas/CreateTaskKey'
+  - type: object
+    x-go-is-request: true
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - signature
+          - account
+          - book_id
+        properties:
+          signature:
+            type: string
+            example: I love Distributed Lab!!!
+          account:
+            type: string
+            example: '0xcD3C5Ecb0159DFD0B7b338341CF6594224aE2083'
+          book_id:
+            type: integer
+            format: int64
+            example: 2

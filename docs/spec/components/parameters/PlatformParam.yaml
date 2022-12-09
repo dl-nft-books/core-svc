@@ -1,0 +1,6 @@
+in: query
+name: platform
+required: true
+schema:
+  type: string
+  description: Token contract platform

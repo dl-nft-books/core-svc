@@ -1,0 +1,27 @@
+allOf:
+  - $ref: '#/components/schemas/TokenKey'
+  - type: object
+    required:
+      - attributes
+    x-go-is-request: true
+    properties:
+      attributes:
+        type: object
+        properties:
+          token_id:
+            type: integer
+            format: int64
+            example: 13
+          status:
+            type: integer
+            format: TokenStatus
+            enum:
+              - name: uploading
+                value: 1
+              - name: finished_uploading
+                value: 2
+            example: 2
+          owner:
+            type: string
+            example: '0x77dADb3Ce09Ef981A008fDC1cE40D8A023E0925e'
+            description: Address of a user who purchased this token

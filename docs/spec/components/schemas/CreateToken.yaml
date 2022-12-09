@@ -1,0 +1,61 @@
+allOf:
+  - $ref: '#/components/schemas/CreateTokenKey'
+  - type: object
+    x-go-is-request: true
+    required:
+      - attributes
+      - relationships
+    properties:
+      attributes:
+        type: object
+        required:
+          - account
+          - token_id
+          - metadata_hash
+          - status
+          - signature
+        properties:
+          token_id:
+            type: integer
+            format: int64
+            example: 13
+          status:
+            type: integer
+            format: TokenStatus
+            enum:
+              - name: uploading
+                value: 1
+              - name: finished_uploading
+                value: 2
+            example: 2
+          account:
+            type: string
+            example: '0x77dADb3Ce09Ef981A008fDC1cE40D8A023E0925e'
+            description: Address of a user who purchased this token
+          metadata_hash:
+            type: string
+            example: QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB
+            description: Hash of a metadata file
+          signature:
+            type: string
+            example: I hate managing 4 backend services in a week
+      relationships:
+        type: object
+        required:
+          - book
+          - payment
+        properties:
+          book:
+            type: object
+            description: Book relation
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/BookKey'
+          payment:
+            type: object
+            description: Payment relation
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/PaymentKey'

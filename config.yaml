@@ -1,0 +1,49 @@
+log:
+  level: debug
+  disable_sentry: true
+
+database:
+  url: postgres://book:book@localhost:2543/book?sslmode=disable
+
+task_processor:
+  name: task_processor # Name to be displayed in logs
+  processes_number: 1 # Number of parallel processes to add
+  cursor: 0 # Default cursor value
+  limit: 1 # Number of subtasks to be processed during one run (no more than 10)
+  runner: # Period settings
+    normal_period: 10s
+    min_abnormal_period: 10s
+    max_abnormal_period: 10s
+
+api: # Api restrictions
+  max_failed_attempts: 10
+  request_delay: 5m
+
+mint: # Parameters for mint signature generation
+  signer: b5b6c7a28756d349ac1e7f7bf11fa885ea7d761c498c6f9803ad6b03675ad4a9
+  precision: 18
+  expiration: 5m
+  chain_id: 137
+
+connector: # Connector to other APIs
+  url:
+  token:
+
+pdf_signature_params:
+  api_key: b367178b5ddb3ea2cc9add1c9989b1eec155ffce4160b5b8c9777dbe28b9f3a6 #100 free uses only
+  params:
+    main_height_indent: 441.2381
+    line_width_indent: 79.8757
+    paragraph_width_indent: 33.821
+    upper_line_height_indent: 7.198
+    lower_line_height_indent: 12.9564
+
+listener:
+  addr: :8765
+
+cop:
+  disabled: true
+  endpoint: "http://..."
+  upstream: "http://..."
+  service_name: generator-svc
+  service_port: 80

@@ -1,0 +1,13 @@
+type: object
+required:
+  - id
+  - type
+properties:
+  id:
+    type: string
+    example: 8
+  type:
+    type: string
+    example: books
+    enum:
+      - books

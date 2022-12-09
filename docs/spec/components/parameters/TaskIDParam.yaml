@@ -1,0 +1,6 @@
+name: task_id
+in: query
+description: Task identifier
+required: true
+schema:
+  type: integer
