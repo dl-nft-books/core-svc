@@ -10,7 +10,7 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/pdf"
+	pdfGenerator "gitlab.com/tokend/nft-books/generator-svc/internal/pdf_generator"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/runners/helpers"
 )
 
@@ -57,7 +57,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug("Generating signature...")
 
 	reader := bytes.NewReader(rawDocument)
-	pdfSignatureGenerator := pdf.New(p.signatureParams)
+	pdfSignatureGenerator := pdfGenerator.New(p.signatureParams)
 	rawDocumentWithSignature, err := pdfSignatureGenerator.GenerateSignature(reader, task.Signature)
 	if err != nil {
 		return errors.Wrap(err, "failed to generate signature")

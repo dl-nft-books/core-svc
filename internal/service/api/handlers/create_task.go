@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/internal/jsonerrors"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/jsonerrors"
 	"net/http"
 	"time"
 

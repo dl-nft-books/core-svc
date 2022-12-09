@@ -23,22 +23,22 @@ type TaskProcessor struct {
 	name     string
 	logger   *logan.Entry
 	db       data.DB
-	booksApi *booker.Connector
+	selector data.TaskSelector
 
-	selector        data.TaskSelector
 	runnerCfg       config.RunnerData
 	signatureParams *config.SignatureParams
-	documenter      *documenter.Connector
+
+	booksApi   *booker.Connector
+	documenter *documenter.Connector
 }
 
 func New(cfg config.Config) *TaskProcessor {
 	status := resources.TaskPending
 
 	return &TaskProcessor{
-		name:     cfg.TaskProcessorCfg().Name,
-		db:       postgres.NewDB(cfg.DB()),
-		logger:   cfg.Log(),
-		booksApi: cfg.BookerConnector(),
+		name:   cfg.TaskProcessorCfg().Name,
+		db:     postgres.NewDB(cfg.DB()),
+		logger: cfg.Log(),
 
 		selector: data.TaskSelector{
 			PageParams: &pgdb.CursorPageParams{
@@ -48,9 +48,12 @@ func New(cfg config.Config) *TaskProcessor {
 			},
 			Status: &status,
 		},
+
 		runnerCfg:       cfg.TaskProcessorCfg().Runner,
 		signatureParams: cfg.PdfSignatureParams(),
-		documenter:      cfg.DocumenterConnector(),
+
+		booksApi:   cfg.BookerConnector(),
+		documenter: cfg.DocumenterConnector(),
 	}
 }
 
