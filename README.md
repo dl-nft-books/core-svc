@@ -4,6 +4,9 @@
 
 generate pdfs and signatures
 
+PDF params (`pdf_signature_params` in the `config.yaml`) explanation:
+![Screenshot](./internal/pdf_generator/params.jpg)
+
 ## Install
 
   ```bash
@@ -32,8 +35,8 @@ To generate resources for Go models run `./generate.sh` script in root folder.
 use `./generate.sh --help` to see all available options.
 
 
-## Running from docker 
-  
+## Running from docker
+
 Make sure that docker installed.
 {%_ if (handleHTTP) { _%}
 use `docker run ` with `-p 8080:80` to expose port 80 to 8080
@@ -54,7 +57,7 @@ use `docker run ` with `-p 8080:80` to expose port 80 to 8080
 
 
 ### Database
-For services, we do use ***PostgresSQL*** database. 
+For services, we do use ***PostgresSQL*** database.
 You can [install it locally](https://www.postgresql.org/download/) or use [docker image](https://hub.docker.com/_/postgres/).
 
 
@@ -63,5 +66,4 @@ You can [install it locally](https://www.postgresql.org/download/) or use [docke
 
 ## Contact
 
-Responsible Max
-The primary contact for this project is @slbmax
+The primary contact for this project is `@slbmax` (Telegram)
