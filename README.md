@@ -2,10 +2,15 @@
 
 ## Description
 
-generate pdfs and signatures
+The core service responsible for generating NFTs.
+
+Service includes API endpoints for tasks – small state machines, where the first step is to prepare a book with user's custom signature and load it to the S3 bucket. The frontend side waits till the task receives `finished_generation` status. After that, the frontend gets an EIP712 Mint signature needed to send a transaction to mint token. For EIP712, we use a `price-svc` connector to get the proper amount of tokens per 1$ (NOT per book price in USD).
+
+When the token is minted, `contract-tracker` updates the task info (e.g., `status` and `token_id`) and creates a token object which contains an info such as book id, signature, owner, IPFS hash, etc.
 
 PDF params (`pdf_signature_params` in the `config.yaml`) explanation:
-![Screenshot](./internal/pdf_generator/params.jpg)
+
+![alt text](./docs/images/book_params.jpg)
 
 ## Install
 
