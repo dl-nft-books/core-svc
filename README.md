@@ -42,16 +42,12 @@ use `./generate.sh --help` to see all available options.
 
 ## Running from docker
 
-Make sure that docker installed.
-{%_ if (handleHTTP) { _%}
-use `docker run ` with `-p 8080:80` to expose port 80 to 8080
+Make sure that docker is installed. Use `docker run ` with `-p 8080:80` to expose port 80 to 8080
 
-{%_ } _%}
-
-    ```bash
-    docker build -t generator-svc .
-    docker run -e KV_VIPER_FILE=/config.yaml generator-svc
-    ```
+```bash
+docker build -t generator-svc .
+docker run -e KV_VIPER_FILE=/config.yaml generator-svc
+```
 
 ## Running from Source
 
@@ -67,8 +63,8 @@ You can [install it locally](https://www.postgresql.org/download/) or use [docke
 
 
 ### Third-party services
-
+- [UniPDF](https://github.com/unidoc/unipdf): service for modifying PDFs
 
 ## Contact
 
-The primary contact for this project is `@slbmax` (Telegram)
+The primary contact for this project is `@slbmax` (_Telegram_) and Dmytro Zakharov `@ZamDimon` (_Telegram_ as well)
