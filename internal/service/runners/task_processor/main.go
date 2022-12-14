@@ -67,8 +67,37 @@ func (p *TaskProcessor) Run(ctx context.Context) {
 	)
 }
 
+func (p *TaskProcessor) cleanTasks() error {
+	unresTasks, err := p.getUnresolvedTasks()
+	if err != nil {
+		return errors.Wrap(err, "failed to get tasks from the database")
+	}
+
+	if len(unresTasks) == 0 {
+		p.logger.Debug("Found no unresolved tasks to process")
+		return nil
+	}
+
+	for _, task := range unresTasks {
+		//errFields := logan.F{
+		//	"task_id":        task.Id,
+		//	"task_signature": task.Signature,
+		//	"task_status":    task.Status,
+		//}
+
+		p.logger.Info(task.CreatedAt)
+
+	}
+
+	return nil
+}
+
 func (p *TaskProcessor) run(ctx context.Context) error {
 	return p.db.Transaction(func() error {
+		if err := p.cleanTasks(); err != nil {
+			return err
+		}
+
 		tasks, err := p.getTasks(p.db)
 		if err != nil {
 			return errors.Wrap(err, "failed to get tasks from the database")
@@ -102,6 +131,21 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 		p.logger.Debugf("Successfully finished processing a batch of tasks (%d tasks)", len(tasks))
 		return nil
 	})
+}
+
+func (p *TaskProcessor) getUnresolvedTasks() ([]data.Task, error) {
+	status := resources.TaskFinishedGeneration
+	selector := data.TaskSelector{
+		Status: &status,
+	}
+
+	tasks, err := p.db.New().Tasks().Select(selector)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get subtasks from db")
+	}
+
+	return tasks, nil
 }
 
 func (p *TaskProcessor) getTasks(db data.DB) ([]data.Task, error) {
