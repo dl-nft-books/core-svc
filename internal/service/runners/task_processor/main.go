@@ -2,10 +2,12 @@ package task_processor
 
 import (
 	"context"
-	"strconv"
-
+	"fmt"
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
+	"net/http"
+	"strconv"
+	"time"
 
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
@@ -68,6 +70,8 @@ func (p *TaskProcessor) Run(ctx context.Context) {
 }
 
 func (p *TaskProcessor) cleanTasks() error {
+	const WAITING_PERIOD = 20 //minutes
+
 	unresTasks, err := p.getUnresolvedTasks()
 	if err != nil {
 		return errors.Wrap(err, "failed to get tasks from the database")
@@ -79,13 +83,36 @@ func (p *TaskProcessor) cleanTasks() error {
 	}
 
 	for _, task := range unresTasks {
-		//errFields := logan.F{
-		//	"task_id":        task.Id,
-		//	"task_signature": task.Signature,
-		//	"task_status":    task.Status,
-		//}
+		errFields := logan.F{
+			"task_id":        task.Id,
+			"task_signature": task.Signature,
+			"task_status":    task.Status,
+		}
 
-		p.logger.Info(task.CreatedAt)
+		// if task is in table more than WAITING_PERIOD minutes - it won`t be finished
+		expDate := task.CreatedAt.Local().Add(time.Minute * WAITING_PERIOD)
+
+		if !time.Now().After(expDate) {
+			continue
+		}
+
+		fileName := fmt.Sprintf("%s.pdf", task.FileIpfsHash)
+
+		statusCode, err := p.documenter.DeleteDocument(fileName)
+
+		if err != nil {
+			return errors.Wrap(err, "failed to delete document from S3", errFields)
+		}
+
+		if statusCode != http.StatusOK {
+			return errors.New("failed to delete document from S3")
+		}
+
+		if err := p.db.New().Tasks().Delete(task.Id); err != nil {
+			return errors.Wrap(err, "failed to delete task from data base", errFields)
+		}
+
+		p.logger.Debug("Document deleted from S3")
 
 	}
 
@@ -95,7 +122,7 @@ func (p *TaskProcessor) cleanTasks() error {
 func (p *TaskProcessor) run(ctx context.Context) error {
 	return p.db.Transaction(func() error {
 		if err := p.cleanTasks(); err != nil {
-			return err
+			return errors.Wrap(err, "failed to clean tasks")
 		}
 
 		tasks, err := p.getTasks(p.db)
