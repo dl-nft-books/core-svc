@@ -3,12 +3,12 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
-
 	"github.com/Masterminds/squirrel"
 	"github.com/fatih/structs"
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"time"
 )
 
 const (
@@ -84,6 +84,11 @@ func (q *tasksQ) Insert(task data.Task) (id int64, err error) {
 func (q *tasksQ) Delete(id int64) error {
 	statement := squirrel.Delete(tasksTable).Where(squirrel.Eq{tasksId: id})
 	return q.database.Exec(statement)
+}
+
+func (q *tasksQ) FilterByMaxWaitingPeriod(period time.Duration) data.TasksQ {
+	q.selector = q.selector.Where(squirrel.LtOrEq{TasksCreatedAt: time.Now().UTC().Add(time.Minute * -period)})
+	return q
 }
 
 func (q *tasksQ) UpdateFileIpfsHash(newIpfsHash string) data.TasksQ {

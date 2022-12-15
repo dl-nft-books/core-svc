@@ -43,6 +43,7 @@ type TasksQ interface {
 	Delete(id int64) error
 	Transaction(fn func(q TasksQ) error) error
 
+	FilterByMaxWaitingPeriod(period time.Duration) TasksQ
 	UpdateFileIpfsHash(newIpfsHash string) TasksQ
 	UpdateMetadataIpfsHash(newIpfsHash string) TasksQ
 	UpdateUri(newUri string) TasksQ

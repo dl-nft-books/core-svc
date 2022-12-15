@@ -3,20 +3,18 @@ package task_processor
 import (
 	"context"
 	"fmt"
-	booker "gitlab.com/tokend/nft-books/book-svc/connector"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
-	"net/http"
-	"strconv"
-	"time"
-
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/running"
 	documenter "gitlab.com/tokend/nft-books/blob-svc/connector/api"
+	booker "gitlab.com/tokend/nft-books/book-svc/connector"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"net/http"
+	"strconv"
 )
 
 const cursorKey = "task_processor_cursor"
@@ -70,8 +68,6 @@ func (p *TaskProcessor) Run(ctx context.Context) {
 }
 
 func (p *TaskProcessor) cleanTasks() error {
-	const WAITING_PERIOD = 20 //minutes
-
 	unresTasks, err := p.getUnresolvedTasks()
 	if err != nil {
 		return errors.Wrap(err, "failed to get tasks from the database")
@@ -87,13 +83,6 @@ func (p *TaskProcessor) cleanTasks() error {
 			"task_id":        task.Id,
 			"task_signature": task.Signature,
 			"task_status":    task.Status,
-		}
-
-		// if task is in table more than WAITING_PERIOD minutes - it won`t be finished
-		expDate := task.CreatedAt.Local().Add(time.Minute * WAITING_PERIOD)
-
-		if !time.Now().After(expDate) {
-			continue
 		}
 
 		fileName := fmt.Sprintf("%s.pdf", task.FileIpfsHash)
@@ -161,12 +150,15 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 }
 
 func (p *TaskProcessor) getUnresolvedTasks() ([]data.Task, error) {
+	// if task is in table more than WAITING_PERIOD minutes - it won`t be finished so we delete it
+	const WAITING_PERIOD = 20 //minutes
+
 	status := resources.TaskFinishedGeneration
 	selector := data.TaskSelector{
 		Status: &status,
 	}
 
-	tasks, err := p.db.New().Tasks().Select(selector)
+	tasks, err := p.db.New().Tasks().FilterByMaxWaitingPeriod(WAITING_PERIOD).Select(selector)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get subtasks from db")
