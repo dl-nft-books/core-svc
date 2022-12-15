@@ -86,6 +86,11 @@ func (q *tokensQ) FilterByPaymentId(paymentId ...int64) data.TokensQ {
 	return q
 }
 
+func (q *tokensQ) FilterByMetadataHash(metadataHash ...string) data.TokensQ {
+	q.selector = q.selector.Where(squirrel.Eq{tokensMetadataHash: metadataHash})
+	return q
+}
+
 func (q *tokensQ) Select() (tokens []data.Token, err error) {
 	err = q.database.Select(&tokens, q.selector)
 	return
@@ -128,6 +133,11 @@ func (q *tokensQ) UpdateStatus(newStatus resources.TokenStatus) data.TokensQ {
 
 func (q *tokensQ) UpdateOwner(newOwner string) data.TokensQ {
 	q.updater = q.updater.Set(tokensAccount, newOwner)
+	return q
+}
+
+func (q *tokensQ) UpdateMetadataHash(newMetadataHash string) data.TokensQ {
+	q.updater = q.updater.Set(tokensMetadataHash, newMetadataHash)
 	return q
 }
 

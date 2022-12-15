@@ -58,6 +58,9 @@ func applyTokenUpdateFilters(q data.TokensQ, request resources.UpdateTokenReques
 	if request.Data.Attributes.Status != nil {
 		q = q.UpdateStatus(*request.Data.Attributes.Status)
 	}
+	if request.Data.Attributes.MetadataHash != nil {
+		q = q.UpdateMetadataHash(*request.Data.Attributes.MetadataHash)
+	}
 
 	return q
 }
