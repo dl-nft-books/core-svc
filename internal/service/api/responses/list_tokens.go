@@ -54,7 +54,9 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 
 		metadata, err := helpers.GetMetadataFromHash(token.MetadataHash)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to get metadata from hash")
+			return nil, errors.Wrap(err, "failed to get metadata from hash", logan.F{
+				"metadata_hash": token.MetadataHash,
+			})
 		}
 
 		tokenAsResource := resources.Token{

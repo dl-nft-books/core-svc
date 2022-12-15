@@ -25,7 +25,7 @@ func UpdateToken(w http.ResponseWriter, r *http.Request) {
 
 	// Validating whether specified task exists
 	tokenId := cast.ToInt64(request.Data.ID)
-	token, err := tokensQ.FilterByTokenId(tokenId).Get()
+	token, err := tokensQ.FilterById(tokenId).Get()
 	if err != nil {
 		helpers.Log(r).WithError(err).Errorf("failed to get a token with id of %v", tokenId)
 		ape.RenderErr(w, problems.InternalError())
