@@ -48,7 +48,7 @@ func applyTokensQFilters(q data.TokensQ, request *requests.ListTokensRequest) da
 	if len(request.Status) > 0 {
 		q = q.FilterByStatus(request.Status...)
 	}
-	if request.MetadataHash != nil {
+	if len(request.MetadataHash) > 0 {
 		q = q.FilterByMetadataHash(request.MetadataHash...)
 	}
 
