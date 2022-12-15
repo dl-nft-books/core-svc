@@ -15,6 +15,7 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 const cursorKey = "task_processor_cursor"
@@ -26,6 +27,7 @@ type TaskProcessor struct {
 	selector data.TaskSelector
 
 	runnerCfg       config.RunnerData
+	cleanerCfg      config.CleanerData
 	signatureParams *config.SignatureParams
 
 	booksApi   *booker.Connector
@@ -50,6 +52,7 @@ func New(cfg config.Config) *TaskProcessor {
 		},
 
 		runnerCfg:       cfg.TaskProcessorCfg().Runner,
+		cleanerCfg:      cfg.TaskProcessorCfg().Cleaner,
 		signatureParams: cfg.PdfSignatureParams(),
 
 		booksApi:   cfg.BookerConnector(),
@@ -150,15 +153,13 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 }
 
 func (p *TaskProcessor) getUnresolvedTasks() ([]data.Task, error) {
-	// if task is in table more than WAITING_PERIOD minutes - it won`t be finished so we delete it
-	const WAITING_PERIOD = 20 //minutes
-
+	waitingPeriod := time.Duration(p.cleanerCfg.MaxWaitingPeriod)
 	status := resources.TaskFinishedGeneration
 	selector := data.TaskSelector{
 		Status: &status,
 	}
 
-	tasks, err := p.db.New().Tasks().FilterByMaxWaitingPeriod(WAITING_PERIOD).Select(selector)
+	tasks, err := p.db.New().Tasks().FilterByMaxWaitingPeriod(waitingPeriod).Select(selector)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get subtasks from db")

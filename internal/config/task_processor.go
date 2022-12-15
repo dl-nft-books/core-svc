@@ -17,6 +17,10 @@ type RunnerData struct {
 	MaxAbnormalPeriod time.Duration `fig:"max_abnormal_period"`
 }
 
+type CleanerData struct {
+	MaxWaitingPeriod int `fig:"max_waiting_period"`
+}
+
 type TaskProcessor interface {
 	TaskProcessorCfg() TaskProcessorCfg
 }
@@ -33,11 +37,12 @@ func NewTaskProcessor(getter kv.Getter) TaskProcessor {
 }
 
 type TaskProcessorCfg struct {
-	Name            string     `fig:"name"`
-	Cursor          uint64     `fig:"cursor"`
-	Limit           uint64     `fig:"limit,non_zero"`
-	ProcessesNumber uint64     `fig:"processes_number,non_zero"`
-	Runner          RunnerData `fig:"runner,required"`
+	Name            string      `fig:"name"`
+	Cursor          uint64      `fig:"cursor"`
+	Limit           uint64      `fig:"limit,non_zero"`
+	ProcessesNumber uint64      `fig:"processes_number,non_zero"`
+	Runner          RunnerData  `fig:"runner,required"`
+	Cleaner         CleanerData `fig:"cleaner,required"`
 }
 
 func (t *taskProcessor) TaskProcessorCfg() TaskProcessorCfg {
