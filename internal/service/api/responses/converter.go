@@ -65,7 +65,7 @@ func convertBookToResource(bookResponse booker.GetBookResponse) resources.Resour
 			},
 			Price:   bookResponse.Data.Attributes.Price,
 			Title:   bookResponse.Data.Attributes.Title,
-			TokenId: bookResponse.Data.Attributes.TokenId,
+			TokenId: int32(bookResponse.Data.Attributes.TokenId),
 		},
 	}
 }

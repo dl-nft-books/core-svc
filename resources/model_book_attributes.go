@@ -28,5 +28,5 @@ type BookAttributes struct {
 	// Book title
 	Title string `json:"title"`
 	// id from the contract that corresponds to the given book
-	TokenId int64 `json:"token_id"`
+	TokenId int32 `json:"token_id"`
 }

@@ -58,14 +58,14 @@ allOf:
         properties:
           book:
             type: object
-            description: Book relation
+            description: Information about related book Token
             properties:
               data:
                 type: object
                 $ref: '#/components/schemas/BookKey'
           payment:
             type: object
-            description: Payment relation
+            description: Payment relation Token
             properties:
               data:
                 type: object

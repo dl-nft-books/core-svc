@@ -36,7 +36,7 @@ func UpdateToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Clearing selector filters and applying updator ones
+	// Clearing selector filters and applying updater ones
 	tokensQ = applyTokenUpdateFilters(tokensQ.New(), *request)
 
 	if err = tokensQ.Update(tokenId); err != nil {

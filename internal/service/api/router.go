@@ -54,6 +54,22 @@ func (s *service) router() chi.Router {
 			})
 		})
 
+		r.Route("/promocodes", func(r chi.Router) {
+			r.Get("/", handlers.ListPromocodes)
+			r.Post("/", handlers.CreatePromocode)
+
+			r.Get("/validate/{promocode}", handlers.ValidatePromocodeById)
+
+			r.Patch("/rollback/{id}", handlers.RollbackPromocode)
+			r.Patch("/use/{id}", handlers.UsePromocode)
+
+			r.Route("/{id}", func(r chi.Router) {
+				r.Get("/", handlers.GetPromocodeById)
+				r.Delete("/", handlers.DeletePromocodeById)
+				r.Patch("/", handlers.UpdatePromocodeById)
+			})
+		})
+
 		r.Route("/signature", func(r chi.Router) {
 			r.Get("/mint", handlers.SignMint)
 		})

@@ -57,7 +57,6 @@ allOf:
         properties:
           book:
             type: object
-            description: Book relation
             properties:
               data:
                 type: object
