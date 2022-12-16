@@ -31,6 +31,7 @@ type Config interface {
 	// Internal service configuration
 	MintConfigurator
 	TaskProcessor
+	TaskCleaner
 	PdfSignatureParams() *SignatureParams
 	ApiRestrictions() ApiRestrictions
 }
@@ -51,6 +52,7 @@ type config struct {
 	// Internal service configuration
 	MintConfigurator
 	TaskProcessor
+	TaskCleaner
 	pdfSignatureParams comfig.Once
 
 	// Getters and comfig.Once's
@@ -77,5 +79,6 @@ func New(getter kv.Getter) Config {
 		// Internal service configuration
 		MintConfigurator: NewEthMinterConfigurator(getter),
 		TaskProcessor:    NewTaskProcessor(getter),
+		TaskCleaner:      NewTaskCleaner(getter),
 	}
 }

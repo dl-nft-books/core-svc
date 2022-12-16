@@ -145,7 +145,8 @@ func applyTasksSelector(sql squirrel.SelectBuilder, selector data.TaskSelector) 
 		sql = sql.Where(squirrel.Eq{tasksStatus: *selector.Status})
 	}
 	if selector.Period != nil {
-		sql = sql.Where(squirrel.LtOrEq{TasksCreatedAt: time.Now().UTC().Add(-1 * *selector.Period)})
+		expirationDate := time.Now().UTC().Add(-(*selector.Period))
+		sql = sql.Where(squirrel.LtOrEq{TasksCreatedAt: expirationDate})
 	}
 	if selector.OffsetParams != nil {
 		return selector.OffsetParams.ApplyTo(sql, tasksId)

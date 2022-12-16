@@ -2,7 +2,6 @@ package task_processor
 
 import (
 	"context"
-	"fmt"
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
@@ -13,7 +12,6 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
-	"net/http"
 	"strconv"
 )
 
@@ -26,7 +24,6 @@ type TaskProcessor struct {
 	selector data.TaskSelector
 
 	runnerCfg       config.RunnerData
-	cleanerCfg      config.CleanerData
 	signatureParams *config.SignatureParams
 
 	booksApi   *booker.Connector
@@ -51,7 +48,6 @@ func New(cfg config.Config) *TaskProcessor {
 		},
 
 		runnerCfg:       cfg.TaskProcessorCfg().Runner,
-		cleanerCfg:      cfg.TaskProcessorCfg().Cleaner,
 		signatureParams: cfg.PdfSignatureParams(),
 
 		booksApi:   cfg.BookerConnector(),
@@ -67,57 +63,6 @@ func (p *TaskProcessor) Run(ctx context.Context) {
 		p.runnerCfg.MinAbnormalPeriod,
 		p.runnerCfg.MaxAbnormalPeriod,
 	)
-}
-
-func (p *TaskProcessor) RunCleaner(ctx context.Context) {
-	running.WithBackOff(
-		ctx, p.logger,
-		p.cleanerCfg.Name, p.runCleaner,
-		p.cleanerCfg.CheckingPeriod,
-		p.runnerCfg.MinAbnormalPeriod,
-		p.runnerCfg.MaxAbnormalPeriod,
-	)
-}
-
-func (p *TaskProcessor) runCleaner(ctx context.Context) error {
-	unresolvedTasks, err := p.getUnresolvedTasks()
-	if err != nil {
-		return errors.Wrap(err, "failed to get tasks from the database")
-	}
-
-	if len(unresolvedTasks) == 0 {
-		p.logger.Debug("Found no unresolved tasks to process")
-		return nil
-	}
-
-	for _, task := range unresolvedTasks {
-		errFields := logan.F{
-			"task_id":        task.Id,
-			"task_signature": task.Signature,
-			"task_status":    task.Status,
-		}
-
-		fileName := fmt.Sprintf("%s.pdf", task.FileIpfsHash)
-
-		statusCode, err := p.documenter.DeleteDocument(fileName)
-
-		if err != nil {
-			return errors.Wrap(err, "failed to delete document from S3", errFields)
-		}
-
-		if statusCode != http.StatusOK {
-			return errors.New("failed to delete document from S3")
-		}
-
-		if err := p.db.New().Tasks().Delete(task.Id); err != nil {
-			return errors.Wrap(err, "failed to delete task from data base", errFields)
-		}
-
-		p.logger.Debugf("Document deleted from S3 (task_id: %d)", task.Id)
-
-	}
-
-	return nil
 }
 
 func (p *TaskProcessor) run(ctx context.Context) error {
@@ -155,21 +100,6 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 		p.logger.Debugf("Successfully finished processing a batch of tasks (%d tasks)", len(tasks))
 		return nil
 	})
-}
-
-func (p *TaskProcessor) getUnresolvedTasks() ([]data.Task, error) {
-	status := resources.TaskFinishedGeneration
-	selector := data.TaskSelector{
-		Status: &status,
-		Period: &p.cleanerCfg.CleaningPeriod,
-	}
-	tasks, err := p.db.New().Tasks().Select(selector)
-
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get subtasks from db")
-	}
-
-	return tasks, nil
 }
 
 func (p *TaskProcessor) getTasks(db data.DB) ([]data.Task, error) {
