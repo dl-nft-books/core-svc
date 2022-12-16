@@ -15,6 +15,7 @@ task_processor:
     min_abnormal_period: 10s
     max_abnormal_period: 10s
   cleaner: # Task cleaner settings
+    name: task_cleaner # Name to be displayed in logs
     checking_period: 10s # seconds / How often will it check tasks to clean
     cleaning_period: 20m # minutes / How long task can stay unresolved until it will be deleted
 
