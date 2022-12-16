@@ -15,7 +15,6 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 const cursorKey = "task_processor_cursor"
@@ -70,18 +69,28 @@ func (p *TaskProcessor) Run(ctx context.Context) {
 	)
 }
 
-func (p *TaskProcessor) cleanTasks() error {
-	unresTasks, err := p.getUnresolvedTasks()
+func (p *TaskProcessor) RunCleaner(ctx context.Context) {
+	running.WithBackOff(
+		ctx, p.logger,
+		p.cleanerCfg.Name, p.runCleaner,
+		p.cleanerCfg.CheckingPeriod,
+		p.runnerCfg.MinAbnormalPeriod,
+		p.runnerCfg.MaxAbnormalPeriod,
+	)
+}
+
+func (p *TaskProcessor) runCleaner(ctx context.Context) error {
+	unresolvedTasks, err := p.getUnresolvedTasks()
 	if err != nil {
 		return errors.Wrap(err, "failed to get tasks from the database")
 	}
 
-	if len(unresTasks) == 0 {
+	if len(unresolvedTasks) == 0 {
 		p.logger.Debug("Found no unresolved tasks to process")
 		return nil
 	}
 
-	for _, task := range unresTasks {
+	for _, task := range unresolvedTasks {
 		errFields := logan.F{
 			"task_id":        task.Id,
 			"task_signature": task.Signature,
@@ -104,7 +113,7 @@ func (p *TaskProcessor) cleanTasks() error {
 			return errors.Wrap(err, "failed to delete task from data base", errFields)
 		}
 
-		p.logger.Debug("Document deleted from S3")
+		p.logger.Debugf("Document deleted from S3 (task_id: %d)", task.Id)
 
 	}
 
@@ -113,10 +122,6 @@ func (p *TaskProcessor) cleanTasks() error {
 
 func (p *TaskProcessor) run(ctx context.Context) error {
 	return p.db.Transaction(func() error {
-		if err := p.cleanTasks(); err != nil {
-			return errors.Wrap(err, "failed to clean tasks")
-		}
-
 		tasks, err := p.getTasks(p.db)
 		if err != nil {
 			return errors.Wrap(err, "failed to get tasks from the database")
@@ -153,13 +158,12 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 }
 
 func (p *TaskProcessor) getUnresolvedTasks() ([]data.Task, error) {
-	waitingPeriod := time.Duration(p.cleanerCfg.MaxWaitingPeriod)
 	status := resources.TaskFinishedGeneration
 	selector := data.TaskSelector{
 		Status: &status,
+		Period: &p.cleanerCfg.CleaningPeriod,
 	}
-
-	tasks, err := p.db.New().Tasks().FilterByMaxWaitingPeriod(waitingPeriod).Select(selector)
+	tasks, err := p.db.New().Tasks().Select(selector)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get subtasks from db")

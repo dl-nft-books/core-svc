@@ -18,7 +18,9 @@ type RunnerData struct {
 }
 
 type CleanerData struct {
-	MaxWaitingPeriod int `fig:"max_waiting_period"`
+	CheckingPeriod time.Duration `fig:"checking_period"`
+	CleaningPeriod time.Duration `fig:"cleaning_period"`
+	Name           string        `fig:"name"`
 }
 
 type TaskProcessor interface {

@@ -59,6 +59,8 @@ func Run(args []string) bool {
 			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
 			log.Infof("started task processor #%d", i+1)
 		}
+		run(waitGroup, ctx, cfg, runners.RunTaskCleaner)
+		log.Info("started task cleaner")
 	case migrateUpCommand.FullCommand():
 		err = MigrateUp(cfg)
 	case migrateDownCommand.FullCommand():

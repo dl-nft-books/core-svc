@@ -9,3 +9,7 @@ import (
 func RunTaskProcessor(ctx context.Context, cfg config.Config) {
 	taskProcessor.New(cfg).Run(ctx)
 }
+
+func RunTaskCleaner(ctx context.Context, cfg config.Config) {
+	taskProcessor.New(cfg).RunCleaner(ctx)
+}

@@ -15,7 +15,8 @@ task_processor:
     min_abnormal_period: 10s
     max_abnormal_period: 10s
   cleaner: # Task cleaner settings
-    max_waiting_period: 20 # minutes
+    checking_period: 10s # seconds / How often will it check tasks to clean
+    cleaning_period: 20m # minutes / How long task can stay unresolved until it will be deleted
 
 api: # Api restrictions
   max_failed_attempts: 10

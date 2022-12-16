@@ -86,11 +86,6 @@ func (q *tasksQ) Delete(id int64) error {
 	return q.database.Exec(statement)
 }
 
-func (q *tasksQ) FilterByMaxWaitingPeriod(period time.Duration) data.TasksQ {
-	q.selector = q.selector.Where(squirrel.LtOrEq{TasksCreatedAt: time.Now().UTC().Add(time.Minute * -period)})
-	return q
-}
-
 func (q *tasksQ) UpdateFileIpfsHash(newIpfsHash string) data.TasksQ {
 	q.updater = q.updater.Set(tasksFileIpfsHash, newIpfsHash)
 	return q
@@ -148,6 +143,9 @@ func applyTasksSelector(sql squirrel.SelectBuilder, selector data.TaskSelector) 
 	}
 	if selector.Status != nil {
 		sql = sql.Where(squirrel.Eq{tasksStatus: *selector.Status})
+	}
+	if selector.Period != nil {
+		sql = sql.Where(squirrel.LtOrEq{TasksCreatedAt: time.Now().UTC().Add(-1 * *selector.Period)})
 	}
 	if selector.OffsetParams != nil {
 		return selector.OffsetParams.ApplyTo(sql, tasksId)
