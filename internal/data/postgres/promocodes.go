@@ -28,7 +28,6 @@ type promocodesQ struct {
 	database *pgdb.DB
 	selector squirrel.SelectBuilder
 	updater  squirrel.UpdateBuilder
-	deleter  squirrel.DeleteBuilder
 }
 
 func NewPromocodesQ(database *pgdb.DB) data.PromocodesQ {
@@ -36,7 +35,6 @@ func NewPromocodesQ(database *pgdb.DB) data.PromocodesQ {
 		database: database,
 		selector: squirrel.Select(fmt.Sprintf("%s.*", promocodesTable)).From(promocodesTable),
 		updater:  squirrel.Update(promocodesTable).Suffix("RETURNING *"),
-		deleter:  squirrel.Delete(promocodesTable),
 	}
 }
 
@@ -59,19 +57,16 @@ func (q *promocodesQ) Sort(sort pgdb.Sorts) data.PromocodesQ {
 
 func (q *promocodesQ) FilterById(id ...int64) data.PromocodesQ {
 	q.selector = q.selector.Where(squirrel.Eq{promocodesId: id})
-	q.deleter = q.deleter.Where(squirrel.Eq{promocodesId: id})
 	return q
 }
 
 func (q *promocodesQ) FilterByPromocode(promocode ...string) data.PromocodesQ {
 	q.selector = q.selector.Where(squirrel.Eq{promocodesPromocode: promocode})
-	q.deleter = q.deleter.Where(squirrel.Eq{promocodesPromocode: promocode})
 	return q
 }
 
 func (q *promocodesQ) FilterByState(state ...resources.PromocodeState) data.PromocodesQ {
 	q.selector = q.selector.Where(squirrel.Eq{promocodesState: state})
-	q.deleter = q.deleter.Where(squirrel.Eq{promocodesState: state})
 
 	return q
 }
