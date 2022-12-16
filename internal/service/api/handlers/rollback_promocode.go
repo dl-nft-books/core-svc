@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"net/http"
 
@@ -32,7 +31,9 @@ func RollbackPromocode(w http.ResponseWriter, r *http.Request) {
 	}
 	if promocode.State == resources.PromocodeExpired {
 		logger.WithError(err).Info("promocode has been expired")
-		ape.RenderErr(w, problems.Forbidden())
+		errorInactive := problems.Forbidden()
+		errorInactive.Detail = "promocode has been expired"
+		ape.RenderErr(w, errorInactive)
 		return
 	}
 
@@ -42,23 +43,12 @@ func RollbackPromocode(w http.ResponseWriter, r *http.Request) {
 		promocodesQ = promocodesQ.UpdateState(resources.PromocodeActive)
 	}
 
-	promocode, err = promocodesQ.Update(promocode.Id)
+	err = promocodesQ.Update(promocode.Id)
 
 	if err != nil {
 		logger.WithError(err).Error("failed to get promocode")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	if promocode == nil {
-		ape.RenderErr(w, problems.NotFound())
-		return
-	}
-	promocodeResponse, err := responses.NewGetPromocodeResponse(*promocode)
-	if err != nil {
-		logger.WithError(err).Error("failed to get promocode response")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
-
-	ape.Render(w, *promocodeResponse)
+	w.WriteHeader(http.StatusNoContent)
 }

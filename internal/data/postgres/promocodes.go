@@ -91,22 +91,23 @@ func (q *promocodesQ) Get() (*data.Promocode, error) {
 	return &promocode, err
 }
 
-func (q *promocodesQ) Delete() error {
-	var promocode data.Promocode
-	err := q.database.Get(&promocode, q.deleter)
+func (q *promocodesQ) DeleteByID(id int64) error {
+	err := q.database.Exec(squirrel.Delete(promocodesTable).
+		Where(squirrel.Eq{promocodesId: id}))
 	if err == sql.ErrNoRows {
 		return nil
 	}
 	return err
 }
 
-func (q *promocodesQ) Insert(promocode data.Promocode) (data.Promocode, error) {
+func (q *promocodesQ) Insert(promocode data.Promocode) (int64, error) {
+	var id int64
 	statement := squirrel.Insert(promocodesTable).
-		Suffix("returning *").
+		Suffix("returning id").
 		SetMap(structs.Map(&promocode))
 
-	err := q.database.Get(&promocode, statement)
-	return promocode, err
+	err := q.database.Get(&id, statement)
+	return id, err
 }
 
 func (q *promocodesQ) Transaction(fn func(q data.PromocodesQ) error) (err error) {
@@ -140,15 +141,26 @@ func (q *promocodesQ) UpdateExpirationDate(newExpirationDate time.Time) data.Pro
 	return q
 }
 
-func (q *promocodesQ) Update(id int64) (*data.Promocode, error) {
-	var promocode data.Promocode
-	err := q.database.Get(&promocode, q.updater.Where(squirrel.Eq{promocodesId: id}))
-	return &promocode, err
+func (q *promocodesQ) Update(id int64) error {
+	err := q.database.Exec(q.updater.Where(squirrel.Eq{promocodesId: id}))
+	return err
 }
 
 func (q *promocodesQ) UpdateWhereExpired() error {
-	err := q.database.Exec(q.updater.
+	return q.database.Exec(q.updater.
 		Where(squirrel.LtOrEq{promocodesExpirationDate: time.Now()}).
 		Where(squirrel.Eq{promocodesState: resources.PromocodeActive}))
-	return err
+}
+
+func (q *promocodesQ) UpdateWhereFullyUsed() error {
+	return q.database.Exec(q.updater.
+		Where(squirrel.LtOrEq{promocodesLeftUsages: 0}).
+		Where(squirrel.Eq{promocodesState: resources.PromocodeActive}))
+}
+
+func (q *promocodesQ) UpdateWhereActive() error {
+	return q.database.Exec(q.updater.
+		Where(squirrel.Gt{promocodesExpirationDate: time.Now()}).
+		Where(squirrel.Gt{promocodesLeftUsages: 0}).
+		Where(squirrel.NotEq{promocodesState: resources.PromocodeActive}))
 }

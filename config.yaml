@@ -2,7 +2,7 @@ log:
   level: debug
   disable_sentry: true
 
-database:
+db:
   url: postgres://book:book@localhost:2543/book?sslmode=disable
 
 task_processor:
@@ -14,6 +14,14 @@ task_processor:
     normal_period: 10s
     min_abnormal_period: 10s
     max_abnormal_period: 10s
+
+promocodes:
+  name: promocode_checker
+  decimal: 2 # number of digits after decimal point
+  checker:
+    normal_period: 10 # in seconds
+    min_abnormal_period: 1 # in seconds
+    max_abnormal_period: 3000  # in seconds
 
 api: # Api restrictions
   max_failed_attempts: 10

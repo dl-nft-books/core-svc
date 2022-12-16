@@ -8,7 +8,7 @@ create table promocodes
     initial_usages     bigint    not null default 0,
     left_usages        bigint    not null default 0,
     expiration_date    timestamp not null default CURRENT_TIMESTAMP,
-    state              int8      not null default 0
+    state              int8      not null default 1
 );
 
 -- +migrate Down

@@ -53,6 +53,7 @@ func Run(args []string) bool {
 	switch cmd {
 	case apiCommand.FullCommand():
 		run(waitGroup, ctx, cfg, api.Run)
+		run(waitGroup, ctx, cfg, runners.RunPromocodeChecker)
 		log.Info("started api...")
 	case taskProcessorCommand.FullCommand():
 		for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {

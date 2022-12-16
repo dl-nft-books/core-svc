@@ -24,6 +24,7 @@ func (s *service) router() chi.Router {
 			// Custom configs
 			helpers.CtxMinter(*s.ethMinterConfig),
 			helpers.CtxApiRestrictions(s.apiRestrictions),
+			helpers.CtxPromocodes(s.promocodes),
 
 			// Connectors
 			helpers.CtxPricer(s.pricer),

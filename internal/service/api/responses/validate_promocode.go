@@ -21,18 +21,8 @@ func NewValidatePromocodeResponse(promocode data.Promocode) (*resources.Validate
 				Data: &relKey,
 			},
 		}
-		response.Included.Add(&resources.Promocode{
-			Key: resources.NewKeyInt64(promocode.Id, resources.PROMOCODE),
-			Attributes: resources.PromocodeAttributes{
-				Id:             promocode.Id,
-				Promocode:      promocode.Promocode,
-				Discount:       promocode.Discount,
-				InitialUsages:  promocode.InitialUsages,
-				LeftUsages:     &promocode.LeftUsages,
-				ExpirationDate: promocode.ExpirationDate,
-				State:          &promocode.State,
-			},
-		})
+		resPromocode := promocode.Resource()
+		response.Included.Add(&resPromocode)
 	}
 	return &response, nil
 }

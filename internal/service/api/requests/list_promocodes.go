@@ -12,7 +12,7 @@ type ListPromocodesRequest struct {
 	pgdb.OffsetPageParams
 	Sorts pgdb.Sorts `url:"sort" default:"id"`
 
-	State []resources.PromocodeState `filter:"status"`
+	State []resources.PromocodeState `filter:"state"`
 }
 
 func NewListPromocodesRequest(r *http.Request) (*ListPromocodesRequest, error) {

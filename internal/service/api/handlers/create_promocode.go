@@ -7,7 +7,6 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"math"
 	"net/http"
@@ -21,9 +20,10 @@ func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	prString := uuid.NewString()
-	promocode, err := helpers.DB(r).Promocodes().Insert(data.Promocode{
-		Promocode:      prString,
-		Discount:       math.Floor(request.Data.Attributes.Discount*100) / 100,
+	promocodeID, err := helpers.DB(r).Promocodes().Insert(data.Promocode{
+		Promocode: prString,
+		Discount: math.Floor(request.Data.Attributes.Discount*10*helpers.Promocodes(r).Decimal) /
+			(10 * helpers.Promocodes(r).Decimal),
 		InitialUsages:  request.Data.Attributes.InitialUsages,
 		LeftUsages:     request.Data.Attributes.InitialUsages,
 		ExpirationDate: request.Data.Attributes.ExpirationDate,
@@ -34,12 +34,8 @@ func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	promocodeResponse, err := responses.NewGetPromocodeResponse(promocode)
-	if err != nil {
-		helpers.Log(r).WithError(err).Error("failed to get promocode response")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
 
-	ape.Render(w, *promocodeResponse)
+	ape.Render(w, resources.KeyResponse{
+		Data: resources.NewKeyInt64(promocodeID, resources.TOKENS),
+	})
 }

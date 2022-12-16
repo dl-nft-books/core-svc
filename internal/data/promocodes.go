@@ -16,19 +16,34 @@ type Promocode struct {
 	State          resources.PromocodeState `db:"state" structs:"state" json:"state"`
 }
 
+func (promocode *Promocode) Resource() resources.Promocode {
+	return resources.Promocode{
+		Key: resources.NewKeyInt64(promocode.Id, resources.PROMOCODE),
+		Attributes: resources.PromocodeAttributes{
+			Id:             promocode.Id,
+			Promocode:      promocode.Promocode,
+			Discount:       promocode.Discount,
+			InitialUsages:  promocode.InitialUsages,
+			LeftUsages:     &promocode.LeftUsages,
+			ExpirationDate: promocode.ExpirationDate,
+			State:          &promocode.State,
+		},
+	}
+}
+
 type PromocodesQ interface {
 	New() PromocodesQ
 
 	Get() (*Promocode, error)
 	Select() ([]Promocode, error)
-	Delete() error
+	DeleteByID(id int64) error
 
 	Sort(sort pgdb.Sorts) PromocodesQ
 	Page(page pgdb.OffsetPageParams) PromocodesQ
 
-	Insert(promocode Promocode) (Promocode, error)
+	Insert(promocode Promocode) (int64, error)
 	Transaction(fn func(q PromocodesQ) error) error
-	FilterByState(status ...resources.PromocodeState) PromocodesQ
+	FilterByState(state ...resources.PromocodeState) PromocodesQ
 	FilterById(id ...int64) PromocodesQ
 	FilterByPromocode(promocode ...string) PromocodesQ
 
@@ -37,6 +52,8 @@ type PromocodesQ interface {
 	UpdateInitialUsages(newInitialUsages int64) PromocodesQ
 	UpdateLeftUsages(newLeftUsages int64) PromocodesQ
 	UpdateExpirationDate(newExpirationDate time.Time) PromocodesQ
-	Update(id int64) (*Promocode, error)
+	Update(id int64) error
 	UpdateWhereExpired() error
+	UpdateWhereFullyUsed() error
+	UpdateWhereActive() error
 }

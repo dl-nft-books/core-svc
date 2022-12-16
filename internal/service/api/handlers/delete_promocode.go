@@ -29,6 +29,11 @@ func DeletePromocodeById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = helpers.DB(r).Promocodes().FilterById(request.Id).Delete()
+	err = helpers.DB(r).Promocodes().DeleteByID(request.Id)
+	if err != nil {
+		logger.WithError(err).Error("failed to delete promocode")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
 	w.WriteHeader(http.StatusNoContent)
 }

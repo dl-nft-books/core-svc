@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"errors"
 	"github.com/spf13/cast"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
 	"math"
 	"net/http"
 
@@ -34,26 +34,26 @@ func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if (request.Data.Attributes.InitialUsages != nil && promocode.LeftUsages > *request.Data.Attributes.InitialUsages) || // if we update only initial_usages
+		(request.Data.Attributes.LeftUsages != nil && promocode.InitialUsages < *request.Data.Attributes.LeftUsages) || // if we update only left_usages
+		(request.Data.Attributes.InitialUsages != nil && request.Data.Attributes.LeftUsages != nil && // if we update initial_usages and left_usages
+			*request.Data.Attributes.LeftUsages > *request.Data.Attributes.InitialUsages) {
+
+		logger.WithError(err).Info("left usages should be lower or equal initial usages")
+		ape.RenderErr(w, problems.BadRequest(errors.New("left usages should be lower or equal initial usages"))...)
+		return
+	}
+
 	promocodesQ := applyPromocodeUpdateFilters(helpers.DB(r).Promocodes().New(), *request)
-	promocode, err = promocodesQ.Update(promocodeId)
+	err = promocodesQ.Update(promocodeId)
 
 	if err != nil {
 		logger.WithError(err).Error("failed to get promocode")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	if promocode == nil {
-		ape.RenderErr(w, problems.NotFound())
-		return
-	}
-	promocodeResponse, err := responses.NewGetPromocodeResponse(*promocode)
-	if err != nil {
-		logger.WithError(err).Error("failed to get promocode response")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
 
-	ape.Render(w, *promocodeResponse)
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func applyPromocodeUpdateFilters(q data.PromocodesQ, request requests.UpdatePromocodeRequest) data.PromocodesQ {

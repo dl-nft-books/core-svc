@@ -2,16 +2,14 @@ package api
 
 import (
 	"context"
-	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
-	"net"
-	"net/http"
-	"sync"
-
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
+	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
 	doorman "gitlab.com/tokend/nft-books/doorman/connector"
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
+	"net"
+	"net/http"
 
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 
@@ -29,6 +27,7 @@ type service struct {
 	// Custom configs
 	ethMinterConfig *config.MintConfig
 	apiRestrictions config.ApiRestrictions
+	promocodes      config.PromocodesCfg
 
 	// Connectors
 	pricer  *pricer.Connector
@@ -59,6 +58,7 @@ func newService(cfg config.Config) *service {
 		// Custom configs
 		ethMinterConfig: cfg.MintConfig(),
 		apiRestrictions: cfg.ApiRestrictions(),
+		promocodes:      cfg.PromocodesCfg(),
 
 		// Connectors
 		pricer:  cfg.PricerConnector(),
@@ -69,11 +69,6 @@ func newService(cfg config.Config) *service {
 }
 
 func Run(ctx context.Context, cfg config.Config) {
-
-	promocodeChecker := NewPromocodeChecker(cfg.DB(), cfg.Log())
-	wg := new(sync.WaitGroup)
-	go promocodeChecker.Run(wg, ctx)
-
 	if err := newService(cfg).run(); err != nil {
 		panic(errors.Wrap(err, "failed to run a service"))
 	}

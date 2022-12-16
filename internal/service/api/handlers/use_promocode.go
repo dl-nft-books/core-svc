@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
+	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"net/http"
 
@@ -22,7 +22,7 @@ func UsePromocode(w http.ResponseWriter, r *http.Request) {
 
 	promocode, err := helpers.DB(r).Promocodes().FilterById(request.Id).Get()
 	if err != nil {
-		logger.WithError(err).Error("failed to get promocode")
+		logger.WithError(err).WithFields(logan.F{"promocode_id": request.Id}).Error("failed to get promocode")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
@@ -31,32 +31,20 @@ func UsePromocode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if promocode.State != resources.PromocodeActive {
-		logger.WithError(err).Info("promocode is inactive")
-		ape.RenderErr(w, problems.Forbidden())
+		logger.WithError(err).WithFields(logan.F{"promocode": promocode.Promocode}).Info("promocode is inactive")
+		errorInactive := problems.Forbidden()
+		errorInactive.Detail = "promocode is inactive"
+		ape.RenderErr(w, errorInactive)
 		return
-	}
-	promocodesQ := helpers.DB(r).Promocodes().New().UpdateLeftUsages(promocode.LeftUsages - 1)
-	if promocode.LeftUsages == 1 {
-		promocodesQ = promocodesQ.UpdateState(resources.PromocodeFullyUsed)
 	}
 
-	promocode, err = promocodesQ.Update(promocode.Id)
+	err = helpers.DB(r).Promocodes().New().UpdateLeftUsages(promocode.LeftUsages - 1).Update(promocode.Id)
 
 	if err != nil {
-		logger.WithError(err).Error("failed to get promocode")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
-	if promocode == nil {
-		ape.RenderErr(w, problems.NotFound())
-		return
-	}
-	promocodeResponse, err := responses.NewGetPromocodeResponse(*promocode)
-	if err != nil {
-		logger.WithError(err).Error("failed to get promocode response")
+		logger.WithError(err).WithFields(logan.F{"promocode": promocode.Promocode}).Error("failed to update promocode")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	ape.Render(w, *promocodeResponse)
+	w.WriteHeader(http.StatusNoContent)
 }

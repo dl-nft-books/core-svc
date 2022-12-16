@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"net/http"
 
@@ -31,12 +30,10 @@ func ValidatePromocodeById(w http.ResponseWriter, r *http.Request) {
 	var promocodeResponse *resources.ValidatePromocodeResponse
 
 	if promocode == nil {
-		promocodeResponse, err = responses.NewValidatePromocodeResponse(data.Promocode{
-			State: 4,
-		})
-	} else {
-		promocodeResponse, err = responses.NewValidatePromocodeResponse(*promocode)
+		ape.RenderErr(w, problems.NotFound())
+		return
 	}
+	promocodeResponse, err = responses.NewValidatePromocodeResponse(*promocode)
 
 	if err != nil {
 		logger.WithError(err).Error("failed to get promocode response")

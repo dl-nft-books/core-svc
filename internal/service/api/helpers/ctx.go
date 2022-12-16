@@ -25,6 +25,7 @@ const (
 	// Custom configs
 	minterCtxKey
 	apiRestrictionsCtxKey
+	promocodesCtxKey
 
 	// Connectors
 	pricerCtxKey
@@ -60,6 +61,16 @@ func Minter(r *http.Request) config.MintConfig {
 func CtxMinter(entry config.MintConfig) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
 		return context.WithValue(ctx, minterCtxKey, entry)
+	}
+}
+
+func Promocodes(r *http.Request) config.PromocodesCfg {
+	return r.Context().Value(promocodesCtxKey).(config.PromocodesCfg)
+}
+
+func CtxPromocodes(promocodes config.PromocodesCfg) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, promocodesCtxKey, promocodes)
 	}
 }
 
