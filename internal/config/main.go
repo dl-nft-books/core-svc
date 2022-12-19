@@ -30,7 +30,7 @@ type Config interface {
 
 	// Internal service configuration
 	MintConfigurator
-	Promocodes
+	Promocoder
 	TaskProcessor
 	PdfSignatureParams() *SignatureParams
 	ApiRestrictions() ApiRestrictions
@@ -52,7 +52,7 @@ type config struct {
 	// Internal service configuration
 	MintConfigurator
 	TaskProcessor
-	Promocodes
+	Promocoder
 	pdfSignatureParams comfig.Once
 
 	// Getters and comfig.Once's
@@ -79,6 +79,6 @@ func New(getter kv.Getter) Config {
 		// Internal service configuration
 		MintConfigurator: NewEthMinterConfigurator(getter),
 		TaskProcessor:    NewTaskProcessor(getter),
-		Promocodes:       NewPromocodes(getter),
+		Promocoder:       NewPromocoder(getter),
 	}
 }

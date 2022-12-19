@@ -18,8 +18,7 @@ func NewPromocodeListResponse(r *http.Request, request *requests.ListPromocodesR
 	}
 
 	for _, promocode := range promocodes {
-		promocodeAsResource := promocode.Resource()
-		response.Data = append(response.Data, promocodeAsResource)
+		response.Data = append(response.Data, promocode.Resource())
 	}
 
 	response.Links = requests.GetOffsetLinksWithSort(r, request.OffsetPageParams, request.Sorts)

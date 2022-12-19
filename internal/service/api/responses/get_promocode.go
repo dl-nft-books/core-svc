@@ -6,9 +6,5 @@ import (
 )
 
 func NewGetPromocodeResponse(promocode data.Promocode) (*resources.PromocodeResponse, error) {
-	response := resources.PromocodeResponse{}
-
-	response.Data = promocode.Resource()
-
-	return &response, nil
+	return &resources.PromocodeResponse{Data: promocode.Resource()}, nil
 }

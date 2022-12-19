@@ -18,8 +18,7 @@ type ListPromocodesRequest struct {
 func NewListPromocodesRequest(r *http.Request) (*ListPromocodesRequest, error) {
 	var request ListPromocodesRequest
 
-	err := urlval.Decode(r.URL.Query(), &request)
-	if err != nil {
+	if err := urlval.Decode(r.URL.Query(), &request); err != nil {
 		return nil, err
 	}
 

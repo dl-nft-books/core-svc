@@ -19,9 +19,11 @@ var (
 	app = kingpin.New("generator-svc", "service responsible for generating a book's pdf with a custom signature on it, handling status of uploading process, and storing tokens")
 
 	// Run commands
-	runCommand           = app.Command("run", "run command")
-	apiCommand           = runCommand.Command("api", "run api")
-	taskProcessorCommand = runCommand.Command("task-processor", "run task processor")
+	runCommand              = app.Command("run", "run command")
+	apiCommand              = runCommand.Command("api", "run api")
+	taskProcessorCommand    = runCommand.Command("task-processor", "run task processor")
+	promocodeCheckerCommand = runCommand.Command("promocode-checker", "run promocode checker")
+	allRunnersCommand       = runCommand.Command("all-runners", "run all runners")
 
 	// Migration commands
 	migrateCommand     = app.Command("migrate", "migrate command")
@@ -53,13 +55,22 @@ func Run(args []string) bool {
 	switch cmd {
 	case apiCommand.FullCommand():
 		run(waitGroup, ctx, cfg, api.Run)
-		run(waitGroup, ctx, cfg, runners.RunPromocodeChecker)
 		log.Info("started api...")
 	case taskProcessorCommand.FullCommand():
 		for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
 			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
 			log.Infof("started task processor #%d", i+1)
 		}
+	case promocodeCheckerCommand.FullCommand():
+		run(waitGroup, ctx, cfg, runners.RunPromocodeChecker)
+		log.Info("started promocode checker...")
+	case allRunnersCommand.FullCommand():
+		for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
+			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
+			log.Infof("started task processor #%d", i+1)
+		}
+		run(waitGroup, ctx, cfg, runners.RunPromocodeChecker)
+		log.Info("started promocode checker...")
 	case migrateUpCommand.FullCommand():
 		err = MigrateUp(cfg)
 	case migrateDownCommand.FullCommand():

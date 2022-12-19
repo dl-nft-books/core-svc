@@ -58,7 +58,7 @@ func newService(cfg config.Config) *service {
 		// Custom configs
 		ethMinterConfig: cfg.MintConfig(),
 		apiRestrictions: cfg.ApiRestrictions(),
-		promocodes:      cfg.PromocodesCfg(),
+		promocodes:      cfg.PromocoderCfg(),
 
 		// Connectors
 		pricer:  cfg.PricerConnector(),

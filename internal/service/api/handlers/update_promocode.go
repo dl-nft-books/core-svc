@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/spf13/cast"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"math"
 	"net/http"
 
 	"gitlab.com/distributed_lab/ape"
@@ -34,20 +33,14 @@ func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if (request.Data.Attributes.InitialUsages != nil && promocode.LeftUsages > *request.Data.Attributes.InitialUsages) || // if we update only initial_usages
-		(request.Data.Attributes.LeftUsages != nil && promocode.InitialUsages < *request.Data.Attributes.LeftUsages) || // if we update only left_usages
-		(request.Data.Attributes.InitialUsages != nil && request.Data.Attributes.LeftUsages != nil && // if we update initial_usages and left_usages
-			*request.Data.Attributes.LeftUsages > *request.Data.Attributes.InitialUsages) {
-
+	if !validateUsages(*request, *promocode) {
 		logger.WithError(err).Info("left usages should be lower or equal initial usages")
 		ape.RenderErr(w, problems.BadRequest(errors.New("left usages should be lower or equal initial usages"))...)
-		return
 	}
 
-	promocodesQ := applyPromocodeUpdateFilters(helpers.DB(r).Promocodes().New(), *request)
-	err = promocodesQ.Update(promocodeId)
+	promocodesQ := applyPromocodeUpdateFilters(r, helpers.DB(r).Promocodes().New(), *request)
 
-	if err != nil {
+	if err = promocodesQ.Update(promocodeId); err != nil {
 		logger.WithError(err).Error("failed to get promocode")
 		ape.RenderErr(w, problems.InternalError())
 		return
@@ -56,7 +49,24 @@ func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func applyPromocodeUpdateFilters(q data.PromocodesQ, request requests.UpdatePromocodeRequest) data.PromocodesQ {
+func validateUsages(request requests.UpdatePromocodeRequest, promocode data.Promocode) bool {
+	// if we update only initial_usages
+	if request.Data.Attributes.InitialUsages != nil && promocode.LeftUsages > *request.Data.Attributes.InitialUsages {
+		return false
+	}
+	// if we update only left_usages
+	if request.Data.Attributes.LeftUsages != nil && promocode.InitialUsages < *request.Data.Attributes.LeftUsages {
+		return false
+	}
+	// if we update initial_usages and left_usages
+	if request.Data.Attributes.InitialUsages != nil && request.Data.Attributes.LeftUsages != nil &&
+		*request.Data.Attributes.LeftUsages > *request.Data.Attributes.InitialUsages {
+		return false
+	}
+	return true
+}
+
+func applyPromocodeUpdateFilters(r *http.Request, q data.PromocodesQ, request requests.UpdatePromocodeRequest) data.PromocodesQ {
 	if request.Data.Attributes.State != nil {
 		q = q.UpdateState(*request.Data.Attributes.State)
 	}
@@ -70,7 +80,7 @@ func applyPromocodeUpdateFilters(q data.PromocodesQ, request requests.UpdateProm
 		q = q.UpdateExpirationDate(*request.Data.Attributes.ExpirationDate)
 	}
 	if request.Data.Attributes.Discount != nil {
-		q = q.UpdateDiscount(math.Floor(*request.Data.Attributes.Discount*100) / 100)
+		q = q.UpdateDiscount(helpers.Trancate(*request.Data.Attributes.Discount, helpers.Promocodes(r).Decimal))
 	}
 	return q
 }

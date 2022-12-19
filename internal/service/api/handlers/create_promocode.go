@@ -8,7 +8,6 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
-	"math"
 	"net/http"
 )
 
@@ -21,9 +20,8 @@ func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 	}
 	prString := uuid.NewString()
 	promocodeID, err := helpers.DB(r).Promocodes().Insert(data.Promocode{
-		Promocode: prString,
-		Discount: math.Floor(request.Data.Attributes.Discount*10*helpers.Promocodes(r).Decimal) /
-			(10 * helpers.Promocodes(r).Decimal),
+		Promocode:      prString,
+		Discount:       helpers.Trancate(request.Data.Attributes.Discount, helpers.Promocodes(r).Decimal),
 		InitialUsages:  request.Data.Attributes.InitialUsages,
 		LeftUsages:     request.Data.Attributes.InitialUsages,
 		ExpirationDate: request.Data.Attributes.ExpirationDate,
@@ -36,6 +34,6 @@ func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ape.Render(w, resources.KeyResponse{
-		Data: resources.NewKeyInt64(promocodeID, resources.TOKENS),
+		Data: resources.NewKeyInt64(promocodeID, resources.PROMOCODE),
 	})
 }

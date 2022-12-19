@@ -89,9 +89,6 @@ func (q *promocodesQ) Get() (*data.Promocode, error) {
 func (q *promocodesQ) DeleteByID(id int64) error {
 	err := q.database.Exec(squirrel.Delete(promocodesTable).
 		Where(squirrel.Eq{promocodesId: id}))
-	if err == sql.ErrNoRows {
-		return nil
-	}
 	return err
 }
 
@@ -137,8 +134,7 @@ func (q *promocodesQ) UpdateExpirationDate(newExpirationDate time.Time) data.Pro
 }
 
 func (q *promocodesQ) Update(id int64) error {
-	err := q.database.Exec(q.updater.Where(squirrel.Eq{promocodesId: id}))
-	return err
+	return q.database.Exec(q.updater.Where(squirrel.Eq{promocodesId: id}))
 }
 
 func (q *promocodesQ) UpdateWhereExpired() error {

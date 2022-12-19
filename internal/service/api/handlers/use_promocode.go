@@ -38,9 +38,7 @@ func UsePromocode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = helpers.DB(r).Promocodes().New().UpdateLeftUsages(promocode.LeftUsages - 1).Update(promocode.Id)
-
-	if err != nil {
+	if err = helpers.DB(r).Promocodes().New().UpdateLeftUsages(promocode.LeftUsages - 1).Update(promocode.Id); err != nil {
 		logger.WithError(err).WithFields(logan.F{"promocode": promocode.Promocode}).Error("failed to update promocode")
 		ape.RenderErr(w, problems.InternalError())
 		return

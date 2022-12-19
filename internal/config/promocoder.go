@@ -9,28 +9,28 @@ import (
 
 const yamlPromocodesKey = "promocodes"
 
-type Promocodes interface {
-	PromocodesCfg() PromocodesCfg
+type Promocoder interface {
+	PromocoderCfg() PromocodesCfg
 }
 
-type promocodes struct {
+type promocoder struct {
 	getter kv.Getter
 	once   comfig.Once
 }
 
-func NewPromocodes(getter kv.Getter) Promocodes {
-	return &promocodes{
+func NewPromocoder(getter kv.Getter) Promocoder {
+	return &promocoder{
 		getter: getter,
 	}
 }
 
 type PromocodesCfg struct {
 	Name    string     `fig:"name"`
-	Decimal float64    `fig:"decimal,non_zero"`
+	Decimal int        `fig:"decimal,non_zero"`
 	Runner  RunnerData `fig:"runner,required"`
 }
 
-func (t *promocodes) PromocodesCfg() PromocodesCfg {
+func (t *promocoder) PromocoderCfg() PromocodesCfg {
 	return t.once.Do(func() interface{} {
 		var cfg PromocodesCfg
 
