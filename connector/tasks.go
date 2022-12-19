@@ -8,12 +8,14 @@ import (
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/urlval"
 	"gitlab.com/tokend/nft-books/generator-svc/connector/models"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
 const (
-	generatorEndpoint = "generator"
-	tasksEndpoint     = "tasks"
+	generatorEndpoint          = "generator"
+	tasksEndpoint              = "tasks"
+	promocodesRollbackEndpoint = "promocodes/rollback"
 )
 
 func (c *Connector) CreateTask(params models.CreateTaskParams) (id int64, err error) {
@@ -99,4 +101,39 @@ func (c *Connector) GetTaskById(id int64) (*models.TaskResponse, error) {
 	}
 
 	return &result, nil
+}
+
+func (c *Connector) RollbackPromocode(id int64) error {
+	var promocode data.Promocode
+
+	// setting full endpoint
+	fullEndpoint := fmt.Sprintf("%s/%s/%s/%d", c.baseUrl, generatorEndpoint, promocodesRollbackEndpoint, id)
+
+	// getting response
+	found, err := c.get(fullEndpoint, &promocode)
+	if err != nil {
+		// errors are already wrapped
+		return errors.From(err, logan.F{"id": id})
+	}
+	if !found {
+		return nil
+	}
+
+	promocode.LeftUsages -= 1
+	request := resources.UpdatePromocodeRequest{
+		Data: resources.UpdatePromocode{
+			Key: resources.NewKeyInt64(id, resources.PROMOCODE),
+			Attributes: resources.UpdatePromocodeAttributes{
+				LeftUsages: &promocode.LeftUsages,
+			},
+		},
+		Included: resources.Included{},
+	}
+	endpoint := fmt.Sprintf("%s/%s/%s/%s", c.baseUrl, generatorEndpoint, promocodesRollbackEndpoint, id)
+	requestAsBytes, err := json.Marshal(request)
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal request")
+	}
+
+	return c.update(endpoint, requestAsBytes, nil)
 }
