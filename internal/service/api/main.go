@@ -27,7 +27,7 @@ type service struct {
 	// Custom configs
 	ethMinterConfig *config.MintConfig
 	apiRestrictions config.ApiRestrictions
-	promocodes      config.PromocodesCfg
+	promocoder      config.PromocoderCfg
 
 	// Connectors
 	pricer  *pricer.Connector
@@ -58,7 +58,7 @@ func newService(cfg config.Config) *service {
 		// Custom configs
 		ethMinterConfig: cfg.MintConfig(),
 		apiRestrictions: cfg.ApiRestrictions(),
-		promocodes:      cfg.PromocoderCfg(),
+		promocoder:      cfg.PromocoderCfg(),
 
 		// Connectors
 		pricer:  cfg.PricerConnector(),

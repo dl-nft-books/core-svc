@@ -10,7 +10,7 @@ import (
 const yamlPromocodesKey = "promocodes"
 
 type Promocoder interface {
-	PromocoderCfg() PromocodesCfg
+	PromocoderCfg() PromocoderCfg
 }
 
 type promocoder struct {
@@ -24,15 +24,15 @@ func NewPromocoder(getter kv.Getter) Promocoder {
 	}
 }
 
-type PromocodesCfg struct {
+type PromocoderCfg struct {
 	Name    string     `fig:"name"`
 	Decimal int        `fig:"decimal,non_zero"`
 	Runner  RunnerData `fig:"runner,required"`
 }
 
-func (t *promocoder) PromocoderCfg() PromocodesCfg {
+func (t *promocoder) PromocoderCfg() PromocoderCfg {
 	return t.once.Do(func() interface{} {
-		var cfg PromocodesCfg
+		var cfg PromocoderCfg
 
 		err := figure.Out(&cfg).
 			From(kv.MustGetStringMap(t.getter, yamlPromocodesKey)).
@@ -42,5 +42,5 @@ func (t *promocoder) PromocoderCfg() PromocodesCfg {
 		}
 
 		return cfg
-	}).(PromocodesCfg)
+	}).(PromocoderCfg)
 }

@@ -21,7 +21,7 @@ func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 	prString := uuid.NewString()
 	promocodeID, err := helpers.DB(r).Promocodes().Insert(data.Promocode{
 		Promocode:      prString,
-		Discount:       helpers.Trancate(request.Data.Attributes.Discount, helpers.Promocodes(r).Decimal),
+		Discount:       helpers.Trancate(request.Data.Attributes.Discount, helpers.Promocoder(r).Decimal),
 		InitialUsages:  request.Data.Attributes.InitialUsages,
 		LeftUsages:     request.Data.Attributes.InitialUsages,
 		ExpirationDate: request.Data.Attributes.ExpirationDate,

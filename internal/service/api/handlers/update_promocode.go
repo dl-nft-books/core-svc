@@ -80,7 +80,7 @@ func applyPromocodeUpdateFilters(r *http.Request, q data.PromocodesQ, request re
 		q = q.UpdateExpirationDate(*request.Data.Attributes.ExpirationDate)
 	}
 	if request.Data.Attributes.Discount != nil {
-		q = q.UpdateDiscount(helpers.Trancate(*request.Data.Attributes.Discount, helpers.Promocodes(r).Decimal))
+		q = q.UpdateDiscount(helpers.Trancate(*request.Data.Attributes.Discount, helpers.Promocoder(r).Decimal))
 	}
 	return q
 }
