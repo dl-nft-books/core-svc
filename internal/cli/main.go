@@ -23,7 +23,7 @@ var (
 	apiCommand              = runCommand.Command("api", "run api")
 	taskProcessorCommand    = runCommand.Command("task-processor", "run task processor")
 	promocodeCheckerCommand = runCommand.Command("promocode-checker", "run promocode checker")
-	allRunnersCommand       = runCommand.Command("all-runners", "run all runners")
+	allCommand              = runCommand.Command("all", "run all")
 
 	// Migration commands
 	migrateCommand     = app.Command("migrate", "migrate command")
@@ -64,7 +64,9 @@ func Run(args []string) bool {
 	case promocodeCheckerCommand.FullCommand():
 		run(waitGroup, ctx, cfg, runners.RunPromocodeChecker)
 		log.Info("started promocode checker...")
-	case allRunnersCommand.FullCommand():
+	case allCommand.FullCommand():
+		run(waitGroup, ctx, cfg, api.Run)
+		log.Info("started api...")
 		for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
 			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
 			log.Infof("started task processor #%d", i+1)

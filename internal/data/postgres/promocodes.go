@@ -87,9 +87,8 @@ func (q *promocodesQ) Get() (*data.Promocode, error) {
 }
 
 func (q *promocodesQ) DeleteByID(id int64) error {
-	err := q.database.Exec(squirrel.Delete(promocodesTable).
+	return q.database.Exec(squirrel.Delete(promocodesTable).
 		Where(squirrel.Eq{promocodesId: id}))
-	return err
 }
 
 func (q *promocodesQ) Insert(promocode data.Promocode) (int64, error) {
