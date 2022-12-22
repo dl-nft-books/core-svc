@@ -18,7 +18,7 @@ task_processor:
 promocodes:
   name: promocode_checker
   decimal: 2 # number of digits after decimal point
-  checker:
+  runner:
     normal_period: 10 # in seconds
     min_abnormal_period: 1 # in seconds
     max_abnormal_period: 3000  # in seconds

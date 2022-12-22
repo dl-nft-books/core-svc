@@ -12,6 +12,8 @@ allOf:
           - discount
           - initial_usages
           - expiration_date
+          - left_usages
+          - state
         properties:
           id:
             type: integer

@@ -24,9 +24,9 @@ func (promocode *Promocode) Resource() resources.Promocode {
 			Promocode:      promocode.Promocode,
 			Discount:       promocode.Discount,
 			InitialUsages:  promocode.InitialUsages,
-			LeftUsages:     &promocode.LeftUsages,
+			LeftUsages:     promocode.LeftUsages,
 			ExpirationDate: promocode.ExpirationDate,
-			State:          &promocode.State,
+			State:          promocode.State,
 		},
 	}
 }

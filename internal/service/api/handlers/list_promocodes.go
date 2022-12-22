@@ -34,7 +34,6 @@ func ListPromocodes(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-
 	ape.Render(w, *promocodesListResponse)
 }
 
