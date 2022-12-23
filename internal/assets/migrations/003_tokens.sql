@@ -9,7 +9,8 @@ create table tokens
     payment_id         bigint    not null default 0,
     metadata_hash      text      not null default 0,
     signature          text      not null default '',
-    status             int8      not null default 0
+    status             int8      not null default 0,
+    chain_id           bigint    not null default 0
 );
 
 -- +migrate Down

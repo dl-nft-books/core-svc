@@ -14,6 +14,7 @@ type Token struct {
 	MetadataHash string                `db:"metadata_hash" structs:"metadata_hash" json:"metadata_hash"`
 	Signature    string                `db:"signature" structs:"signature" json:"signature"`
 	Status       resources.TokenStatus `db:"status" structs:"status" json:"status"`
+	ChainId      int64                 `db:"chain_id" structs:"chain_id" json:"chain_id"`
 }
 
 type TokensQ interface {
@@ -25,6 +26,7 @@ type TokensQ interface {
 	FilterByTokenId(tokenId ...int64) TokensQ
 	FilterByBookId(bookId ...int64) TokensQ
 	FilterByPaymentId(paymentId ...int64) TokensQ
+	FilterByChainId(chainId ...int64) TokensQ
 
 	Get() (*Token, error)
 	Select() ([]Token, error)

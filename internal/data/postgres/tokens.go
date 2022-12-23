@@ -23,6 +23,7 @@ const (
 	tokensMetadataHash = "metadata_hash"
 	tokensSignature    = "signature"
 	tokensStatus       = "status"
+	tokensChainId      = "chain_id"
 )
 
 type tokensQ struct {
@@ -83,6 +84,11 @@ func (q *tokensQ) FilterByBookId(bookId ...int64) data.TokensQ {
 
 func (q *tokensQ) FilterByPaymentId(paymentId ...int64) data.TokensQ {
 	q.selector = q.selector.Where(squirrel.Eq{tokensPaymentId: paymentId})
+	return q
+}
+
+func (q *tokensQ) FilterByChainId(chainId ...int64) data.TokensQ {
+	q.selector = q.selector.Where(squirrel.Eq{tokensChainId: chainId})
 	return q
 }
 

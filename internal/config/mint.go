@@ -21,7 +21,6 @@ type MintConfig struct {
 	PrivateKey *ecdsa.PrivateKey `fig:"signer,required"`
 	Precision  int               `fig:"precision,required"`
 	Expiration time.Duration     `fig:"expiration,required"`
-	ChainID    int64             `fig:"chain_id,required"`
 }
 
 type ethMinterConfigurator struct {
