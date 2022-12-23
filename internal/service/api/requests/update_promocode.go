@@ -36,11 +36,5 @@ func (r UpdatePromocodeRequest) validate() error {
 			validation.Min(0.0),
 			validation.Max(1.0),
 		),
-		"data/attributes/initial_usages": validation.Validate(
-			r.Data.Attributes.InitialUsages,
-		),
-		"data/attributes/expiration_date": validation.Validate(
-			r.Data.Attributes.ExpirationDate,
-		),
 	}.Filter()
 }

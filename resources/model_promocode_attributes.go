@@ -14,7 +14,7 @@ type PromocodeAttributes struct {
 	ExpirationDate time.Time      `json:"expiration_date"`
 	Id             int64          `json:"id"`
 	InitialUsages  int64          `json:"initial_usages"`
-	LeftUsages     int64          `json:"left_usages"`
+	Usages     int64          `json:"usages"`
 	Promocode      string         `json:"promocode"`
 	State          PromocodeState `json:"state"`
 }

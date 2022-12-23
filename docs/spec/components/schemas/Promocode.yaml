@@ -12,7 +12,7 @@ allOf:
           - discount
           - initial_usages
           - expiration_date
-          - left_usages
+          - usages
           - state
         properties:
           id:
@@ -27,7 +27,7 @@ allOf:
           initial_usages:
             type: integer
             format: int64
-          left_usages:
+          usages:
             type: integer
             format: int64
           expiration_date:

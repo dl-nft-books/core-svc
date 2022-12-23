@@ -23,7 +23,7 @@ func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 		Promocode:      prString,
 		Discount:       helpers.Trancate(request.Data.Attributes.Discount, helpers.Promocoder(r).Decimal),
 		InitialUsages:  request.Data.Attributes.InitialUsages,
-		LeftUsages:     request.Data.Attributes.InitialUsages,
+		Usages:         0,
 		ExpirationDate: request.Data.Attributes.ExpirationDate,
 		State:          resources.PromocodeActive,
 	})

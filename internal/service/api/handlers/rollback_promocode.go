@@ -37,9 +37,9 @@ func RollbackPromocode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	promocodesQ := helpers.DB(r).Promocodes().New().UpdateLeftUsages(promocode.LeftUsages + 1)
+	promocodesQ := helpers.DB(r).Promocodes().New().UpdateUsages(promocode.Usages - 1)
 
-	if promocode.LeftUsages == 0 {
+	if promocode.Usages == 0 {
 		promocodesQ = promocodesQ.UpdateState(resources.PromocodeActive)
 	}
 

@@ -34,8 +34,8 @@ func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !validateUsages(*request, *promocode) {
-		logger.WithError(err).Info("left usages should be lower or equal initial usages")
-		ape.RenderErr(w, problems.BadRequest(errors.New("left usages should be lower or equal initial usages"))...)
+		logger.WithError(err).Info("usages should be lower or equal initial usages")
+		ape.RenderErr(w, problems.BadRequest(errors.New("usages should be lower or equal initial usages"))...)
 	}
 
 	promocodesQ := applyPromocodeUpdateFilters(r, helpers.DB(r).Promocodes().New(), *request)
@@ -50,17 +50,7 @@ func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
 }
 
 func validateUsages(request requests.UpdatePromocodeRequest, promocode data.Promocode) bool {
-	// if we update only initial_usages
-	if request.Data.Attributes.InitialUsages != nil && promocode.LeftUsages > *request.Data.Attributes.InitialUsages {
-		return false
-	}
-	// if we update only left_usages
-	if request.Data.Attributes.LeftUsages != nil && promocode.InitialUsages < *request.Data.Attributes.LeftUsages {
-		return false
-	}
-	// if we update initial_usages and left_usages
-	if request.Data.Attributes.InitialUsages != nil && request.Data.Attributes.LeftUsages != nil &&
-		*request.Data.Attributes.LeftUsages > *request.Data.Attributes.InitialUsages {
+	if request.Data.Attributes.InitialUsages != nil && promocode.Usages > *request.Data.Attributes.InitialUsages {
 		return false
 	}
 	return true
@@ -70,8 +60,8 @@ func applyPromocodeUpdateFilters(r *http.Request, q data.PromocodesQ, request re
 	if request.Data.Attributes.State != nil {
 		q = q.UpdateState(*request.Data.Attributes.State)
 	}
-	if request.Data.Attributes.LeftUsages != nil {
-		q = q.UpdateLeftUsages(*request.Data.Attributes.LeftUsages)
+	if request.Data.Attributes.Usages != nil {
+		q = q.UpdateUsages(*request.Data.Attributes.Usages)
 	}
 	if request.Data.Attributes.InitialUsages != nil {
 		q = q.UpdateInitialUsages(*request.Data.Attributes.InitialUsages)

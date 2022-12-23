@@ -1,23 +1,21 @@
 package connector
 
 import (
-	"encoding/json"
 	"fmt"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/connector/models"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
 const (
-	promocodesRollbackEndpoint = "promocodes/rollback"
+	promocodesEndpoint = "promocodes"
 )
 
 func (c *Connector) GetPromocodeById(id int64) (*models.PromocodeResponse, error) {
 	var promocode models.PromocodeResponse
 
 	// setting full endpoint
-	fullEndpoint := fmt.Sprintf("%s/%s/%s/%d", c.baseUrl, generatorEndpoint, promocodesRollbackEndpoint, id)
+	fullEndpoint := fmt.Sprintf("%s/%s/%d", c.baseUrl, generatorEndpoint, id)
 
 	// getting response
 	found, err := c.get(fullEndpoint, &promocode)
@@ -33,31 +31,20 @@ func (c *Connector) GetPromocodeById(id int64) (*models.PromocodeResponse, error
 }
 
 func (c *Connector) RollbackPromocode(id int64) error {
-	var promocode, err = c.GetPromocodeById(id)
+	var res int64
 
+	// setting full endpoint
+	fullEndpoint := fmt.Sprintf("%s/%s/%s/%s/%d", c.baseUrl, generatorEndpoint, promocodesEndpoint, "rollback", id)
+
+	// getting response
+	found, err := c.get(fullEndpoint, &res)
 	if err != nil {
 		// errors are already wrapped
 		return errors.From(err, logan.F{"id": id})
 	}
-	if promocode == nil {
+	if !found {
 		return nil
 	}
 
-	*promocode.Data.Attributes.LeftUsages--
-	request := resources.UpdatePromocodeRequest{
-		Data: resources.UpdatePromocode{
-			Key: resources.NewKeyInt64(id, resources.PROMOCODE),
-			Attributes: resources.UpdatePromocodeAttributes{
-				LeftUsages: promocode.Data.Attributes.LeftUsages,
-			},
-		},
-		Included: resources.Included{},
-	}
-	endpoint := fmt.Sprintf("%s/%s/%s/%s", c.baseUrl, generatorEndpoint, promocodesRollbackEndpoint, id)
-	requestAsBytes, err := json.Marshal(request)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal request")
-	}
-
-	return c.update(endpoint, requestAsBytes, nil)
+	return nil
 }
