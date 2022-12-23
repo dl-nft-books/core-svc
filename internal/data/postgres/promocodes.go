@@ -19,7 +19,7 @@ const (
 	promocodesPromocode      = "promocode"
 	promocodesDiscount       = "discount"
 	promocodesInitialUsages  = "initial_usages"
-	promocodesUsages     = "usages"
+	promocodesUsages         = "usages"
 	promocodesExpirationDate = "expiration_date"
 	promocodesState          = "state"
 )
@@ -144,13 +144,13 @@ func (q *promocodesQ) UpdateWhereExpired() error {
 
 func (q *promocodesQ) UpdateWhereFullyUsed() error {
 	return q.database.Exec(q.updater.
-		Where(squirrel.LtOrEq{promocodesUsages: 0}).
+		Where(squirrel.LtOrEq{promocodesInitialUsages + " - " + promocodesUsages: 0}).
 		Where(squirrel.Eq{promocodesState: resources.PromocodeActive}))
 }
 
 func (q *promocodesQ) UpdateWhereActive() error {
 	return q.database.Exec(q.updater.
 		Where(squirrel.Gt{promocodesExpirationDate: time.Now()}).
-		Where(squirrel.Gt{promocodesUsages: 0}).
+		Where(squirrel.Gt{promocodesInitialUsages + " - " + promocodesUsages: 0}).
 		Where(squirrel.NotEq{promocodesState: resources.PromocodeActive}))
 }
