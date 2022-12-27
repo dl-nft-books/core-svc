@@ -38,7 +38,19 @@ func CreateToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdTokenId, err := helpers.DB(r).Tokens().Insert(data.Token{
+	token, err := helpers.DB(r).Tokens().FilterByMetadataHash(request.Data.Attributes.MetadataHash).Select()
+	if err != nil {
+		helpers.Log(r).Errorf("failed to get token")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
+	if token != nil {
+		helpers.Log(r).Errorf("token with metadata hash %v is already exists", request.Data.Attributes.MetadataHash)
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
+
+	createdTokenId, err := helpers.DB(r).New().Tokens().Insert(data.Token{
 		Account:      request.Data.Attributes.Account,
 		TokenId:      request.Data.Attributes.TokenId,
 		BookId:       bookId,
