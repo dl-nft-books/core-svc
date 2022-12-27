@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
@@ -92,6 +93,7 @@ func (q *tokensQ) FilterByMetadataHash(metadataHash ...string) data.TokensQ {
 }
 
 func (q *tokensQ) Select() (tokens []data.Token, err error) {
+	log.Println(q.selector.ToSql())
 	err = q.database.Select(&tokens, q.selector)
 	return
 }

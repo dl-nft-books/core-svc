@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"gitlab.com/distributed_lab/ape"
@@ -27,7 +28,7 @@ func ListTokens(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-
+	log.Println(tokens)
 	tokensListResponse, err := responses.NewTokenListResponse(r, request, tokens, helpers.Tracker(r), helpers.DB(r).Tasks())
 	if err != nil {
 		logger.WithError(err).Error("unable to form task list response")
