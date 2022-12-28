@@ -19,6 +19,7 @@ type MintInfo struct {
 	TokenAddress     string
 	TokenURI         string
 	PricePerOneToken *big.Int
+	Discount         *big.Int
 	EndTimestamp     int64
 
 	HashedTokenURI []byte

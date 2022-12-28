@@ -14,6 +14,7 @@ type SignMintRequest struct {
 	TaskID       int64  `url:"task_id"`
 	Platform     string `url:"platform"`
 	TokenAddress string `url:"token_address"`
+	PromocodeID  int64  `url:"promocode_id"`
 }
 
 func NewSignMintRequest(r *http.Request) (*SignMintRequest, error) {
