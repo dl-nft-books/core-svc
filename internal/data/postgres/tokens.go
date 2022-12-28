@@ -3,13 +3,11 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
-	"log"
-
 	"github.com/Masterminds/squirrel"
 	"github.com/fatih/structs"
 	"gitlab.com/distributed_lab/kit/pgdb"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
+	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
 const (
@@ -88,8 +86,6 @@ func (q *tokensQ) FilterByPaymentId(paymentId ...int64) data.TokensQ {
 
 func (q *tokensQ) FilterByMetadataHash(metadataHash ...string) data.TokensQ {
 	q.selector = q.selector.Where(squirrel.Eq{tokensMetadataHash: metadataHash})
-
-	log.Println(q.selector.ToSql())
 	return q
 }
 
