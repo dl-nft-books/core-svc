@@ -10,6 +10,7 @@ allOf:
         required:
           - price
           - end_timestamp
+          - discount
         properties:
           price:
             type: string
@@ -18,6 +19,9 @@ allOf:
             type: integer
             format: int64
             description: Timestamp when signature will expire
+          discount:
+            type: string
+            description: amount of discount where 1% = 10^25
       relationships:
         type: object
         required:

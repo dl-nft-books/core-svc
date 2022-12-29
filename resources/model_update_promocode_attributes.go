@@ -13,6 +13,6 @@ type UpdatePromocodeAttributes struct {
 	Discount       *float64        `json:"discount,omitempty"`
 	ExpirationDate *time.Time      `json:"expiration_date,omitempty"`
 	InitialUsages  *int64          `json:"initial_usages,omitempty"`
-	Usages     *int64          `json:"usages,omitempty"`
 	State          *PromocodeState `json:"state,omitempty"`
+	Usages         *int64          `json:"usages,omitempty"`
 }

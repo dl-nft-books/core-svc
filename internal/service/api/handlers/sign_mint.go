@@ -126,6 +126,10 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		mintInfo.Discount = discount
 	}
 
+	if promocode == nil {
+		mintInfo.Discount = big.NewInt(0)
+	}
+
 	// Signing the mint transaction
 	mintSignature, err := signature.SignMintInfo(&mintInfo, &domainData, &mintConfig)
 	if err != nil {
@@ -136,6 +140,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 
 	ape.Render(w, responses.NewSignMintResponse(
 		mintInfo.PricePerOneToken.String(),
+		mintInfo.Discount.String(),
 		mintSignature,
 		mintInfo.EndTimestamp,
 	))
