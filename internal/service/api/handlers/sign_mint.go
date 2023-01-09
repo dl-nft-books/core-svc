@@ -127,6 +127,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if promocode == nil {
+		logger.Info("no promocode applied")
 		mintInfo.Discount = big.NewInt(0)
 	}
 
@@ -137,6 +138,8 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
+
+	logger.Info("promocode applied, discount: ", mintInfo.Discount.String())
 
 	ape.Render(w, responses.NewSignMintResponse(
 		mintInfo.PricePerOneToken.String(),
