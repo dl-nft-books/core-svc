@@ -139,7 +139,9 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.Info("promocode applied, discount: ", mintInfo.Discount.String())
+	if promocode != nil {
+		logger.Info("promocode applied, discount: ", mintInfo.Discount.String())
+	}
 
 	ape.Render(w, responses.NewSignMintResponse(
 		mintInfo.PricePerOneToken.String(),

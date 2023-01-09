@@ -2,8 +2,6 @@ package signature
 
 import (
 	"crypto/ecdsa"
-	"fmt"
-
 	"github.com/ethereum/go-ethereum/common"
 	"gitlab.com/distributed_lab/logan/v3"
 
@@ -88,9 +86,6 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 			"tokenURI":            mintInfo.HashedTokenURI,
 		},
 	}
-
-	fmt.Println(data)
-	fmt.Println(data.Message, data.PrimaryType, data.Domain)
 
 	return signer.NewDefaultSigner(privateKey).SignTypedData(data)
 }
