@@ -3,6 +3,7 @@ package signature
 import (
 	"crypto/ecdsa"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"gitlab.com/distributed_lab/logan/v3"
 
 	"github.com/davecgh/go-spew/spew"
@@ -56,6 +57,8 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 	error,
 ) {
 	spew.Dump(mintInfo)
+	spew.Dump(domainData)
+	spew.Dump(crypto.PubkeyToAddress(*privateKey.Public().(*ecdsa.PublicKey)).String())
 
 	data := &eip712.TypedData{
 		Types: apitypes.Types{
