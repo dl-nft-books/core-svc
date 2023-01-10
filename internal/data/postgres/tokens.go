@@ -3,13 +3,11 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
-
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
-
 	"github.com/Masterminds/squirrel"
 	"github.com/fatih/structs"
 	"gitlab.com/distributed_lab/kit/pgdb"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
+	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
 const (
@@ -89,6 +87,10 @@ func (q *tokensQ) FilterByPaymentId(paymentId ...int64) data.TokensQ {
 
 func (q *tokensQ) FilterByChainId(chainId ...int64) data.TokensQ {
 	q.selector = q.selector.Where(squirrel.Eq{tokensChainId: chainId})
+}
+
+func (q *tokensQ) FilterByMetadataHash(metadataHash ...string) data.TokensQ {
+	q.selector = q.selector.Where(squirrel.Eq{tokensMetadataHash: metadataHash})
 	return q
 }
 
@@ -134,6 +136,11 @@ func (q *tokensQ) UpdateStatus(newStatus resources.TokenStatus) data.TokensQ {
 
 func (q *tokensQ) UpdateOwner(newOwner string) data.TokensQ {
 	q.updater = q.updater.Set(tokensAccount, newOwner)
+	return q
+}
+
+func (q *tokensQ) UpdateMetadataHash(newMetadataHash string) data.TokensQ {
+	q.updater = q.updater.Set(tokensMetadataHash, newMetadataHash)
 	return q
 }
 

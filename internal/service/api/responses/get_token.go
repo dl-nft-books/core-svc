@@ -52,13 +52,14 @@ func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, tasksQ
 	response.Data = resources.Token{
 		Key: resources.NewKeyInt64(token.Id, resources.TOKENS),
 		Attributes: resources.TokenAttributes{
-			Owner:       token.Account,
-			Description: metadata.Description,
-			ImageUrl:    metadata.Image,
-			Name:        metadata.Name,
-			Signature:   task.Signature,
-			Status:      token.Status,
-			TokenId:     token.TokenId,
+			Owner:        token.Account,
+			Description:  metadata.Description,
+			MetadataHash: token.MetadataHash,
+			ImageUrl:     metadata.Image,
+			Name:         metadata.Name,
+			Signature:    task.Signature,
+			Status:       token.Status,
+			TokenId:      token.TokenId,
 		},
 		Relationships: getTokenRelationships(token),
 	}

@@ -27,6 +27,7 @@ type TokensQ interface {
 	FilterByBookId(bookId ...int64) TokensQ
 	FilterByPaymentId(paymentId ...int64) TokensQ
 	FilterByChainId(chainId ...int64) TokensQ
+	FilterByMetadataHash(metadataHash ...string) TokensQ
 
 	Get() (*Token, error)
 	Select() ([]Token, error)
@@ -40,5 +41,6 @@ type TokensQ interface {
 	UpdateStatus(newStatus resources.TokenStatus) TokensQ
 	UpdateTokenId(newTokenId int64) TokensQ
 	UpdateOwner(newOwner string) TokensQ
+	UpdateMetadataHash(newMetadataHash string) TokensQ
 	Update(id int64) error
 }
