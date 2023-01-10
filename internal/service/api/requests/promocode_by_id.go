@@ -12,12 +12,12 @@ type PromocodeByIdRequest struct {
 }
 
 func NewPromocodeByIdRequest(r *http.Request) (*PromocodeByIdRequest, error) {
-	IdAsString, err := strconv.Atoi(chi.URLParam(r, "id"))
+	idAsString, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get id from the url path")
 	}
 
 	return &PromocodeByIdRequest{
-		Id: int64(IdAsString),
+		Id: int64(idAsString),
 	}, nil
 }

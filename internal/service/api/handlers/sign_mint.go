@@ -3,8 +3,8 @@ package handlers
 import (
 	"errors"
 	"fmt"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"math"
 	"math/big"
 	"net/http"
 	"time"
@@ -16,6 +16,10 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/signature"
 )
+
+// discount in contract is int number where 1% = 10^25
+// discount in database is float number where 1% = 0.01
+const coefString string = "10000000000000000000000000" // 10^25
 
 func SignMint(w http.ResponseWriter, r *http.Request) {
 	logger := helpers.Log(r)
@@ -86,15 +90,19 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	mintInfo.Discount = big.NewInt(0)
 
 	//Getting promocode info
-	var promocode *data.Promocode = nil
+	promocode, err := helpers.DB(r).Promocodes().FilterById(request.PromocodeID).Get()
+	if err != nil {
+		logger.WithError(err).Error("failed to get promocode")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
 
-	if request.PromocodeID != 0 {
-		promocode, err = helpers.DB(r).Promocodes().FilterById(request.PromocodeID).Get()
-		if err != nil {
-			logger.WithError(err).Error("failed to get promocode")
-			ape.RenderErr(w, problems.InternalError())
-			return
-		}
+	if promocode == nil {
+		logger.Info("no promocode applied")
+		mintInfo.Discount = big.NewInt(0)
+	}
+
+	if promocode != nil {
 
 		//Validating promocode
 		promocodeResponse, err := responses.NewValidatePromocodeResponse(*promocode)
@@ -106,16 +114,15 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if promocodeResponse.Data.Attributes.State != resources.PromocodeActive {
-			logger.WithError(err).Error("promocode invalid")
-			ape.RenderErr(w, problems.BadRequest(errors.New("promocode invalid"))...)
+			logger.WithError(err).Error(fmt.Sprintf("promocode with state %v is invalid",
+				promocodeResponse.Data.Attributes.State))
+			ape.RenderErr(w, problems.BadRequest(errors.New(fmt.Sprintf("promocode with state %v is invalid",
+				promocodeResponse.Data.Attributes.State)))...)
 			return
 		}
 
-		//discount in contract is int number where 1% = 10^25
-		//discount in data base is float number where 1% = 0.01
-		const coefString string = "10000000000000000000000000"
-		discount := big.NewInt(int64(promocode.Discount * 100))
-		coef, ok := big.NewInt(0).SetString(fmt.Sprintf("%v", coefString), 10)
+		discount := big.NewInt(int64(promocode.Discount * math.Pow10(helpers.Promocoder(r).Decimal)))
+		coef, ok := big.NewInt(0).SetString(fmt.Sprintf(coefString), 10)
 		if !ok {
 			logger.Error("failed to parse big int")
 			ape.RenderErr(w, problems.InternalError())
@@ -125,12 +132,6 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 
 		mintInfo.Discount = discount
 	}
-
-	if promocode == nil {
-		logger.Info("no promocode applied")
-		mintInfo.Discount = big.NewInt(0)
-	}
-
 	// Signing the mint transaction
 	mintSignature, err := signature.SignMintInfo(&mintInfo, &domainData, &mintConfig)
 	if err != nil {
