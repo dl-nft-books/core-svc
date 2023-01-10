@@ -87,6 +87,7 @@ func (q *tokensQ) FilterByPaymentId(paymentId ...int64) data.TokensQ {
 
 func (q *tokensQ) FilterByChainId(chainId ...int64) data.TokensQ {
 	q.selector = q.selector.Where(squirrel.Eq{tokensChainId: chainId})
+	return q
 }
 
 func (q *tokensQ) FilterByMetadataHash(metadataHash ...string) data.TokensQ {
