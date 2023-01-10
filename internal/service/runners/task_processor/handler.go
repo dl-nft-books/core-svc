@@ -38,15 +38,17 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	fileKey := response.Data.Attributes.File.Attributes.Key
 
 	p.logger.Debug("Key retrieved successfully")
-	p.logger.Debug("Retrieving document link from S3...")
+	p.logger.Debugf("Retrieving document link from S3... (fileKey=%s)", fileKey)
 
 	fileLink, err := p.documenter.GetDocumentLink(fileKey)
 	if err != nil {
-		return errors.Wrap(err, "failed to get document link")
+		return errors.Wrap(err, "failed to get document link", logan.F{
+			"file_key": fileKey,
+		})
 	}
 
 	p.logger.Debug("Link retrieved successfully")
-	p.logger.Debug("Downloading document...")
+	p.logger.Debugf("Downloading document...")
 
 	rawDocument, err := helpers.DownloadDocument(fileLink.Data.Attributes.Url)
 	if err != nil {

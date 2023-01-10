@@ -63,9 +63,10 @@ func (c *Connector) UpdateToken(params models.UpdateTokenParams) error {
 		Data: resources.UpdateToken{
 			Key: resources.NewKeyInt64(params.Id, resources.TOKENS),
 			Attributes: resources.UpdateTokenAttributes{
-				Owner:   params.Owner,
-				Status:  params.Status,
-				TokenId: params.TokenId,
+				Owner:        params.Owner,
+				Status:       params.Status,
+				TokenId:      params.TokenId,
+				MetadataHash: params.MetadataHash,
 			},
 		},
 		Included: resources.Included{},

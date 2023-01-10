@@ -27,7 +27,6 @@ func ListTokens(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-
 	tokensListResponse, err := responses.NewTokenListResponse(r, request, tokens, helpers.Tracker(r), helpers.DB(r).Tasks())
 	if err != nil {
 		logger.WithError(err).Error("unable to form task list response")
@@ -48,8 +47,11 @@ func applyTokensQFilters(q data.TokensQ, request *requests.ListTokensRequest) da
 	if len(request.Status) > 0 {
 		q = q.FilterByStatus(request.Status...)
 	}
-	if request.ChainId != nil {
-		q = q.FilterByChainId(*request.ChainId)
+	if len(request.ChainId) > 0 {
+		q = q.FilterByChainId(request.ChainId...)
+	}
+	if len(request.MetadataHash) > 0 {
+		q = q.FilterByMetadataHash(request.MetadataHash...)
 	}
 	q = q.Page(request.OffsetPageParams)
 	q = q.Sort(request.Sorts)
