@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"errors"
 	"fmt"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"math"
@@ -11,6 +10,7 @@ import (
 
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
+	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
@@ -71,7 +71,8 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		VerifyingAddress: book.Data.Attributes.ContractAddress,
 		ContractName:     book.Data.Attributes.ContractName,
 		ContractVersion:  book.Data.Attributes.ContractVersion,
-		ChainID:          5,
+		//TODO: take it from book attrs when networks is done
+		ChainID: 5,
 	}
 
 	mintInfo := signature.MintInfo{
@@ -87,51 +88,15 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	mintInfo.EndTimestamp = time.Now().Add(mintConfig.Expiration).Unix()
-	mintInfo.Discount = big.NewInt(0)
 
-	//Getting promocode info
-	promocode, err := helpers.DB(r).Promocodes().FilterById(request.PromocodeID).Get()
+	discount, err := getPromocodeDiscount(w, request.PromocodeID)
+
 	if err != nil {
-		logger.WithError(err).Error("failed to get promocode")
-		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	if promocode == nil {
-		logger.Info("no promocode applied")
-		mintInfo.Discount = big.NewInt(0)
-	}
+	mintInfo.Discount = discount
 
-	if promocode != nil {
-
-		//Validating promocode
-		promocodeResponse, err := responses.NewValidatePromocodeResponse(*promocode)
-
-		if err != nil {
-			logger.WithError(err).Error("failed to get promocode response")
-			ape.RenderErr(w, problems.InternalError())
-			return
-		}
-
-		if promocodeResponse.Data.Attributes.State != resources.PromocodeActive {
-			logger.WithError(err).Error(fmt.Sprintf("promocode with state %v is invalid",
-				promocodeResponse.Data.Attributes.State))
-			ape.RenderErr(w, problems.BadRequest(errors.New(fmt.Sprintf("promocode with state %v is invalid",
-				promocodeResponse.Data.Attributes.State)))...)
-			return
-		}
-
-		discount := big.NewInt(int64(promocode.Discount * math.Pow10(helpers.Promocoder(r).Decimal)))
-		coef, ok := big.NewInt(0).SetString(fmt.Sprintf(coefString), 10)
-		if !ok {
-			logger.Error("failed to parse big int")
-			ape.RenderErr(w, problems.InternalError())
-			return
-		}
-		discount.Mul(discount, coef)
-
-		mintInfo.Discount = discount
-	}
 	// Signing the mint transaction
 	mintSignature, err := signature.SignMintInfo(&mintInfo, &domainData, &mintConfig)
 	if err != nil {
@@ -150,4 +115,47 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		mintSignature,
 		mintInfo.EndTimestamp,
 	))
+}
+
+func getPromocodeDiscount(w http.ResponseWriter, promocodeID int64) (*big.Int, error) {
+	//Getting promocode info
+	promocode, err := helpers.DB(r).Promocodes().FilterById(promocodeID).Get()
+	if err != nil {
+		ape.RenderErr(w, problems.InternalError())
+		return nil, errors.Wrap(err, "failed to get promocode")
+	}
+
+	//No discount applied
+	if promocode == nil {
+		return big.NewInt(0), nil
+	}
+
+	if promocode != nil {
+		//Validating promocode
+		promocodeResponse, err := responses.NewValidatePromocodeResponse(*promocode)
+
+		if err != nil {
+			ape.RenderErr(w, problems.InternalError())
+			return nil, errors.Wrap(err, "failed to get promocode response")
+		}
+
+		//Checking promocode state
+		if promocodeResponse.Data.Attributes.State != resources.PromocodeActive {
+			expiredError := errors.New(fmt.Sprintf("promocode with state %v is invalid",
+				promocodeResponse.Data.Attributes.State))
+			ape.RenderErr(w, problems.BadRequest(expiredError)...)
+			return nil, errors.Wrap(err, expiredError.Error())
+		}
+
+		//Calculating discount
+		discount := big.NewInt(int64(promocode.Discount * math.Pow10(helpers.Promocoder(r).Decimal)))
+		coef, ok := big.NewInt(0).SetString(fmt.Sprintf(coefString), 10)
+		if !ok {
+			ape.RenderErr(w, problems.InternalError())
+			return nil, errors.New("failed to parse big int")
+		}
+		discount.Mul(discount, coef)
+
+		return discount, nil
+	}
 }
