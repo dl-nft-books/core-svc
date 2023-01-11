@@ -89,9 +89,10 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 
 	mintInfo.EndTimestamp = time.Now().Add(mintConfig.Expiration).Unix()
 
-	discount, err := getPromocodeDiscount(w, request.PromocodeID)
+	discount, err := getPromocodeDiscount(w, r, request.PromocodeID)
 
 	if err != nil {
+		logger.WithError(err).Error("failed to get discount")
 		return
 	}
 
@@ -105,7 +106,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if promocode != nil {
+	if mintInfo.Discount != big.NewInt(0) {
 		logger.Info("promocode applied, discount: ", mintInfo.Discount.String())
 	}
 
@@ -117,17 +118,12 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	))
 }
 
-func getPromocodeDiscount(w http.ResponseWriter, promocodeID int64) (*big.Int, error) {
+func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, promocodeID int64) (*big.Int, error) {
 	//Getting promocode info
 	promocode, err := helpers.DB(r).Promocodes().FilterById(promocodeID).Get()
 	if err != nil {
 		ape.RenderErr(w, problems.InternalError())
 		return nil, errors.Wrap(err, "failed to get promocode")
-	}
-
-	//No discount applied
-	if promocode == nil {
-		return big.NewInt(0), nil
 	}
 
 	if promocode != nil {
@@ -158,4 +154,7 @@ func getPromocodeDiscount(w http.ResponseWriter, promocodeID int64) (*big.Int, e
 
 		return discount, nil
 	}
+
+	//No discount applied
+	return big.NewInt(0), nil
 }
