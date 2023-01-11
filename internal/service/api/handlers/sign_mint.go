@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"fmt"
+	"gitlab.com/distributed_lab/logan/v3"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"math"
 	"math/big"
@@ -89,7 +91,14 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 
 	mintInfo.EndTimestamp = time.Now().Add(mintConfig.Expiration).Unix()
 
-	discount, err := getPromocodeDiscount(w, r, request.PromocodeID)
+	//Getting promocode info
+	promocode, err := helpers.DB(r).Promocodes().FilterById(request.PromocodeID).Get()
+	if err != nil {
+		logger.WithError(err).Error("failed to get promocode")
+		ape.RenderErr(w, problems.InternalError())
+	}
+
+	discount, err := getPromocodeDiscount(w, r, promocode)
 
 	if err != nil {
 		logger.WithError(err).Error("failed to get discount")
@@ -106,7 +115,14 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if mintInfo.Discount != big.NewInt(0) {
+	// Using promocode after signature is formed
+	if promocode != nil {
+		if err = helpers.DB(r).Promocodes().New().UpdateUsages(promocode.Usages + 1).Update(promocode.Id); err != nil {
+			logger.WithError(err).WithFields(logan.F{"promocode": promocode.Promocode}).Error("failed to update promocode")
+			ape.RenderErr(w, problems.InternalError())
+			return
+		}
+
 		logger.Info("promocode applied, discount: ", mintInfo.Discount.String())
 	}
 
@@ -118,14 +134,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	))
 }
 
-func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, promocodeID int64) (*big.Int, error) {
-	//Getting promocode info
-	promocode, err := helpers.DB(r).Promocodes().FilterById(promocodeID).Get()
-	if err != nil {
-		ape.RenderErr(w, problems.InternalError())
-		return nil, errors.Wrap(err, "failed to get promocode")
-	}
-
+func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, promocode *data.Promocode) (*big.Int, error) {
 	if promocode != nil {
 		//Validating promocode
 		promocodeResponse, err := responses.NewValidatePromocodeResponse(*promocode)
