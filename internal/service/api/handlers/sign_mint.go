@@ -82,30 +82,42 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		TokenURI:     task.MetadataIpfsHash,
 	}
 
-	mintInfo.PricePerOneToken, err = helpers.ConvertPrice(priceResponse.Data.Attributes.Price, mintConfig.Precision)
-	if err != nil {
-		logger.WithError(err).Error("failed to convert price")
-		ape.RenderErr(w, problems.InternalError())
-		return
+	isVoucherTokenApplied := book.Data.Attributes.VoucherToken == request.TokenAddress
+	// If using voucher token --> setting price to 0
+	if isVoucherTokenApplied {
+		mintInfo.PricePerOneToken = big.NewInt(0)
+	} else {
+		// Normal scenario without voucher
+		mintInfo.PricePerOneToken, err = helpers.ConvertPrice(priceResponse.Data.Attributes.Price, mintConfig.Precision)
+		if err != nil {
+			logger.WithError(err).Error("failed to convert price")
+			ape.RenderErr(w, problems.InternalError())
+			return
+		}
 	}
 
 	mintInfo.EndTimestamp = time.Now().Add(mintConfig.Expiration).Unix()
 
-	//Getting promocode info
+	// Getting promocode info
 	promocode, err := helpers.DB(r).Promocodes().FilterById(request.PromocodeID).Get()
 	if err != nil {
 		logger.WithError(err).Error("failed to get promocode")
 		ape.RenderErr(w, problems.InternalError())
 	}
 
-	discount, err := getPromocodeDiscount(w, r, promocode)
+	// Promocodes and vouchers can't be used together
+	if isVoucherTokenApplied {
+		mintInfo.Discount = big.NewInt(0)
+	} else {
+		discount, err := getPromocodeDiscount(w, r, promocode)
 
-	if err != nil {
-		logger.WithError(err).Error("failed to get discount")
-		return
+		if err != nil {
+			logger.WithError(err).Error("failed to get discount")
+			return
+		}
+
+		mintInfo.Discount = discount
 	}
-
-	mintInfo.Discount = discount
 
 	// Signing the mint transaction
 	mintSignature, err := signature.SignMintInfo(&mintInfo, &domainData, &mintConfig)
@@ -116,7 +128,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Using promocode after signature is formed
-	if promocode != nil {
+	if promocode != nil && !isVoucherTokenApplied {
 		if err = helpers.DB(r).Promocodes().New().UpdateUsages(promocode.Usages + 1).Update(promocode.Id); err != nil {
 			logger.WithError(err).WithFields(logan.F{"promocode": promocode.Promocode}).Error("failed to update promocode")
 			ape.RenderErr(w, problems.InternalError())
