@@ -58,14 +58,6 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Getting price per token in dollars
-	priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress)
-	if err != nil {
-		logger.WithError(err).Error("failed to get price")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
-
 	// Forming signature mintInfo
 	mintConfig := helpers.Minter(r)
 
@@ -88,6 +80,14 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		mintInfo.PricePerOneToken = big.NewInt(0)
 	} else {
 		// Normal scenario without voucher
+		// Getting price per token in dollars
+		priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress)
+		if err != nil {
+			logger.WithError(err).Error("failed to get price")
+			ape.RenderErr(w, problems.InternalError())
+			return
+		}
+		// Converting price
 		mintInfo.PricePerOneToken, err = helpers.ConvertPrice(priceResponse.Data.Attributes.Price, mintConfig.Precision)
 		if err != nil {
 			logger.WithError(err).Error("failed to convert price")
