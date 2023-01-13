@@ -3,6 +3,7 @@ package task_processor
 import (
 	"bytes"
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"net/http"
 
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/opensea"
@@ -110,13 +111,14 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 		bookTitle       = response.Data.Attributes.Title
 		bookDescription = response.Data.Attributes.Description
 	)
-
-	ipfsMetadataHash, err := helpers.PrecalculateMetadataIPFSHash(opensea.Metadata{
+	openseaData := opensea.Metadata{
 		Name:        fmt.Sprintf("%s #%v", bookTitle, task.Id),
 		Description: bookDescription,
 		Image:       bannerLink.Data.Attributes.Url,
 		FileURL:     baseURI + ipfsFileHash,
-	})
+	}
+	spew.Dump(openseaData)
+	ipfsMetadataHash, err := helpers.PrecalculateMetadataIPFSHash(openseaData)
 	if err != nil {
 		return errors.Wrap(err, "failed to precalculate ipfs hash for a metadata file")
 	}
