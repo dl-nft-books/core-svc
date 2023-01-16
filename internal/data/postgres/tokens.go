@@ -8,6 +8,7 @@ import (
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"strings"
 )
 
 const (
@@ -66,7 +67,10 @@ func (q *tokensQ) FilterByStatus(status ...resources.TokenStatus) data.TokensQ {
 }
 
 func (q *tokensQ) FilterByAccount(account ...string) data.TokensQ {
-	q.selector = q.selector.Where(squirrel.Eq{tokensAccount: account})
+	for i := range account {
+		account[i] = strings.ToLower(account[i])
+	}
+	q.selector = q.selector.Where(squirrel.Eq{fmt.Sprintf("lower(%v)", tokensAccount): account})
 	return q
 }
 
