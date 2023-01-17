@@ -26,7 +26,7 @@ type (
 		Status       resources.TokenStatus `json:"status"`
 		TokenId      int64                 `json:"token_id"`
 		Signature    string                `json:"signature"`
-
+		ChainId      int64                 `json:"chain_id"`
 		//relations
 		BookId    int64
 		PaymentId int64
