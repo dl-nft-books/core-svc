@@ -1228,8 +1228,8 @@ gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312 h1:u8pxrNw8QKIsrmCl
 gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312/go.mod h1:vdlhN5/oQR7uY8EsGSqPf8bwnmQxxpaq7qrQn5Y3U/w=
 gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221207105353-c6d1df229e8d h1:ce1dOWmTbuKeXEV9FexbPMgt2jgvoiFGKhtQ39NXr10=
 gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221207105353-c6d1df229e8d/go.mod h1:q1z3N4ZyIFjFIPr5rJWaYlRjURgZ6WVB928KFpwd2bY=
-gitlab.com/tokend/nft-books/book-svc v0.0.0-20230112112128-b2a4c971d801 h1:1nizd3pWYVHqjdre1smFA28l1vzRhRETSKo1O3d+Tlw=
-gitlab.com/tokend/nft-books/book-svc v0.0.0-20230112112128-b2a4c971d801/go.mod h1:vbh0F9b9a8URnlLWke5T9RTkEireAFRJC1Ce9KrZa1Q=
+gitlab.com/tokend/nft-books/book-svc v0.0.0-20230117171728-e926a212b109 h1:bpK7JhOoLJetkdD4ZIUaz+LNN70Pwt6c0Mn/C5B8IiQ=
+gitlab.com/tokend/nft-books/book-svc v0.0.0-20230117171728-e926a212b109/go.mod h1:Kbi64JnGrpIep6YC0Bc5hJKcZTBp6HC8n9TyEk/dCoQ=
 gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221209003416-5f1b6f0f90fb h1:bwdhdOMzheaUcoLEd86P7s6pdJtj3756J2dUwhYohRc=
 gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221209003416-5f1b6f0f90fb/go.mod h1:vauxNcrANLkngO/skMR8XPNSasgm9YHhjg+MqUfGrFk=
 gitlab.com/tokend/nft-books/doorman v0.1.0-rc.1.0.20221208122624-848d4fe0422f h1:ddoLuVWHHPCUdMFbcszPNY2Na7wP8/IyqQx/o1upTjU=

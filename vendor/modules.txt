@@ -473,7 +473,7 @@ gitlab.com/tokend/nft-books/blob-svc/connector/api
 gitlab.com/tokend/nft-books/blob-svc/connector/config
 gitlab.com/tokend/nft-books/blob-svc/connector/models
 gitlab.com/tokend/nft-books/blob-svc/resources
-# gitlab.com/tokend/nft-books/book-svc v0.0.0-20230112112128-b2a4c971d801
+# gitlab.com/tokend/nft-books/book-svc v0.0.0-20230117171728-e926a212b109
 ## explicit; go 1.18
 gitlab.com/tokend/nft-books/book-svc/connector
 gitlab.com/tokend/nft-books/book-svc/connector/models

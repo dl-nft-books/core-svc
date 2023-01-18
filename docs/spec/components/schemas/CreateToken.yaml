@@ -14,6 +14,7 @@ allOf:
           - metadata_hash
           - status
           - signature
+          - chain_id
         properties:
           token_id:
             type: integer
@@ -39,6 +40,10 @@ allOf:
           signature:
             type: string
             example: I hate managing 4 backend services in a week
+          chain_id:
+            type: integer
+            format: int64
+            example: 13
       relationships:
         type: object
         required:

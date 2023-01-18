@@ -5,6 +5,7 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"log"
 	"math"
 	"math/big"
 	"net/http"
@@ -65,10 +66,9 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		VerifyingAddress: book.Data.Attributes.ContractAddress,
 		ContractName:     book.Data.Attributes.ContractName,
 		ContractVersion:  book.Data.Attributes.ContractVersion,
-		//TODO: take it from book attrs when networks is done
-		ChainID: 5,
+		ChainID:          book.Data.Attributes.ChainId,
 	}
-
+	log.Println(book.Data.Attributes.ChainId)
 	mintInfo := signature.MintInfo{
 		TokenAddress: request.TokenAddress,
 		TokenURI:     task.MetadataIpfsHash,

@@ -30,6 +30,7 @@ func (c *Connector) CreateToken(params models.CreateTokenParams) (id int64, err 
 					Status:       params.Status,
 					TokenId:      params.TokenId,
 					Signature:    params.Signature,
+					ChainId:      params.ChainId,
 				},
 				Relationships: resources.CreateTokenRelationships{
 					Book: resources.Relation{

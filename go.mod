@@ -33,7 +33,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/miguelmota/go-solidity-sha3 v0.1.1
 	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221207105353-c6d1df229e8d
-	gitlab.com/tokend/nft-books/book-svc v0.0.0-20230112112128-b2a4c971d801
+	gitlab.com/tokend/nft-books/book-svc v0.0.0-20230117171728-e926a212b109
 	gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221209003416-5f1b6f0f90fb
 	gitlab.com/tokend/nft-books/doorman v0.1.0-rc.1.0.20221208122624-848d4fe0422f
 	gitlab.com/tokend/nft-books/price-svc v0.0.0-20221202091547-364acb962d10
