@@ -133,7 +133,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 
 	// Using promocode after signature is formed
 	if promocode != nil && !isVoucherTokenApplied {
-		if err = helpers.DB(r).Promocodes().New().UpdateUsages(promocode.Usages + 1).Update(promocode.Id); err != nil {
+		if err = helpers.DB(r).Promocodes().New().UpdateUsages(promocode.Usages + 1).FilterById(promocode.Id).Update(); err != nil {
 			logger.WithError(err).WithFields(logan.F{"promocode": promocode.Promocode}).Error("failed to update promocode")
 			ape.RenderErr(w, problems.InternalError())
 			return
