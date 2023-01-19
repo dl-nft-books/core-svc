@@ -21,7 +21,7 @@ import (
 
 // discount in contract is int number where 1% = 10^25
 // discount in database is float number where 1% = 0.01
-const coefString string = "10000000000000000000000000" // 10^25
+const discountMultiplier = "10000000000000000000000000" // 10^25
 
 func SignMint(w http.ResponseWriter, r *http.Request) {
 	logger := helpers.Log(r)
@@ -78,7 +78,9 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	// If using voucher token --> setting price to 0
 	if isVoucherTokenApplied {
 		mintInfo.PricePerOneToken = big.NewInt(0)
-	} else {
+	}
+
+	if !isVoucherTokenApplied {
 		// Normal scenario without voucher
 		// Getting price per token in dollars
 		priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress)
@@ -108,7 +110,9 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	// Promocodes and vouchers can't be used together
 	if isVoucherTokenApplied {
 		mintInfo.Discount = big.NewInt(0)
-	} else {
+	}
+
+	if !isVoucherTokenApplied {
 		discount, err := getPromocodeDiscount(w, r, promocode)
 
 		if err != nil {
@@ -146,6 +150,8 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	))
 }
 
+var formattedDiscountMultiplier, _ = big.NewInt(0).SetString(fmt.Sprintf(discountMultiplier), 10)
+
 func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, promocode *data.Promocode) (*big.Int, error) {
 	if promocode != nil {
 		//Validating promocode
@@ -166,12 +172,8 @@ func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, promocode *dat
 
 		//Calculating discount
 		discount := big.NewInt(int64(promocode.Discount * math.Pow10(helpers.Promocoder(r).Decimal)))
-		coef, ok := big.NewInt(0).SetString(fmt.Sprintf(coefString), 10)
-		if !ok {
-			ape.RenderErr(w, problems.InternalError())
-			return nil, errors.New("failed to parse big int")
-		}
-		discount.Mul(discount, coef)
+
+		discount.Mul(discount, formattedDiscountMultiplier)
 
 		return discount, nil
 	}
