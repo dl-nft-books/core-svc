@@ -28,13 +28,13 @@ func New(cfg config.Config) *PromocodeChecker {
 }
 
 func (pc *PromocodeChecker) promocodeCheck() error {
-	if err := pc.promocodesQ.New().UpdateState(resources.PromocodeExpired).UpdateWhereExpired(); err != nil {
+	if err := pc.promocodesQ.New().UpdateState(resources.PromocodeExpired).FilterExpired().Update(); err != nil {
 		return errors.Wrap(err, "Failed to update promocode expired state")
 	}
-	if err := pc.promocodesQ.New().UpdateState(resources.PromocodeFullyUsed).UpdateWhereFullyUsed(); err != nil {
+	if err := pc.promocodesQ.New().UpdateState(resources.PromocodeFullyUsed).FilterFullyUsed().Update(); err != nil {
 		return errors.Wrap(err, "Failed to update promocode fully used state")
 	}
-	if err := pc.promocodesQ.New().UpdateState(resources.PromocodeActive).UpdateWhereActive(); err != nil {
+	if err := pc.promocodesQ.New().UpdateState(resources.PromocodeActive).FilterActive().Update(); err != nil {
 		return errors.Wrap(err, "Failed to update promocode active state")
 	}
 	return nil
