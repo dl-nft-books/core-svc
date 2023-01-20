@@ -58,6 +58,7 @@ func CreateToken(w http.ResponseWriter, r *http.Request) {
 		MetadataHash: request.Data.Attributes.MetadataHash,
 		Status:       request.Data.Attributes.Status,
 		ChainId:      request.Data.Attributes.ChainId,
+		Signature:    request.Data.Attributes.Signature,
 	})
 	if err != nil {
 		helpers.Log(r).WithError(err).Errorf("failed to create new token with id of #%v", bookId)
