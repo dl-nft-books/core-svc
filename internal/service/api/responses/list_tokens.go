@@ -14,7 +14,7 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
-func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, tokens []data.Token, trackerApi *tracker.Connector, tasksQ data.TasksQ) (*resources.TokenListResponse, error) {
+func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, tokens []data.Token, trackerApi *tracker.Connector) (*resources.TokenListResponse, error) {
 	response := resources.TokenListResponse{}
 
 	if len(tokens) == 0 {
@@ -37,21 +37,6 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 			})
 		}
 
-		tasks, err := tasksQ.New().Select(data.TaskSelector{
-			IpfsHash: &token.MetadataHash,
-		})
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to get task by hash", logan.F{
-				"metadata_hash": token.MetadataHash,
-			})
-		}
-		if len(tasks) != 1 {
-			return nil, errors.From(NonSingleTaskErr, logan.F{
-				"metadata_hash": token.MetadataHash,
-			})
-		}
-		task := tasks[0]
-
 		metadata, err := helpers.GetMetadataFromHash(token.MetadataHash)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to get metadata from hash", logan.F{
@@ -69,7 +54,7 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 				Name:         metadata.Name,
 				Description:  metadata.Description,
 				ImageUrl:     metadata.Image,
-				Signature:    task.Signature,
+				Signature:    token.Signature,
 			},
 			Relationships: getTokenRelationships(token),
 		}
