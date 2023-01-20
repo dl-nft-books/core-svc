@@ -40,7 +40,7 @@ func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
 
 	promocodesQ := applyPromocodeUpdateFilters(r, helpers.DB(r).Promocodes().New(), *request)
 
-	if err = promocodesQ.Update(promocodeId); err != nil {
+	if err = promocodesQ.FilterById(promocodeId).Update(); err != nil {
 		logger.WithError(err).Error("failed to get promocode")
 		ape.RenderErr(w, problems.InternalError())
 		return

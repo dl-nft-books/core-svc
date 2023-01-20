@@ -11,7 +11,7 @@ type Promocode struct {
 	Promocode      string                   `db:"promocode" structs:"promocode"`
 	Discount       float64                  `db:"discount" structs:"discount"`
 	InitialUsages  int64                    `db:"initial_usages" structs:"initial_usages" json:"initial_usages"`
-	Usages     int64                    `db:"usages" structs:"usages" json:"usages"`
+	Usages         int64                    `db:"usages" structs:"usages" json:"usages"`
 	ExpirationDate time.Time                `db:"expiration_date" structs:"expiration_date" json:"expiration_date"`
 	State          resources.PromocodeState `db:"state" structs:"state" json:"state"`
 }
@@ -24,7 +24,7 @@ func (promocode *Promocode) Resource() resources.Promocode {
 			Promocode:      promocode.Promocode,
 			Discount:       promocode.Discount,
 			InitialUsages:  promocode.InitialUsages,
-			Usages:     promocode.Usages,
+			Usages:         promocode.Usages,
 			ExpirationDate: promocode.ExpirationDate,
 			State:          promocode.State,
 		},
@@ -52,8 +52,8 @@ type PromocodesQ interface {
 	UpdateInitialUsages(newInitialUsages int64) PromocodesQ
 	UpdateUsages(newUsages int64) PromocodesQ
 	UpdateExpirationDate(newExpirationDate time.Time) PromocodesQ
-	Update(id int64) error
-	UpdateWhereExpired() error
-	UpdateWhereFullyUsed() error
-	UpdateWhereActive() error
+	Update() error
+	FilterExpired() PromocodesQ
+	FilterFullyUsed() PromocodesQ
+	FilterActive() PromocodesQ
 }

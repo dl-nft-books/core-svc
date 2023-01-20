@@ -57,6 +57,7 @@ func (q *promocodesQ) Sort(sort pgdb.Sorts) data.PromocodesQ {
 
 func (q *promocodesQ) FilterById(id ...int64) data.PromocodesQ {
 	q.selector = q.selector.Where(squirrel.Eq{promocodesId: id})
+	q.updater = q.updater.Where(squirrel.Eq{promocodesId: id})
 	return q
 }
 
@@ -132,25 +133,28 @@ func (q *promocodesQ) UpdateExpirationDate(newExpirationDate time.Time) data.Pro
 	return q
 }
 
-func (q *promocodesQ) Update(id int64) error {
-	return q.database.Exec(q.updater.Where(squirrel.Eq{promocodesId: id}))
+func (q *promocodesQ) Update() error {
+	return q.database.Exec(q.updater)
 }
 
-func (q *promocodesQ) UpdateWhereExpired() error {
-	return q.database.Exec(q.updater.
+func (q *promocodesQ) FilterExpired() data.PromocodesQ {
+	q.updater = q.updater.
 		Where(squirrel.LtOrEq{promocodesExpirationDate: time.Now()}).
-		Where(squirrel.Eq{promocodesState: resources.PromocodeActive}))
+		Where(squirrel.Eq{promocodesState: resources.PromocodeActive})
+	return q
 }
 
-func (q *promocodesQ) UpdateWhereFullyUsed() error {
-	return q.database.Exec(q.updater.
+func (q *promocodesQ) FilterFullyUsed() data.PromocodesQ {
+	q.updater = q.updater.
 		Where(squirrel.LtOrEq{promocodesInitialUsages + " - " + promocodesUsages: 0}).
-		Where(squirrel.Eq{promocodesState: resources.PromocodeActive}))
+		Where(squirrel.Eq{promocodesState: resources.PromocodeActive})
+	return q
 }
 
-func (q *promocodesQ) UpdateWhereActive() error {
-	return q.database.Exec(q.updater.
+func (q *promocodesQ) FilterActive() data.PromocodesQ {
+	q.updater = q.updater.
 		Where(squirrel.Gt{promocodesExpirationDate: time.Now()}).
 		Where(squirrel.Gt{promocodesInitialUsages + " - " + promocodesUsages: 0}).
-		Where(squirrel.NotEq{promocodesState: resources.PromocodeActive}))
+		Where(squirrel.NotEq{promocodesState: resources.PromocodeActive})
+	return q
 }

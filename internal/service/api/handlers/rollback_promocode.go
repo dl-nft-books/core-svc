@@ -43,7 +43,7 @@ func RollbackPromocode(w http.ResponseWriter, r *http.Request) {
 		promocodesQ = promocodesQ.UpdateState(resources.PromocodeActive)
 	}
 
-	err = promocodesQ.Update(promocode.Id)
+	err = promocodesQ.FilterById(promocode.Id).Update()
 
 	if err != nil {
 		logger.WithError(err).Error("failed to get promocode")
