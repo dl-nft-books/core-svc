@@ -14,7 +14,7 @@ var (
 	PaymentNotFoundErr = errors.New("payment with specified id was not found")
 )
 
-func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, tasksQ data.TasksQ) (*resources.TokenResponse, error) {
+func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector) (*resources.TokenResponse, error) {
 	var response resources.TokenResponse
 
 	paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
@@ -29,21 +29,6 @@ func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, tasksQ
 		})
 	}
 
-	tasks, err := tasksQ.New().Select(data.TaskSelector{
-		IpfsHash: &token.MetadataHash,
-	})
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get task by hash", logan.F{
-			"metadata_hash": token.MetadataHash,
-		})
-	}
-	if len(tasks) != 1 {
-		return nil, errors.From(NonSingleTaskErr, logan.F{
-			"metadata_hash": token.MetadataHash,
-		})
-	}
-	task := tasks[0]
-
 	metadata, err := helpers.GetMetadataFromHash(token.MetadataHash)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get metadata from hash")
@@ -57,7 +42,7 @@ func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, tasksQ
 			MetadataHash: token.MetadataHash,
 			ImageUrl:     metadata.Image,
 			Name:         metadata.Name,
-			Signature:    task.Signature,
+			Signature:    token.Signature,
 			Status:       token.Status,
 			TokenId:      token.TokenId,
 		},
