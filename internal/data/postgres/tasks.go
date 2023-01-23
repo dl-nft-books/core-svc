@@ -3,12 +3,12 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
-
 	"github.com/Masterminds/squirrel"
 	"github.com/fatih/structs"
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"time"
 )
 
 const (
@@ -143,6 +143,10 @@ func applyTasksSelector(sql squirrel.SelectBuilder, selector data.TaskSelector) 
 	}
 	if selector.Status != nil {
 		sql = sql.Where(squirrel.Eq{tasksStatus: *selector.Status})
+	}
+	if selector.Period != nil {
+		expirationDate := time.Now().UTC().Add(-(*selector.Period))
+		sql = sql.Where(squirrel.LtOrEq{TasksCreatedAt: expirationDate})
 	}
 	if selector.OffsetParams != nil {
 		return selector.OffsetParams.ApplyTo(sql, tasksId)

@@ -32,6 +32,7 @@ type Config interface {
 	MintConfigurator
 	Promocoder
 	TaskProcessor
+	TaskCleaner
 	PdfSignatureParams() *SignatureParams
 	ApiRestrictions() ApiRestrictions
 }
@@ -52,7 +53,11 @@ type config struct {
 	// Internal service configuration
 	MintConfigurator
 	TaskProcessor
+<<<<<<< HEAD
 	Promocoder
+=======
+	TaskCleaner
+>>>>>>> origin/feature/S3_cleaning
 	pdfSignatureParams comfig.Once
 
 	// Getters and comfig.Once's
@@ -79,6 +84,10 @@ func New(getter kv.Getter) Config {
 		// Internal service configuration
 		MintConfigurator: NewEthMinterConfigurator(getter),
 		TaskProcessor:    NewTaskProcessor(getter),
+<<<<<<< HEAD
 		Promocoder:       NewPromocoder(getter),
+=======
+		TaskCleaner:      NewTaskCleaner(getter),
+>>>>>>> origin/feature/S3_cleaning
 	}
 }

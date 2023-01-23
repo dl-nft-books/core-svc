@@ -28,6 +28,7 @@ type TaskSelector struct {
 	IpfsHash     *string
 	Status       *resources.TaskStatus
 	TokenId      *int64
+	Period       *time.Duration
 }
 
 type TasksQ interface {
