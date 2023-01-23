@@ -61,7 +61,6 @@ func Run(args []string) bool {
 			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
 			log.Infof("started task processor #%d", i+1)
 		}
-<<<<<<< HEAD
 	case promocodeCheckerCommand.FullCommand():
 		run(waitGroup, ctx, cfg, runners.RunPromocodeChecker)
 		log.Info("started promocode checker...")
@@ -74,10 +73,8 @@ func Run(args []string) bool {
 		}
 		run(waitGroup, ctx, cfg, runners.RunPromocodeChecker)
 		log.Info("started promocode checker...")
-=======
 		run(waitGroup, ctx, cfg, runners.RunTaskCleaner)
 		log.Info("started task cleaner")
->>>>>>> origin/feature/S3_cleaning
 	case migrateUpCommand.FullCommand():
 		err = MigrateUp(cfg)
 	case migrateDownCommand.FullCommand():
