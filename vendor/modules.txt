@@ -495,7 +495,7 @@ gitlab.com/tokend/nft-books/doorman/resources
 # gitlab.com/tokend/nft-books/go-sdk v0.1.2
 ## explicit; go 1.18
 gitlab.com/tokend/nft-books/go-sdk
-# gitlab.com/tokend/nft-books/price-svc v0.0.0-20221202091547-364acb962d10
+# gitlab.com/tokend/nft-books/price-svc v0.0.0-20230124123043-62885a5608ed
 ## explicit; go 1.18
 gitlab.com/tokend/nft-books/price-svc/connector
 gitlab.com/tokend/nft-books/price-svc/connector/models

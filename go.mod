@@ -36,7 +36,7 @@ require (
 	gitlab.com/tokend/nft-books/book-svc v0.0.0-20230117171728-e926a212b109
 	gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221209003416-5f1b6f0f90fb
 	gitlab.com/tokend/nft-books/doorman v0.1.0-rc.1.0.20221208122624-848d4fe0422f
-	gitlab.com/tokend/nft-books/price-svc v0.0.0-20221202091547-364acb962d10
+	gitlab.com/tokend/nft-books/price-svc v0.0.0-20230124123043-62885a5608ed
 )
 
 require (

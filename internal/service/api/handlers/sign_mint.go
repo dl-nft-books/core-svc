@@ -83,7 +83,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	if !isVoucherTokenApplied {
 		// Normal scenario without voucher
 		// Getting price per token in dollars
-		priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress)
+		priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress, book.Data.Attributes.ChainId)
 		if err != nil {
 			logger.WithError(err).Error("failed to get price")
 			ape.RenderErr(w, problems.InternalError())
