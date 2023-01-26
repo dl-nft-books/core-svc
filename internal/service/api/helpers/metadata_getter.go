@@ -2,13 +2,14 @@ package helpers
 
 import (
 	"encoding/json"
-	"github.com/pkg/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/opensea"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/pkg/errors"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/opensea"
 )
 
-const baseURI = "https://ipfs.io/ipfs/"
+const baseURI = "https://ipfs.tokend.io/ipfs/ipfs/"
 
 func GetMetadataFromHash(hash string) (*opensea.Metadata, error) {
 	response, err := http.Get(baseURI + hash)
