@@ -9,10 +9,8 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data/opensea"
 )
 
-const baseURI = "https://ipfs.tokend.io/ipfs/ipfs/"
-
-func GetMetadataFromHash(hash string) (*opensea.Metadata, error) {
-	response, err := http.Get(baseURI + hash)
+func GetMetadataFromHash(hash, baseUri string) (*opensea.Metadata, error) {
+	response, err := http.Get(baseUri + hash)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get a response")
 	}

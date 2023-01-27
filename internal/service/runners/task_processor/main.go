@@ -18,11 +18,11 @@ import (
 const cursorKey = "task_processor_cursor"
 
 type TaskProcessor struct {
-	name     string
-	logger   *logan.Entry
-	db       data.DB
-	selector data.TaskSelector
-
+	name            string
+	logger          *logan.Entry
+	db              data.DB
+	selector        data.TaskSelector
+	baseIpfsUri     string
 	runnerCfg       config.RunnerData
 	signatureParams *config.SignatureParams
 
@@ -34,10 +34,10 @@ func New(cfg config.Config) *TaskProcessor {
 	status := resources.TaskPending
 
 	return &TaskProcessor{
-		name:   cfg.TaskProcessorCfg().Name,
-		db:     postgres.NewDB(cfg.DB()),
-		logger: cfg.Log(),
-
+		name:        cfg.TaskProcessorCfg().Name,
+		db:          postgres.NewDB(cfg.DB()),
+		logger:      cfg.Log(),
+		baseIpfsUri: cfg.BaseUri(),
 		selector: data.TaskSelector{
 			PageParams: &pgdb.CursorPageParams{
 				Cursor: cfg.TaskProcessorCfg().Cursor,

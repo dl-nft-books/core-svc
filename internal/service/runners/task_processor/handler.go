@@ -15,8 +15,6 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/runners/helpers"
 )
 
-const baseURI = "https://ipfs.io/ipfs/"
-
 var bookNotFoundErr = errors.New("book was not found")
 
 func (p *TaskProcessor) handleTask(task data.Task) error {
@@ -115,7 +113,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 		Name:        fmt.Sprintf("%s #%v", bookTitle, task.Id),
 		Description: bookDescription,
 		Image:       bannerLink.Data.Attributes.Url,
-		FileURL:     baseURI + ipfsFileHash,
+		FileURL:     p.baseIpfsUri + ipfsFileHash,
 	}
 	spew.Dump(openseaData)
 	ipfsMetadataHash, err := helpers.PrecalculateMetadataIPFSHash(openseaData)
@@ -128,7 +126,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	if err = p.db.Tasks().UpdateMetadataIpfsHash(ipfsMetadataHash).Update(task.Id); err != nil {
 		return errors.Wrap(err, "failed to update ipfs hash")
 	}
-	if err = p.db.Tasks().UpdateUri(baseURI + ipfsMetadataHash).Update(task.Id); err != nil {
+	if err = p.db.Tasks().UpdateUri(p.baseIpfsUri + ipfsMetadataHash).Update(task.Id); err != nil {
 		return errors.Wrap(err, "failed to update task uri")
 	}
 
