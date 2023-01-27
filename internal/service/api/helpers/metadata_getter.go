@@ -2,14 +2,17 @@ package helpers
 
 import (
 	"encoding/json"
-	"github.com/pkg/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/opensea"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/pkg/errors"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/opensea"
 )
 
-func GetMetadataFromHash(hash, baseUri string) (*opensea.Metadata, error) {
-	response, err := http.Get(baseUri + hash)
+const baseURI = "https://ipfs.tokend.io/ipfs/ipfs/"
+
+func GetMetadataFromHash(hash string) (*opensea.Metadata, error) {
+	response, err := http.Get(baseURI + hash)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get a response")
 	}
