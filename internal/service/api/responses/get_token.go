@@ -14,7 +14,7 @@ var (
 	PaymentNotFoundErr = errors.New("payment with specified id was not found")
 )
 
-func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector) (*resources.TokenResponse, error) {
+func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, beseUri string) (*resources.TokenResponse, error) {
 	var response resources.TokenResponse
 
 	paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
@@ -29,7 +29,7 @@ func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector) (*reso
 		})
 	}
 
-	metadata, err := helpers.GetMetadataFromHash(token.MetadataHash)
+	metadata, err := helpers.GetMetadataFromHash(token.MetadataHash, beseUri)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get metadata from hash")
 	}

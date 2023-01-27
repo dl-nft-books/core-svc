@@ -8,10 +8,8 @@ import (
 	"net/http"
 )
 
-const baseURI = "https://ipfs.io/ipfs/"
-
-func GetMetadataFromHash(hash string) (*opensea.Metadata, error) {
-	response, err := http.Get(baseURI + hash)
+func GetMetadataFromHash(hash, baseUri string) (*opensea.Metadata, error) {
+	response, err := http.Get(baseUri + hash)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get a response")
 	}

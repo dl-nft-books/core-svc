@@ -25,6 +25,7 @@ func (s *service) router() chi.Router {
 			helpers.CtxMinter(*s.ethMinterConfig),
 			helpers.CtxApiRestrictions(s.apiRestrictions),
 			helpers.CtxPromocoder(s.promocoder),
+			helpers.CtxBaseIpfsUri(s.baseIpfsUri),
 
 			// Connectors
 			helpers.CtxPricer(s.pricer),
