@@ -3,6 +3,7 @@ package helpers
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -10,6 +11,7 @@ import (
 )
 
 func GetMetadataFromHash(hash, baseUri string) (*opensea.Metadata, error) {
+	log.Println("GET METADATA", baseUri+hash)
 	response, err := http.Get(baseUri + hash)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get a response")
