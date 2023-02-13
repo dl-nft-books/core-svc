@@ -24,17 +24,38 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 	}
 
 	for _, token := range tokens {
-		paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
+		if token.IsTokenPayment {
+			paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
 
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
-				"payment_id": token.PaymentId,
-			})
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
+					"payment_id": token.PaymentId,
+				})
+			}
+			if paymentResponse == nil {
+				return nil, errors.From(PaymentNotFoundErr, logan.F{
+					"payment_id": PaymentNotFoundErr,
+				})
+			}
+
+			response.Included.Add(convertPaymentToResource(*paymentResponse))
 		}
-		if paymentResponse == nil {
-			return nil, errors.From(PaymentNotFoundErr, logan.F{
-				"payment_id": PaymentNotFoundErr,
-			})
+
+		if !token.IsTokenPayment {
+			paymentResponse, err := trackerApi.GetNftPaymentById(token.PaymentId)
+
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
+					"payment_id": token.PaymentId,
+				})
+			}
+			if paymentResponse == nil {
+				return nil, errors.From(PaymentNotFoundErr, logan.F{
+					"payment_id": PaymentNotFoundErr,
+				})
+			}
+
+			response.Included.Add(convertNftPaymentToResource(*paymentResponse))
 		}
 
 		metadata, err := helpers.GetMetadataFromHash(token.MetadataHash, helpers.BaseIpfsUri(r))
@@ -47,20 +68,20 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 		tokenAsResource := resources.Token{
 			Key: resources.NewKeyInt64(token.Id, resources.TOKENS),
 			Attributes: resources.TokenAttributes{
-				Owner:        token.Account,
-				TokenId:      token.TokenId,
-				MetadataHash: token.MetadataHash,
-				Status:       token.Status,
-				Name:         metadata.Name,
-				Description:  metadata.Description,
-				ImageUrl:     metadata.Image,
-				Signature:    token.Signature,
+				Owner:          token.Account,
+				TokenId:        token.TokenId,
+				MetadataHash:   token.MetadataHash,
+				Status:         token.Status,
+				Name:           metadata.Name,
+				Description:    metadata.Description,
+				ImageUrl:       metadata.Image,
+				Signature:      token.Signature,
+				IsTokenPayment: token.IsTokenPayment,
 			},
 			Relationships: getTokenRelationships(token),
 		}
 
 		response.Data = append(response.Data, tokenAsResource)
-		response.Included.Add(convertPaymentToResource(*paymentResponse))
 	}
 
 	response.Links = requests.GetOffsetLinksWithSort(r, request.OffsetPageParams, request.Sorts)

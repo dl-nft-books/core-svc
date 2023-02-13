@@ -479,7 +479,7 @@ gitlab.com/tokend/nft-books/book-svc/connector
 gitlab.com/tokend/nft-books/book-svc/connector/models
 gitlab.com/tokend/nft-books/book-svc/internal/service/api/requests
 gitlab.com/tokend/nft-books/book-svc/resources
-# gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221209003416-5f1b6f0f90fb
+# gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20230209143753-8330131b841a
 ## explicit; go 1.18
 gitlab.com/tokend/nft-books/contract-tracker/connector
 gitlab.com/tokend/nft-books/contract-tracker/connector/models
@@ -495,7 +495,7 @@ gitlab.com/tokend/nft-books/doorman/resources
 # gitlab.com/tokend/nft-books/go-sdk v0.1.2
 ## explicit; go 1.18
 gitlab.com/tokend/nft-books/go-sdk
-# gitlab.com/tokend/nft-books/price-svc v0.0.0-20230124123043-62885a5608ed
+# gitlab.com/tokend/nft-books/price-svc v0.0.0-20230213140134-789b5d685dc7
 ## explicit; go 1.18
 gitlab.com/tokend/nft-books/price-svc/connector
 gitlab.com/tokend/nft-books/price-svc/connector/models

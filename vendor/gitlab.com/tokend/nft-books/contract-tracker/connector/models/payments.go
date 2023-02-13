@@ -7,8 +7,11 @@ import (
 
 type (
 	// ListPaymentsParams is a helper struct to be included when calling ListPayments request
-	ListPaymentsParams requests.ListPaymentsRequest
+	ListPaymentsParams    requests.ListPaymentsRequest
+	ListNftPaymentsParams requests.ListNftPaymentsRequest
 
-	GetPaymentResponse   resources.PaymentResponse
-	ListPaymentsResponse resources.PaymentListResponse
+	GetPaymentResponse      resources.PaymentResponse
+	ListPaymentsResponse    resources.PaymentListResponse
+	GetNftPaymentResponse   resources.NftPaymentResponse
+	ListNftPaymentsResponse resources.NftPaymentListResponse
 )

@@ -8,7 +8,8 @@ type TokenAttributes struct {
 	// Token's description retrieved from json metadata
 	Description string `json:"description"`
 	// Url to the token's image
-	ImageUrl string `json:"image_url"`
+	ImageUrl       string `json:"image_url"`
+	IsTokenPayment bool   `json:"is_token_payment"`
 	// Hash of a metadata file
 	MetadataHash string `json:"metadata_hash"`
 	// Token's name retrieved from json metadata

@@ -14,15 +14,16 @@ import (
 const (
 	tokensTable = "tokens"
 
-	tokensId           = "id"
-	tokensAccount      = "account"
-	tokensTokenId      = "token_id"
-	tokensBookId       = "book_id"
-	tokensPaymentId    = "payment_id"
-	tokensMetadataHash = "metadata_hash"
-	tokensSignature    = "signature"
-	tokensStatus       = "status"
-	tokensChainId      = "chain_id"
+	tokensId             = "id"
+	tokensAccount        = "account"
+	tokensTokenId        = "token_id"
+	tokensBookId         = "book_id"
+	tokensPaymentId      = "payment_id"
+	tokensMetadataHash   = "metadata_hash"
+	tokensSignature      = "signature"
+	tokensStatus         = "status"
+	tokensChainId        = "chain_id"
+	tokensIsTokenPayment = "is_token_payment"
 )
 
 type tokensQ struct {
@@ -96,6 +97,11 @@ func (q *tokensQ) FilterByChainId(chainId ...int64) data.TokensQ {
 
 func (q *tokensQ) FilterByMetadataHash(metadataHash ...string) data.TokensQ {
 	q.selector = q.selector.Where(squirrel.Eq{tokensMetadataHash: metadataHash})
+	return q
+}
+
+func (q *tokensQ) FilterByIsTokenPayment(isTokenPayment bool) data.TokensQ {
+	q.selector = q.selector.Where(squirrel.Eq{tokensIsTokenPayment: isTokenPayment})
 	return q
 }
 

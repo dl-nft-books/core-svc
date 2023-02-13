@@ -24,3 +24,13 @@ type MintInfo struct {
 
 	HashedTokenURI []byte
 }
+
+type MintByNftInfo struct {
+	NftAddress    string
+	NftFloorPrice *big.Int
+	NftId         *big.Int
+	TokenURI      string
+	EndTimestamp  int64
+
+	HashedTokenURI []byte
+}

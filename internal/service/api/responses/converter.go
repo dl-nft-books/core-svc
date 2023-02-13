@@ -25,6 +25,24 @@ func convertPaymentToResource(paymentResponse tracker.GetPaymentResponse) resour
 	}
 }
 
+func convertNftPaymentToResource(paymentResponse tracker.GetNftPaymentResponse) resources.Resource {
+	return &resources.NftPayment{
+		Key: resources.Key{
+			ID:   paymentResponse.Data.Key.ID,
+			Type: resources.ResourceType(paymentResponse.Data.Key.Type),
+		},
+		Attributes: resources.NftPaymentAttributes{
+			FloorPrice:        paymentResponse.Data.Attributes.FloorPrice,
+			NftAddress:        paymentResponse.Data.Attributes.NftAddress,
+			NftId:             paymentResponse.Data.Attributes.NftId,
+			BookUrl:           paymentResponse.Data.Attributes.BookUrl,
+			MintedTokenPrice:  paymentResponse.Data.Attributes.MintedTokenPrice,
+			PayerAddress:      paymentResponse.Data.Attributes.PayerAddress,
+			PurchaseTimestamp: paymentResponse.Data.Attributes.PurchaseTimestamp,
+		},
+		Relationships: nil,
+	}
+}
 func convertBookToResource(bookResponse booker.GetBookResponse) resources.Resource {
 	return &resources.Book{
 		Key: resources.Key{

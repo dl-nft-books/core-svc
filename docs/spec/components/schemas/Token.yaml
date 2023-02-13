@@ -13,6 +13,7 @@ allOf:
           - signature
           - status
           - name
+          - is_token_payment
           - description
           - image_url
           - owner
@@ -53,6 +54,9 @@ allOf:
             type: string
             example: QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB
             description: Hash of a metadata file
+          is_token_payment:
+            type: boolean
+            example: true
       relationships:
         type: object
         properties:

@@ -13,6 +13,7 @@ const (
 	TASKS              ResourceType = "tasks"
 	TOKENS             ResourceType = "tokens"
 	FILES              ResourceType = "files"
+	NFT_PAYMENT        ResourceType = "nft-payment"
 	PAYMENT            ResourceType = "payment"
 	PRICES             ResourceType = "prices"
 	PROMOCODE          ResourceType = "promocode"

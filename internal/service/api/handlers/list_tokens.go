@@ -53,6 +53,9 @@ func applyTokensQFilters(q data.TokensQ, request *requests.ListTokensRequest) da
 	if len(request.MetadataHash) > 0 {
 		q = q.FilterByMetadataHash(request.MetadataHash...)
 	}
+	if request.IsTokenPayment != nil {
+		q = q.FilterByIsTokenPayment(*request.IsTokenPayment)
+	}
 	q = q.Page(request.OffsetPageParams)
 	q = q.Sort(request.Sorts)
 

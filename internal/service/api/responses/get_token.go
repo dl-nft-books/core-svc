@@ -16,17 +16,34 @@ var (
 
 func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, beseUri string) (*resources.TokenResponse, error) {
 	var response resources.TokenResponse
-
-	paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
-			"payment_id": token.PaymentId,
-		})
+	if token.IsTokenPayment {
+		paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
+				"payment_id": token.PaymentId,
+			})
+		}
+		if paymentResponse == nil {
+			return nil, errors.From(PaymentNotFoundErr, logan.F{
+				"payment_id": PaymentNotFoundErr,
+			})
+		}
+		response.Included.Add(convertPaymentToResource(*paymentResponse))
 	}
-	if paymentResponse == nil {
-		return nil, errors.From(PaymentNotFoundErr, logan.F{
-			"payment_id": PaymentNotFoundErr,
-		})
+
+	if !token.IsTokenPayment {
+		paymentResponse, err := trackerApi.GetNftPaymentById(token.PaymentId)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
+				"payment_id": token.PaymentId,
+			})
+		}
+		if paymentResponse == nil {
+			return nil, errors.From(PaymentNotFoundErr, logan.F{
+				"payment_id": PaymentNotFoundErr,
+			})
+		}
+		response.Included.Add(convertNftPaymentToResource(*paymentResponse))
 	}
 
 	metadata, err := helpers.GetMetadataFromHash(token.MetadataHash, beseUri)
@@ -37,19 +54,18 @@ func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, beseUr
 	response.Data = resources.Token{
 		Key: resources.NewKeyInt64(token.Id, resources.TOKENS),
 		Attributes: resources.TokenAttributes{
-			Owner:        token.Account,
-			Description:  metadata.Description,
-			MetadataHash: token.MetadataHash,
-			ImageUrl:     metadata.Image,
-			Name:         metadata.Name,
-			Signature:    token.Signature,
-			Status:       token.Status,
-			TokenId:      token.TokenId,
+			Owner:          token.Account,
+			Description:    metadata.Description,
+			MetadataHash:   token.MetadataHash,
+			ImageUrl:       metadata.Image,
+			Name:           metadata.Name,
+			Signature:      token.Signature,
+			Status:         token.Status,
+			TokenId:        token.TokenId,
+			IsTokenPayment: token.IsTokenPayment,
 		},
 		Relationships: getTokenRelationships(token),
 	}
-
-	response.Included.Add(convertPaymentToResource(*paymentResponse))
 
 	return &response, nil
 }

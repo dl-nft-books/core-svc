@@ -15,6 +15,7 @@ allOf:
           - status
           - signature
           - chain_id
+          - is_token_payment
         properties:
           token_id:
             type: integer
@@ -44,6 +45,9 @@ allOf:
             type: integer
             format: int64
             example: 13
+          is_token_payment:
+            type: boolean
+            example: true
       relationships:
         type: object
         required:
