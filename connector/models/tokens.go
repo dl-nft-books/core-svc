@@ -22,11 +22,12 @@ type (
 		// Address of a user who purchased this token
 		Account string `json:"account"`
 		// Hash of a metadata file
-		MetadataHash string                `json:"metadata_hash"`
-		Status       resources.TokenStatus `json:"status"`
-		TokenId      int64                 `json:"token_id"`
-		Signature    string                `json:"signature"`
-		ChainId      int64                 `json:"chain_id"`
+		MetadataHash   string                `json:"metadata_hash"`
+		Status         resources.TokenStatus `json:"status"`
+		TokenId        int64                 `json:"token_id"`
+		Signature      string                `json:"signature"`
+		IsTokenPayment bool                  `json:"is_token_payment"`
+		ChainId        int64                 `json:"chain_id"`
 		//relations
 		BookId    int64
 		PaymentId int64

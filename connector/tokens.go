@@ -25,12 +25,13 @@ func (c *Connector) CreateToken(params models.CreateTokenParams) (id int64, err 
 			Data: resources.CreateToken{
 				Key: resources.NewKeyInt64(0, resources.TOKENS),
 				Attributes: resources.CreateTokenAttributes{
-					Account:      params.Account,
-					MetadataHash: params.MetadataHash,
-					Status:       params.Status,
-					TokenId:      params.TokenId,
-					Signature:    params.Signature,
-					ChainId:      params.ChainId,
+					Account:        params.Account,
+					MetadataHash:   params.MetadataHash,
+					Status:         params.Status,
+					TokenId:        params.TokenId,
+					Signature:      params.Signature,
+					ChainId:        params.ChainId,
+					IsTokenPayment: params.IsTokenPayment,
 				},
 				Relationships: resources.CreateTokenRelationships{
 					Book: resources.Relation{
