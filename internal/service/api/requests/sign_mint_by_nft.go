@@ -3,15 +3,13 @@ package requests
 import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"gitlab.com/distributed_lab/urlval"
-	"math/big"
 	"net/http"
 )
 
 type SignMintByNftRequest struct {
-	TaskID     int64    `url:"task_id"`
-	Platform   string   `url:"platform"`
-	NftAddress string   `url:"token_address"`
-	NftID      *big.Int `url:"nft_id"`
+	TaskID     int64  `url:"task_id"`
+	Platform   string `url:"platform"`
+	NftAddress string `url:"token_address"`
 }
 
 func NewSignMintByNftRequest(r *http.Request) (*SignMintByNftRequest, error) {

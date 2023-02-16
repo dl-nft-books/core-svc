@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
+	"math/big"
 	"net/http"
 	"time"
 
@@ -58,10 +59,10 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 		ContractVersion:  book.Data.Attributes.ContractVersion,
 		ChainID:          book.Data.Attributes.ChainId,
 	}
-	mintInfo := signature.MintByNftInfo{
-		NftAddress: request.NftAddress,
-		NftId:      request.NftID,
-		TokenURI:   task.MetadataIpfsHash,
+	mintInfo := signature.MintInfo{
+		TokenAddress: request.NftAddress,
+		Discount:     big.NewInt(0),
+		TokenURI:     task.MetadataIpfsHash,
 	}
 
 	// Getting price per token in dollars
@@ -72,7 +73,7 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Converting price
-	mintInfo.NftFloorPrice, err = helpers.ConvertPrice(fmt.Sprintf("%f", priceResponse.Data.Attributes.Usd), mintConfig.Precision)
+	mintInfo.PricePerOneToken, err = helpers.ConvertPrice(fmt.Sprintf("%f", priceResponse.Data.Attributes.Usd), mintConfig.Precision)
 	if err != nil {
 		logger.WithError(err).Error("failed to convert price")
 		ape.RenderErr(w, problems.InternalError())
@@ -82,15 +83,16 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 	mintInfo.EndTimestamp = time.Now().Add(mintConfig.Expiration).Unix()
 
 	// Signing the mint transaction
-	mintSignature, err := signature.SignMintByNftInfo(&mintInfo, &domainData, &mintConfig)
+	mintSignature, err := signature.SignMintInfo(&mintInfo, &domainData, &mintConfig)
 	if err != nil {
 		logger.WithError(err).Error("failed to generate eip712 mint signature")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 	spew.Dump(*mintSignature)
-	ape.Render(w, responses.NewSignMintByNftResponse(
-		mintInfo.NftFloorPrice.String(),
+	ape.Render(w, responses.NewSignMintResponse(
+		mintInfo.PricePerOneToken.String(),
+		mintInfo.Discount.String(),
 		mintSignature,
 		mintInfo.EndTimestamp,
 	))
