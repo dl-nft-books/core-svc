@@ -46,8 +46,8 @@ func signMintByNftInfoByEIP712(privateKey *ecdsa.PrivateKey,
 	data := &eip712.TypedData{
 		Types: apitypes.Types{
 			"Mint": []apitypes.Type{
-				{Name: "nftAddress", Type: "address"},
-				{Name: "nftFloorPrice", Type: "uint256"},
+				{Name: "paymentTokenAddress", Type: "address"},
+				{Name: "paymentTokenPrice", Type: "uint256"},
 				{Name: "discount", Type: "uint256"},
 				{Name: "endTimestamp", Type: "uint256"},
 				{Name: "tokenURI", Type: "bytes32"},
@@ -67,11 +67,11 @@ func signMintByNftInfoByEIP712(privateKey *ecdsa.PrivateKey,
 			VerifyingContract: domainData.VerifyingAddress,
 		},
 		Message: apitypes.TypedDataMessage{
-			"nftAddress":    mintInfo.NftAddress,
-			"nftFloorPrice": mintInfo.NftFloorPrice.String(),
-			"discount":      big.NewInt(0).String(),
-			"endTimestamp":  math.NewHexOrDecimal256(mintInfo.EndTimestamp),
-			"tokenURI":      mintInfo.HashedTokenURI,
+			"paymentTokenAddress": mintInfo.NftAddress,
+			"paymentTokenPrice":   mintInfo.NftFloorPrice.String(),
+			"discount":            big.NewInt(0).String(),
+			"endTimestamp":        math.NewHexOrDecimal256(mintInfo.EndTimestamp),
+			"tokenURI":            mintInfo.HashedTokenURI,
 		},
 	}
 
