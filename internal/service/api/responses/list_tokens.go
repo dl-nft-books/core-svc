@@ -24,39 +24,6 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 	}
 
 	for _, token := range tokens {
-		if token.IsTokenPayment {
-			paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
-
-			if err != nil {
-				return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
-					"payment_id": token.PaymentId,
-				})
-			}
-			if paymentResponse == nil {
-				return nil, errors.From(PaymentNotFoundErr, logan.F{
-					"payment_id": PaymentNotFoundErr,
-				})
-			}
-
-			response.Included.Add(convertPaymentToResource(*paymentResponse))
-		}
-
-		if !token.IsTokenPayment {
-			paymentResponse, err := trackerApi.GetNftPaymentById(token.PaymentId)
-
-			if err != nil {
-				return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
-					"payment_id": token.PaymentId,
-				})
-			}
-			if paymentResponse == nil {
-				return nil, errors.From(PaymentNotFoundErr, logan.F{
-					"payment_id": PaymentNotFoundErr,
-				})
-			}
-
-			response.Included.Add(convertNftPaymentToResource(*paymentResponse))
-		}
 
 		metadata, err := helpers.GetMetadataFromHash(token.MetadataHash, helpers.BaseIpfsUri(r))
 		if err != nil {
