@@ -10,6 +10,7 @@ import (
 	sha3 "github.com/miguelmota/go-solidity-sha3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
+	"math/big"
 )
 
 func SignMintByNftInfo(
@@ -47,7 +48,7 @@ func signMintByNftInfoByEIP712(privateKey *ecdsa.PrivateKey,
 			"Mint": []apitypes.Type{
 				{Name: "nftAddress", Type: "address"},
 				{Name: "nftFloorPrice", Type: "uint256"},
-				{Name: "tokenId", Type: "uint256"},
+				{Name: "discount", Type: "uint256"},
 				{Name: "endTimestamp", Type: "uint256"},
 				{Name: "tokenURI", Type: "bytes32"},
 			},
@@ -68,7 +69,7 @@ func signMintByNftInfoByEIP712(privateKey *ecdsa.PrivateKey,
 		Message: apitypes.TypedDataMessage{
 			"nftAddress":    mintInfo.NftAddress,
 			"nftFloorPrice": mintInfo.NftFloorPrice.String(),
-			"tokenId":       mintInfo.NftId.String(),
+			"discount":      big.NewInt(0).String(),
 			"endTimestamp":  math.NewHexOrDecimal256(mintInfo.EndTimestamp),
 			"tokenURI":      mintInfo.HashedTokenURI,
 		},
