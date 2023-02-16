@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"net/http"
 	"time"
 
@@ -87,7 +88,7 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-
+	spew.Dump(*mintSignature)
 	ape.Render(w, responses.NewSignMintByNftResponse(
 		mintInfo.NftFloorPrice.String(),
 		mintSignature,

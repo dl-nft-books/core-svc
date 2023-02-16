@@ -100,6 +100,14 @@ func (q *tokensQ) FilterByMetadataHash(metadataHash ...string) data.TokensQ {
 	return q
 }
 
+func (q *tokensQ) FilterByName(name ...string) data.TokensQ {
+	for i := range name {
+		name[i] = strings.ToLower(name[i])
+	}
+	q.selector = q.selector.Where(squirrel.Eq{fmt.Sprintf("lower(%v)", tokensAccount): name})
+	return q
+}
+
 func (q *tokensQ) FilterByIsTokenPayment(isTokenPayment bool) data.TokensQ {
 	q.selector = q.selector.Where(squirrel.Eq{tokensIsTokenPayment: isTokenPayment})
 	return q

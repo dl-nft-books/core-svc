@@ -53,6 +53,9 @@ func applyTokensQFilters(q data.TokensQ, request *requests.ListTokensRequest) da
 	if len(request.MetadataHash) > 0 {
 		q = q.FilterByMetadataHash(request.MetadataHash...)
 	}
+	if len(request.Name) > 0 {
+		q = q.FilterByName(request.Name...)
+	}
 	if request.IsTokenPayment != nil {
 		q = q.FilterByIsTokenPayment(*request.IsTokenPayment)
 	}

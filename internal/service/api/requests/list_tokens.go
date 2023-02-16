@@ -17,6 +17,7 @@ type ListTokensRequest struct {
 	TokenId        *int64                  `filter:"token_id""`
 	ChainId        []int64                 `filter:"chain_id""`
 	MetadataHash   []string                `filter:"metadata_hash"`
+	Name           []string                `filter:"name"`
 	IsTokenPayment *bool                   `filter:"is_token_payment"`
 }
 

@@ -2,6 +2,7 @@ package signature
 
 import (
 	"crypto/ecdsa"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	signer "github.com/ethersphere/bee/pkg/crypto"
@@ -20,11 +21,12 @@ func SignMintByNftInfo(
 	error,
 ) {
 	privateKey := config.PrivateKey
-
 	// hashing token uri
 	tokenURIRaw := sha3.String(mintInfo.TokenURI)
 	mintInfo.HashedTokenURI = sha3.SoliditySHA3(tokenURIRaw)
 
+	spew.Dump(*mintInfo)
+	spew.Dump(*domainData)
 	signature, err := signMintByNftInfoByEIP712(privateKey, mintInfo, domainData)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to sign EIP712 hash")

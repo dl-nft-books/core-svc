@@ -29,6 +29,7 @@ type TokensQ interface {
 	FilterByPaymentId(paymentId ...int64) TokensQ
 	FilterByChainId(chainId ...int64) TokensQ
 	FilterByMetadataHash(metadataHash ...string) TokensQ
+	FilterByName(name ...string) TokensQ
 	FilterByIsTokenPayment(isTokenPayment bool) TokensQ
 
 	Get() (*Token, error)
