@@ -7,14 +7,14 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"net/http"
 )
 
 var (
-	NonSingleTaskErr   = errors.New("either no tasks or duplicate for the given hash was found")
 	PaymentNotFoundErr = errors.New("payment with specified id was not found")
 )
 
-func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, beseUri string) (*resources.TokenResponse, error) {
+func NewGetTokenResponse(r *http.Request, token data.Token, trackerApi *tracker.Connector, beseUri string) (*resources.TokenResponse, error) {
 	var response resources.TokenResponse
 
 	paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
@@ -29,7 +29,7 @@ func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, beseUr
 		})
 	}
 
-	metadata, err := helpers.GetMetadataFromHash(token.MetadataHash, beseUri)
+	metadata, err := helpers.GetMetadataFromHash(r, token.MetadataHash, beseUri)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get metadata from hash")
 	}

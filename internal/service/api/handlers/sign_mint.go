@@ -2,26 +2,26 @@ package handlers
 
 import (
 	"fmt"
+	"gitlab.com/distributed_lab/ape"
+	"gitlab.com/distributed_lab/ape/problems"
 	"gitlab.com/distributed_lab/logan/v3"
+	"gitlab.com/distributed_lab/logan/v3/errors"
+	bookModel "gitlab.com/tokend/nft-books/book-svc/connector/models"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/signature"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"math"
 	"math/big"
 	"net/http"
 	"time"
-
-	"gitlab.com/distributed_lab/ape"
-	"gitlab.com/distributed_lab/ape/problems"
-	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/signature"
 )
 
 // discount in contract is int number where 1% = 10^25
 // discount in database is float number where 1% = 0.01
-const discountMultiplier = "10000000000000000000000000" // 10^25
+var formattedDiscountMultiplier, _ = big.NewInt(0).SetString(fmt.Sprintf("10000000000000000000000000"), 10)
 
 func SignMint(w http.ResponseWriter, r *http.Request) {
 	logger := helpers.Log(r)
@@ -70,33 +70,15 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	mintInfo := signature.MintInfo{
 		TokenAddress: request.TokenAddress,
 		TokenURI:     task.MetadataIpfsHash,
+		EndTimestamp: time.Now().Add(mintConfig.Expiration).Unix(),
 	}
 
-	isVoucherTokenApplied := book.Data.Attributes.VoucherToken == request.TokenAddress
-	// If using voucher token --> setting price to 0
-	if isVoucherTokenApplied {
-		mintInfo.PricePerOneToken = big.NewInt(0)
+	mintInfo.Discount, err = getPricePerOneToken(w, r, request, *book, mintConfig.Precision)
+	if err != nil {
+		logger.WithError(err).Error("failed to get price")
+		ape.RenderErr(w, problems.InternalError())
+		return
 	}
-
-	if !isVoucherTokenApplied {
-		// Normal scenario without voucher
-		// Getting price per token in dollars
-		priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress, book.Data.Attributes.ChainId)
-		if err != nil {
-			logger.WithError(err).Error("failed to get price")
-			ape.RenderErr(w, problems.InternalError())
-			return
-		}
-		// Converting price
-		mintInfo.PricePerOneToken, err = helpers.ConvertPrice(priceResponse.Data.Attributes.Price, mintConfig.Precision)
-		if err != nil {
-			logger.WithError(err).Error("failed to convert price")
-			ape.RenderErr(w, problems.InternalError())
-			return
-		}
-	}
-
-	mintInfo.EndTimestamp = time.Now().Add(mintConfig.Expiration).Unix()
 
 	// Getting promocode info
 	promocode, err := helpers.DB(r).Promocodes().FilterById(request.PromocodeID).Get()
@@ -104,21 +86,12 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		logger.WithError(err).Error("failed to get promocode")
 		ape.RenderErr(w, problems.InternalError())
 	}
+	isVoucherTokenApplied := book.Data.Attributes.VoucherToken == request.TokenAddress
 
-	// Promocodes and vouchers can't be used together
-	if isVoucherTokenApplied {
-		mintInfo.Discount = big.NewInt(0)
-	}
-
-	if !isVoucherTokenApplied {
-		discount, err := getPromocodeDiscount(w, r, promocode)
-
-		if err != nil {
-			logger.WithError(err).Error("failed to get discount")
-			return
-		}
-
-		mintInfo.Discount = discount
+	mintInfo.Discount, err = getPromocodeDiscount(w, r, isVoucherTokenApplied, promocode)
+	if err != nil {
+		logger.WithError(err).Error("failed to get discount")
+		return
 	}
 
 	// Signing the mint transaction
@@ -131,7 +104,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 
 	// Using promocode after signature is formed
 	if promocode != nil && !isVoucherTokenApplied {
-		if err = helpers.DB(r).Promocodes().New().UpdateUsages(promocode.Usages + 1).FilterById(promocode.Id).Update(); err != nil {
+		if err = helpers.DB(r).Promocodes().New().UpdateUsages(promocode.Usages + 1).FilterUpdateById(promocode.Id).Update(); err != nil {
 			logger.WithError(err).WithFields(logan.F{"promocode": promocode.Promocode}).Error("failed to update promocode")
 			ape.RenderErr(w, problems.InternalError())
 			return
@@ -148,9 +121,12 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	))
 }
 
-var formattedDiscountMultiplier, _ = big.NewInt(0).SetString(fmt.Sprintf(discountMultiplier), 10)
+func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, isVoucherTokenApplied bool, promocode *data.Promocode) (*big.Int, error) {
 
-func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, promocode *data.Promocode) (*big.Int, error) {
+	// Promocodes and vouchers can't be used together
+	if isVoucherTokenApplied {
+		return big.NewInt(0), nil
+	}
 	if promocode != nil {
 		//Validating promocode
 		promocodeResponse, err := responses.NewValidatePromocodeResponse(*promocode)
@@ -178,4 +154,19 @@ func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, promocode *dat
 
 	//No discount applied
 	return big.NewInt(0), nil
+}
+func getPricePerOneToken(w http.ResponseWriter, r *http.Request, request *requests.SignMintRequest, book bookModel.GetBookResponse, precision int) (*big.Int, error) {
+	if book.Data.Attributes.VoucherToken == request.TokenAddress {
+		return big.NewInt(0), nil
+	}
+
+	// Normal scenario without voucher
+	// Getting price per token in dollars
+	priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress, book.Data.Attributes.ChainId)
+	if err != nil {
+		ape.RenderErr(w, problems.InternalError())
+		return nil, err
+	}
+	// Converting price
+	return helpers.ConvertPrice(priceResponse.Data.Attributes.Price, precision)
 }

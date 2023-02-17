@@ -57,6 +57,10 @@ func (q *promocodesQ) Sort(sort pgdb.Sorts) data.PromocodesQ {
 
 func (q *promocodesQ) FilterById(id ...int64) data.PromocodesQ {
 	q.selector = q.selector.Where(squirrel.Eq{promocodesId: id})
+	return q
+}
+
+func (q *promocodesQ) FilterUpdateById(id ...int64) data.PromocodesQ {
 	q.updater = q.updater.Where(squirrel.Eq{promocodesId: id})
 	return q
 }

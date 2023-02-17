@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"github.com/pkg/errors"
 	"net/http"
 
 	"gitlab.com/distributed_lab/kit/pgdb"
@@ -19,7 +20,7 @@ func NewListPromocodesRequest(r *http.Request) (*ListPromocodesRequest, error) {
 	var request ListPromocodesRequest
 
 	if err := urlval.Decode(r.URL.Query(), &request); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to unmarshal list promocodes request")
 	}
 
 	return &request, nil

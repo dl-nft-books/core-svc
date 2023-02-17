@@ -8,6 +8,8 @@ import "time"
 
 type BookAttributes struct {
 	Banner Media `json:"banner"`
+	// id of network chain
+	ChainId int64 `json:"chain_id"`
 	// Token contract address
 	ContractAddress string `json:"contract_address"`
 	// Token contract name
@@ -29,8 +31,4 @@ type BookAttributes struct {
 	Title string `json:"title"`
 	// id from the contract that corresponds to the given book
 	TokenId int32 `json:"token_id"`
-	// Voucher token contract address, that can be used to claim free book
-	VoucherToken string `json:"voucher_token"`
-	// How many voucher tokens user have to pay that book
-	VoucherTokenAmount string `json:"voucher_token_amount"`
 }
