@@ -70,7 +70,6 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	mintInfo := signature.MintInfo{
 		TokenAddress: request.TokenAddress,
 		TokenURI:     task.MetadataIpfsHash,
-		EndTimestamp: time.Now().Add(mintConfig.Expiration).Unix(),
 	}
 
 	mintInfo.Discount, err = getPricePerOneToken(w, r, request, *book, mintConfig.Precision)
@@ -87,6 +86,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 	}
 	isVoucherTokenApplied := book.Data.Attributes.VoucherToken == request.TokenAddress
+	mintInfo.EndTimestamp = time.Now().Add(mintConfig.Expiration).Unix()
 
 	mintInfo.Discount, err = getPromocodeDiscount(w, r, isVoucherTokenApplied, promocode)
 	if err != nil {
