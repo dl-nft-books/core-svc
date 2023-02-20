@@ -15,7 +15,6 @@ task_processor:
     min_abnormal_period: 10s
     max_abnormal_period: 10s
 
-<<<<<<< HEAD
 promocodes:
   name: promocode_checker
   decimal: 2 # number of digits after decimal point
@@ -23,7 +22,7 @@ promocodes:
     normal_period: 10 # in seconds
     min_abnormal_period: 1 # in seconds
     max_abnormal_period: 3000  # in seconds
-=======
+
 task_cleaner:
   name: task_cleaner # Name to be displayed in logs
   runner: # Period settings
@@ -31,7 +30,6 @@ task_cleaner:
     min_abnormal_period: 10s
     max_abnormal_period: 10s
   cleaning_period: 20m # minutes / How long task can stay unresolved until it will be deleted
->>>>>>> origin/feature/S3_cleaning
 
 api: # Api restrictions
   max_failed_attempts: 10

@@ -12,6 +12,8 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 )
 
+var invalidUsagesError = errors.New("usages should be lower or equal initial usages")
+
 func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
 	logger := helpers.Log(r)
 
@@ -34,13 +36,13 @@ func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !validateUsages(*request, *promocode) {
-		logger.WithError(err).Info("usages should be lower or equal initial usages")
-		ape.RenderErr(w, problems.BadRequest(errors.New("usages should be lower or equal initial usages"))...)
+		logger.WithError(err).Info(invalidUsagesError)
+		ape.RenderErr(w, problems.BadRequest(invalidUsagesError)...)
 	}
 
 	promocodesQ := applyPromocodeUpdateFilters(r, helpers.DB(r).Promocodes().New(), *request)
 
-	if err = promocodesQ.FilterById(promocodeId).Update(); err != nil {
+	if err = promocodesQ.FilterUpdateById(promocodeId).Update(); err != nil {
 		logger.WithError(err).Error("failed to get promocode")
 		ape.RenderErr(w, problems.InternalError())
 		return
@@ -50,10 +52,7 @@ func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
 }
 
 func validateUsages(request requests.UpdatePromocodeRequest, promocode data.Promocode) bool {
-	if request.Data.Attributes.InitialUsages != nil && promocode.Usages > *request.Data.Attributes.InitialUsages {
-		return false
-	}
-	return true
+	return request.Data.Attributes.InitialUsages == nil || promocode.Usages <= *request.Data.Attributes.InitialUsages
 }
 
 func applyPromocodeUpdateFilters(r *http.Request, q data.PromocodesQ, request requests.UpdatePromocodeRequest) data.PromocodesQ {

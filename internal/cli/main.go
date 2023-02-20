@@ -2,6 +2,7 @@ package cli
 
 import (
 	"context"
+	"fmt"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
@@ -43,6 +44,14 @@ func Run(args []string) bool {
 	cfg := config.New(kv.MustFromEnv())
 	log = cfg.Log()
 
+	allRunners := map[string]func(ctx context.Context, cfg config.Config){
+		"promocode checker": runners.RunPromocodeChecker,
+		"task cleaner":      runners.RunTaskCleaner,
+	}
+	for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
+		allRunners[fmt.Sprintf("task processor #%d", i+1)] = runners.RunTaskProcessor
+	}
+
 	cmd, err := app.Parse(args[1:])
 	if err != nil {
 		panic(errors.Wrap(err, "failed to parse arguments"))
@@ -65,16 +74,10 @@ func Run(args []string) bool {
 		run(waitGroup, ctx, cfg, runners.RunPromocodeChecker)
 		log.Info("started promocode checker...")
 	case allCommand.FullCommand():
-		run(waitGroup, ctx, cfg, api.Run)
-		log.Info("started api...")
-		for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
-			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
-			log.Infof("started task processor #%d", i+1)
+		for name, processor := range allRunners {
+			run(waitGroup, ctx, cfg, processor)
+			log.Infof("started %v", name)
 		}
-		run(waitGroup, ctx, cfg, runners.RunPromocodeChecker)
-		log.Info("started promocode checker...")
-		run(waitGroup, ctx, cfg, runners.RunTaskCleaner)
-		log.Info("started task cleaner")
 	case migrateUpCommand.FullCommand():
 		err = MigrateUp(cfg)
 	case migrateDownCommand.FullCommand():
