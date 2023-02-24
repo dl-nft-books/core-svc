@@ -30,7 +30,7 @@ func ListPromocodes(w http.ResponseWriter, r *http.Request) {
 
 	promocodesListResponse, err := responses.NewPromocodeListResponse(r, request, promocodes)
 	if err != nil {
-		logger.WithError(err).Error("unable to form task list response")
+		logger.WithError(err).Error("unable to form promocode list response")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
