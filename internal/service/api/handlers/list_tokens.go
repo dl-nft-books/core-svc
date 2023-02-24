@@ -29,7 +29,7 @@ func ListTokens(w http.ResponseWriter, r *http.Request) {
 	}
 	tokensListResponse, err := responses.NewTokenListResponse(r, request, tokens, helpers.Tracker(r))
 	if err != nil {
-		logger.WithError(err).Error("unable to form task list response")
+		logger.WithError(err).Error("unable to form token list response")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}

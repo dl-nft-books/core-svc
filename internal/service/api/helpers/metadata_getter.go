@@ -23,7 +23,10 @@ func GetMetadataFromHash(r *http.Request, hash, baseUri string) (*opensea.Metada
 			if i+1 == numberOfRetries {
 				return nil, errors.Wrap(err, "failed to get a response")
 			}
-			logger.Error(errors.Wrap(err, "failed to get a response"), logan.F{"try number": i + 1})
+			logger.WithFields(logan.F{
+				"try number":    i + 1,
+				"metadata_hash": hash,
+			}).Error(errors.Wrap(err, "failed to get a response"))
 			continue
 		}
 
@@ -32,7 +35,10 @@ func GetMetadataFromHash(r *http.Request, hash, baseUri string) (*opensea.Metada
 			if i+1 == numberOfRetries {
 				return nil, errors.Wrap(err, "failed to read a response")
 			}
-			logger.Error(errors.Wrap(err, "failed to read a response"), logan.F{"try number": i + 1})
+			logger.WithFields(logan.F{
+				"try number":    i + 1,
+				"metadata_hash": hash,
+			}).Error(errors.Wrap(err, "failed to read a response"))
 			continue
 		}
 
@@ -40,7 +46,10 @@ func GetMetadataFromHash(r *http.Request, hash, baseUri string) (*opensea.Metada
 			if i+1 == numberOfRetries {
 				return nil, errors.Wrap(err, "failed to unmarshal a response")
 			}
-			logger.Error(errors.Wrap(err, "failed to unmarshal a response"), logan.F{"try number": i + 1})
+			logger.WithFields(logan.F{
+				"try number":    i + 1,
+				"metadata_hash": hash,
+			}).Error(errors.Wrap(err, "failed to unmarshal a response"))
 			continue
 		}
 		if err == nil {
