@@ -2,9 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.1.0] - 2022-01-27
 ### Added
 - S3 bucket cleaner.
+- Support for various networks
+- Promo-codes support
+- Vouchers support
+- TokenD IPFS uploader
+
+### Fixed
+- Duplicate tokens
 
 ## [1.0.0] - 2022-12-09
  
