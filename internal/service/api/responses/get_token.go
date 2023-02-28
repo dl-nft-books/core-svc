@@ -14,7 +14,7 @@ var (
 	PaymentNotFoundErr = errors.New("payment with specified id was not found")
 )
 
-func NewGetTokenResponse(r *http.Request, token data.Token, trackerApi *tracker.Connector, beseUri string) (*resources.TokenResponse, error) {
+func NewGetTokenResponse(r *http.Request, token data.Token, trackerApi *tracker.Connector) (*resources.TokenResponse, error) {
 	var response resources.TokenResponse
 	if token.IsTokenPayment {
 		paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
@@ -46,7 +46,7 @@ func NewGetTokenResponse(r *http.Request, token data.Token, trackerApi *tracker.
 		response.Included.Add(convertNftPaymentToResource(*paymentResponse))
 	}
 
-	metadata, err := helpers.GetMetadataFromHash(r, token.MetadataHash, beseUri)
+	metadata, err := helpers.GetMetadataFromHash(r, token.MetadataHash)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get metadata from hash")
 	}

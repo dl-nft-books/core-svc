@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 	"gitlab.com/distributed_lab/logan/v3"
-	"gitlab.com/distributed_lab/logan/v3/errors"
 	bookModel "gitlab.com/tokend/nft-books/book-svc/connector/models"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
@@ -21,7 +21,10 @@ import (
 
 // discount in contract is int number where 1% = 10^25
 // discount in database is float number where 1% = 0.01
-var formattedDiscountMultiplier, _ = big.NewInt(0).SetString(fmt.Sprintf("10000000000000000000000000"), 10)
+var (
+	formattedDiscountMultiplier, _ = big.NewInt(0).SetString(fmt.Sprintf("10000000000000000000000000"), 10)
+	ok                             bool
+)
 
 func SignMint(w http.ResponseWriter, r *http.Request) {
 	logger := helpers.Log(r)
@@ -85,12 +88,12 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.WithError(err).Error("failed to get promocode")
 		ape.RenderErr(w, problems.InternalError())
+		return
 	}
 	isVoucherTokenApplied := book.Data.Attributes.VoucherToken == request.TokenAddress
 
-	mintInfo.Discount, err = getPromocodeDiscount(w, r, isVoucherTokenApplied, promocode)
-	if err != nil {
-		logger.WithError(err).Error("failed to get discount")
+	mintInfo.Discount, ok = getPromocodeDiscount(w, r, isVoucherTokenApplied, promocode)
+	if !ok {
 		return
 	}
 
@@ -121,27 +124,24 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	))
 }
 
-func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, isVoucherTokenApplied bool, promocode *data.Promocode) (*big.Int, error) {
-
+func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, isVoucherTokenApplied bool, promocode *data.Promocode) (*big.Int, bool) {
+	logger := helpers.Log(r)
 	// Promocodes and vouchers can't be used together
-	if isVoucherTokenApplied {
-		return big.NewInt(0), nil
-	}
-	if promocode != nil {
+	if !isVoucherTokenApplied && promocode != nil {
 		//Validating promocode
 		promocodeResponse, err := responses.NewValidatePromocodeResponse(*promocode)
 
 		if err != nil {
+			logger.WithError(err).Error("failed to get promocode response")
 			ape.RenderErr(w, problems.InternalError())
-			return nil, errors.Wrap(err, "failed to get promocode response")
+			return nil, false
 		}
 
 		//Checking promocode state
 		if promocodeResponse.Data.Attributes.State != resources.PromocodeActive {
-			expiredError := errors.New(fmt.Sprintf("promocode with state %v is invalid",
-				promocodeResponse.Data.Attributes.State))
-			ape.RenderErr(w, problems.BadRequest(expiredError)...)
-			return nil, errors.Wrap(err, expiredError.Error())
+			logger.WithError(err).Error(Inactive())
+			ape.RenderErr(w, problems.BadRequest(Inactive())...)
+			return nil, false
 		}
 
 		//Calculating discount
@@ -149,13 +149,14 @@ func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, isVoucherToken
 
 		discount.Mul(discount, formattedDiscountMultiplier)
 
-		return discount, nil
+		return discount, true
 	}
 
 	//No discount applied
-	return big.NewInt(0), nil
+	return big.NewInt(0), true
 }
 func getPricePerOneToken(w http.ResponseWriter, r *http.Request, request *requests.SignMintRequest, book bookModel.GetBookResponse, precision int) (*big.Int, error) {
+	logger := helpers.Log(r)
 	if book.Data.Attributes.VoucherToken == request.TokenAddress {
 		return big.NewInt(0), nil
 	}
@@ -164,8 +165,9 @@ func getPricePerOneToken(w http.ResponseWriter, r *http.Request, request *reques
 	// Getting price per token in dollars
 	priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress, book.Data.Attributes.ChainId)
 	if err != nil {
+		logger.WithError(err).Error("failed to get price response")
 		ape.RenderErr(w, problems.InternalError())
-		return nil, err
+		return nil, errors.Wrap(err, "failed to get price response")
 	}
 	// Converting price
 	return helpers.ConvertPrice(priceResponse.Data.Attributes.Price, precision)

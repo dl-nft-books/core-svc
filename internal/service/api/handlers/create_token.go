@@ -15,7 +15,7 @@ import (
 func CreateToken(w http.ResponseWriter, r *http.Request) {
 	request, err := requests.NewCreateTokenRequest(r)
 	if err != nil {
-		helpers.Log(r).WithError(err).Error("failed to fetch create task request")
+		helpers.Log(r).WithError(err).Error("failed to fetch create token request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -40,8 +40,8 @@ func CreateToken(w http.ResponseWriter, r *http.Request) {
 
 	token, err := helpers.DB(r).Tokens().FilterByMetadataHash(request.Data.Attributes.MetadataHash).Get()
 	if err != nil {
-		helpers.Log(r).Errorf("failed to get token")
-		ape.RenderErr(w, problems.NotFound())
+		helpers.Log(r).WithError(err).Errorf("failed to get token")
+		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 	if token != nil {

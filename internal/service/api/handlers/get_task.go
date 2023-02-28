@@ -16,6 +16,7 @@ func GetTaskByID(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewTaskByIdRequest(r)
 	if err != nil {
+		logger.WithError(err).Error("failed to fetch get task request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}

@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"github.com/pkg/errors"
 	"net/http"
 	"regexp"
 
@@ -22,7 +23,7 @@ func NewSignMintRequest(r *http.Request) (*SignMintRequest, error) {
 	var err error
 
 	if err = urlval.Decode(r.URL.Query(), &result); err != nil {
-		return &result, err
+		return &result, errors.Wrap(err, "failed to unmarshal sign mint request")
 	}
 
 	return &result, result.validate()

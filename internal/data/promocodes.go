@@ -7,13 +7,13 @@ import (
 )
 
 type Promocode struct {
-	Id             int64                    `db:"id" structs:"-" json:"-"`
+	Id             int64                    `db:"id" structs:"-"`
 	Promocode      string                   `db:"promocode" structs:"promocode"`
 	Discount       float64                  `db:"discount" structs:"discount"`
-	InitialUsages  int64                    `db:"initial_usages" structs:"initial_usages" json:"initial_usages"`
-	Usages         int64                    `db:"usages" structs:"usages" json:"usages"`
-	ExpirationDate time.Time                `db:"expiration_date" structs:"expiration_date" json:"expiration_date"`
-	State          resources.PromocodeState `db:"state" structs:"state" json:"state"`
+	InitialUsages  int64                    `db:"initial_usages" structs:"initial_usages"`
+	Usages         int64                    `db:"usages" structs:"usages"`
+	ExpirationDate time.Time                `db:"expiration_date" structs:"expiration_date"`
+	State          resources.PromocodeState `db:"state" structs:"state"`
 }
 
 func (promocode *Promocode) Resource() resources.Promocode {

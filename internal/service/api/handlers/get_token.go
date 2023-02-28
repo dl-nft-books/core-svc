@@ -16,6 +16,7 @@ func GetTokenById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewTokenByIdRequest(r)
 	if err != nil {
+		logger.WithError(err).Error("failed to fetch get token request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -31,7 +32,7 @@ func GetTokenById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenResponse, err := responses.NewGetTokenResponse(r, *token, helpers.Tracker(r), helpers.BaseIpfsUri(r))
+	tokenResponse, err := responses.NewGetTokenResponse(r, *token, helpers.Tracker(r), helpers.Ipfser(r).BaseUri)
 	if err != nil {
 		logger.WithError(err).Error("failed to get token response")
 		ape.RenderErr(w, problems.InternalError())

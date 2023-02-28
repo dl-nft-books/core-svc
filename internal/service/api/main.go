@@ -28,7 +28,7 @@ type service struct {
 	ethMinterConfig *config.MintConfig
 	apiRestrictions config.ApiRestrictions
 	promocoder      config.PromocoderCfg
-	baseIpfsUri     string
+	ipfser          config.IpfserCfg
 	// Connectors
 	pricer  *pricer.Connector
 	booker  *booker.Connector
@@ -59,7 +59,7 @@ func newService(cfg config.Config) *service {
 		ethMinterConfig: cfg.MintConfig(),
 		apiRestrictions: cfg.ApiRestrictions(),
 		promocoder:      cfg.PromocoderCfg(),
-		baseIpfsUri:     cfg.BaseUri(),
+		ipfser:          cfg.IpfserCfg(),
 		// Connectors
 		pricer:  cfg.PricerConnector(),
 		booker:  cfg.BookerConnector(),

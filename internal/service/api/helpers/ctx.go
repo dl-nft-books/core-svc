@@ -26,7 +26,7 @@ const (
 	minterCtxKey
 	apiRestrictionsCtxKey
 	promocoderCtxKey
-	ipfsCtxKey
+	ipfserCtxKey
 
 	// Connectors
 	pricerCtxKey
@@ -65,13 +65,13 @@ func CtxMinter(entry config.MintConfig) func(context.Context) context.Context {
 	}
 }
 
-func BaseIpfsUri(r *http.Request) string {
-	return r.Context().Value(ipfsCtxKey).(string)
+func Ipfser(r *http.Request) config.IpfserCfg {
+	return r.Context().Value(ipfserCtxKey).(config.IpfserCfg)
 }
 
-func CtxBaseIpfsUri(entry string) func(context.Context) context.Context {
+func CtxIpfser(entry config.IpfserCfg) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
-		return context.WithValue(ctx, ipfsCtxKey, entry)
+		return context.WithValue(ctx, ipfserCtxKey, entry)
 	}
 }
 

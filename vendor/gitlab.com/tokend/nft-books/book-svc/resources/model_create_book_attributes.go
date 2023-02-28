@@ -5,11 +5,14 @@
 package resources
 
 type CreateBookAttributes struct {
-	Banner  Media `json:"banner"`
+	Banner Media `json:"banner"`
+	// Networks chain id
 	ChainId int64 `json:"chain_id"`
 	// Book description
 	Description string `json:"description"`
 	File        Media  `json:"file"`
+	// Book floor price ($)
+	FloorPrice string `json:"floor_price"`
 	// Price per one token ($)
 	Price string `json:"price"`
 	// Book title

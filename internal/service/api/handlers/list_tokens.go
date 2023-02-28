@@ -16,7 +16,7 @@ func ListTokens(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewListTokensRequest(r)
 	if err != nil {
-		logger.WithError(err).Error("invalid request")
+		logger.WithError(err).Error("failed to fetch list tokens request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}

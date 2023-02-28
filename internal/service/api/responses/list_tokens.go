@@ -25,7 +25,7 @@ func NewTokenListResponse(r *http.Request, request *requests.ListTokensRequest, 
 
 	for _, token := range tokens {
 
-		metadata, err := helpers.GetMetadataFromHash(r, token.MetadataHash, helpers.BaseIpfsUri(r))
+		metadata, err := helpers.GetMetadataFromHash(r, token.MetadataHash)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to get metadata from hash", logan.F{
 				"metadata_hash": token.MetadataHash,

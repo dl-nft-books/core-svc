@@ -17,6 +17,7 @@ func ValidatePromocodeById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewValidatePromocodeRequest(r)
 	if err != nil {
+		logger.WithError(err).Error("failed to fetch validate promocode request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}

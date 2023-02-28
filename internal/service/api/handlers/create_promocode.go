@@ -14,7 +14,7 @@ import (
 func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 	request, err := requests.NewCreatePromocodeRequest(r)
 	if err != nil {
-		helpers.Log(r).WithError(err).Error("failed to fetch create task request")
+		helpers.Log(r).WithError(err).Error("failed to fetch create promocode request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}

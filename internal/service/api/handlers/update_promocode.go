@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"errors"
 	"github.com/spf13/cast"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"net/http"
@@ -12,13 +11,12 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 )
 
-var invalidUsagesError = errors.New("usages should be lower or equal initial usages")
-
 func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
 	logger := helpers.Log(r)
 
 	request, err := requests.NewUpdatePromocodeRequest(r)
 	if err != nil {
+		logger.WithError(err).Error("failed to fetch update promocode request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -36,8 +34,8 @@ func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !validateUsages(*request, *promocode) {
-		logger.WithError(err).Info(invalidUsagesError)
-		ape.RenderErr(w, problems.BadRequest(invalidUsagesError)...)
+		logger.WithError(err).Info(InvalidUsagesError)
+		ape.RenderErr(w, problems.BadRequest(InvalidUsagesError)...)
 	}
 
 	promocodesQ := applyPromocodeUpdateFilters(r, helpers.DB(r).Promocodes().New(), *request)

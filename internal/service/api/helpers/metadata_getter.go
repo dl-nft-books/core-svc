@@ -10,52 +10,51 @@ import (
 	"time"
 )
 
-func GetMetadataFromHash(r *http.Request, hash, baseUri string) (*opensea.Metadata, error) {
+func GetMetadataFromHash(r *http.Request, hash string) (*opensea.Metadata, error) {
 	var (
-		numberOfRetries = 5
-		retryAfter      = 2 * time.Second
-		metadata        opensea.Metadata
-		logger          = Log(r)
+		ipfser      = Ipfser(r)
+		metadata    opensea.Metadata
+		logger      = Log(r)
+		loganFields = logan.F{
+			"metadata_hash": hash,
+		}
 	)
-	for i := 0; i < numberOfRetries; i++ {
-		response, err := http.Get(baseUri + hash)
+	for i := 0; i < ipfser.NumberOfRetries; i++ {
+		response, err := http.Get(ipfser.BaseUri + hash)
 		if err != nil {
-			if i+1 == numberOfRetries {
+			if i+1 == ipfser.NumberOfRetries {
 				return nil, errors.Wrap(err, "failed to get a response")
 			}
-			logger.WithFields(logan.F{
-				"try number":    i + 1,
-				"metadata_hash": hash,
-			}).Error(errors.Wrap(err, "failed to get a response"))
+			logger.WithFields(loganFields.Merge(logan.F{
+				"attempts_number": 1,
+			})).Error(errors.Wrap(err, "failed to get a response"))
+			time.Sleep(ipfser.RetryPeriod)
 			continue
 		}
 
 		responseData, err := ioutil.ReadAll(response.Body)
 		if err != nil {
-			if i+1 == numberOfRetries {
+			if i+1 == ipfser.NumberOfRetries {
 				return nil, errors.Wrap(err, "failed to read a response")
 			}
-			logger.WithFields(logan.F{
-				"try number":    i + 1,
-				"metadata_hash": hash,
-			}).Error(errors.Wrap(err, "failed to read a response"))
+			logger.WithFields(loganFields.Merge(logan.F{
+				"attempts_number": 1,
+			})).Error(errors.Wrap(err, "failed to read a response"))
+			time.Sleep(ipfser.RetryPeriod)
 			continue
 		}
 
 		if err = json.Unmarshal(responseData, &metadata); err != nil {
-			if i+1 == numberOfRetries {
+			if i+1 == ipfser.NumberOfRetries {
 				return nil, errors.Wrap(err, "failed to unmarshal a response")
 			}
-			logger.WithFields(logan.F{
-				"try number":    i + 1,
-				"metadata_hash": hash,
-			}).Error(errors.Wrap(err, "failed to unmarshal a response"))
+			logger.WithFields(loganFields.Merge(logan.F{
+				"attempts_number": 1,
+			})).Error(errors.Wrap(err, "failed to unmarshal a response"))
+			time.Sleep(ipfser.RetryPeriod)
 			continue
 		}
-		if err == nil {
-			break
-		}
-		time.Sleep(retryAfter)
+		break
 	}
 
 	return &metadata, nil

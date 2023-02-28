@@ -16,7 +16,7 @@ func ListPromocodes(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewListPromocodesRequest(r)
 	if err != nil {
-		logger.WithError(err).Error("invalid request")
+		logger.WithError(err).Error("failed to fetch list promocode request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}

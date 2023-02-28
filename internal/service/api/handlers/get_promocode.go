@@ -16,6 +16,7 @@ func GetPromocodeById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewPromocodeByIdRequest(r)
 	if err != nil {
+		logger.WithError(err).Error("failed to fetch get promocode request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -27,16 +28,12 @@ func GetPromocodeById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if promocode == nil {
+		logger.Error("promocode with such id is not found")
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
 
-	promocodeResponse, err := responses.NewGetPromocodeResponse(*promocode)
-	if err != nil {
-		logger.WithError(err).Error("failed to get promocode response")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
+	promocodeResponse := responses.NewGetPromocodeResponse(*promocode)
 
 	ape.Render(w, *promocodeResponse)
 }

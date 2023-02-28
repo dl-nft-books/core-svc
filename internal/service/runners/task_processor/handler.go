@@ -112,7 +112,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 		Name:        fmt.Sprintf("%s #%v", bookTitle, task.Id),
 		Description: bookDescription,
 		Image:       bannerLink.Data.Attributes.Url,
-		FileURL:     p.baseIpfsUri + ipfsFileHash,
+		FileURL:     p.ipfser.BaseUri + ipfsFileHash,
 	}
 	ipfsMetadataHash, err := helpers.PrecalculateMetadataIPFSHash(openseaData)
 	if err != nil {
@@ -124,7 +124,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	if err = p.db.Tasks().UpdateMetadataIpfsHash(ipfsMetadataHash).Update(task.Id); err != nil {
 		return errors.Wrap(err, "failed to update ipfs hash")
 	}
-	if err = p.db.Tasks().UpdateUri(p.baseIpfsUri + ipfsMetadataHash).Update(task.Id); err != nil {
+	if err = p.db.Tasks().UpdateUri(p.ipfser.BaseUri + ipfsMetadataHash).Update(task.Id); err != nil {
 		return errors.Wrap(err, "failed to update task uri")
 	}
 

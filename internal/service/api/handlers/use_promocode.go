@@ -16,6 +16,7 @@ func UsePromocode(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewPromocodeByIdRequest(r)
 	if err != nil {
+		logger.WithError(err).Error("failed to fetch use promocode request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -31,10 +32,8 @@ func UsePromocode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if promocode.State != resources.PromocodeActive {
-		logger.WithError(err).WithFields(logan.F{"promocode": promocode.Promocode}).Info("promocode is inactive")
-		errorInactive := problems.Forbidden()
-		errorInactive.Detail = "promocode is inactive"
-		ape.RenderErr(w, errorInactive)
+		logger.WithError(Inactive()).WithFields(logan.F{"promocode": promocode.Promocode})
+		ape.RenderErr(w, Inactive())
 		return
 	}
 

@@ -14,6 +14,10 @@ import (
 	"net/http"
 )
 
+var (
+	documentDeleteError = errors.New("failed to delete document from S3")
+)
+
 type TaskCleaner struct {
 	name       string
 	logger     *logan.Entry
@@ -78,8 +82,8 @@ func (p *TaskCleaner) run(ctx context.Context) error {
 		}
 
 		if statusCode != http.StatusOK {
-			documentDeleteError := errors.New("failed to delete document from S3")
-			return errors.Wrap(documentDeleteError, "request failed", logan.F{"status_code": statusCode})
+			p.logger.WithFields(logan.F{"status_code": statusCode}).Error(documentDeleteError)
+			return documentDeleteError
 		}
 
 		if err = p.db.New().Tasks().Delete(task.Id); err != nil {

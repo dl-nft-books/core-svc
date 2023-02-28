@@ -13,7 +13,7 @@ import (
 func NewUpdateTokenRequest(r *http.Request) (*resources.UpdateTokenRequest, error) {
 	var request resources.UpdateTokenRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		return nil, errors.Wrap(err, "failed to unmarshal update task request")
+		return nil, errors.Wrap(err, "failed to unmarshal update token request")
 	}
 
 	request.Data.ID = chi.URLParam(r, "id")

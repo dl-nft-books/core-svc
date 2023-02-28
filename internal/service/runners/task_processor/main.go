@@ -22,7 +22,7 @@ type TaskProcessor struct {
 	logger          *logan.Entry
 	db              data.DB
 	selector        data.TaskSelector
-	baseIpfsUri     string
+	ipfser          config.IpfserCfg
 	runnerCfg       config.RunnerData
 	signatureParams *config.SignatureParams
 
@@ -34,10 +34,10 @@ func New(cfg config.Config) *TaskProcessor {
 	status := resources.TaskPending
 
 	return &TaskProcessor{
-		name:        cfg.TaskProcessorCfg().Name,
-		db:          postgres.NewDB(cfg.DB()),
-		logger:      cfg.Log(),
-		baseIpfsUri: cfg.BaseUri(),
+		name:   cfg.TaskProcessorCfg().Name,
+		db:     postgres.NewDB(cfg.DB()),
+		logger: cfg.Log(),
+		ipfser: cfg.IpfserCfg(),
 		selector: data.TaskSelector{
 			PageParams: &pgdb.CursorPageParams{
 				Cursor: cfg.TaskProcessorCfg().Cursor,

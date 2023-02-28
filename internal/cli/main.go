@@ -2,7 +2,6 @@ package cli
 
 import (
 	"context"
-	"fmt"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
@@ -30,6 +29,11 @@ var (
 	migrateCommand     = app.Command("migrate", "migrate command")
 	migrateUpCommand   = migrateCommand.Command("up", "migrate database up")
 	migrateDownCommand = migrateCommand.Command("down", "migrate database down")
+
+	allRunners = map[string]func(ctx context.Context, cfg config.Config){
+		"promocode_checker": runners.RunPromocodeChecker,
+		"task_cleaner":      runners.RunTaskCleaner,
+	}
 )
 
 func Run(args []string) bool {
@@ -43,14 +47,6 @@ func Run(args []string) bool {
 
 	cfg := config.New(kv.MustFromEnv())
 	log = cfg.Log()
-
-	allRunners := map[string]func(ctx context.Context, cfg config.Config){
-		"promocode checker": runners.RunPromocodeChecker,
-		"task cleaner":      runners.RunTaskCleaner,
-	}
-	for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
-		allRunners[fmt.Sprintf("task processor #%d", i+1)] = runners.RunTaskProcessor
-	}
 
 	cmd, err := app.Parse(args[1:])
 	if err != nil {
@@ -68,15 +64,19 @@ func Run(args []string) bool {
 	case taskProcessorCommand.FullCommand():
 		for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
 			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
-			log.Infof("started task processor #%d", i+1)
+			log.Infof("started task_processor #%d", i+1)
 		}
 	case promocodeCheckerCommand.FullCommand():
 		run(waitGroup, ctx, cfg, runners.RunPromocodeChecker)
-		log.Info("started promocode checker...")
+		log.Info("started promocode_checker...")
 	case allCommand.FullCommand():
 		for name, processor := range allRunners {
 			run(waitGroup, ctx, cfg, processor)
 			log.Infof("started %v", name)
+		}
+		for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
+			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
+			log.Infof("started task_processor #%d", i+1)
 		}
 	case migrateUpCommand.FullCommand():
 		err = MigrateUp(cfg)

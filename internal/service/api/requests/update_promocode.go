@@ -24,7 +24,7 @@ func NewUpdatePromocodeRequest(r *http.Request) (*UpdatePromocodeRequest, error)
 	request.Data.ID = chi.URLParam(r, "id")
 
 	if _, err := strconv.Atoi(request.Data.ID); err != nil {
-		return nil, errors.New("invalid id param")
+		return nil, errors.Wrap(err, "failed to get id from the url path")
 	}
 
 	return &request, request.validate()

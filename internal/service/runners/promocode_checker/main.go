@@ -27,7 +27,7 @@ func New(cfg config.Config) *PromocodeChecker {
 	}
 }
 
-func (pc *PromocodeChecker) promocodeCheck() error {
+func (pc *PromocodeChecker) promocodeCheck(ctx context.Context) error {
 	if err := pc.promocodesQ.New().UpdateState(resources.PromocodeExpired).FilterExpired().Update(); err != nil {
 		return errors.Wrap(err, "Failed to update promocode expired state")
 	}
@@ -43,8 +43,7 @@ func (pc *PromocodeChecker) promocodeCheck() error {
 func (pc *PromocodeChecker) Run(ctx context.Context) {
 	running.WithBackOff(
 		ctx, pc.logger, pc.name,
-		func(ctx context.Context) error {
-			return pc.promocodeCheck()
-		}, pc.runnerData.NormalPeriod, pc.runnerData.MinAbnormalPeriod, pc.runnerData.MaxAbnormalPeriod,
+		pc.promocodeCheck,
+		pc.runnerData.NormalPeriod, pc.runnerData.MinAbnormalPeriod, pc.runnerData.MaxAbnormalPeriod,
 	)
 }

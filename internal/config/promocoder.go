@@ -38,7 +38,7 @@ func (t *promocoder) PromocoderCfg() PromocoderCfg {
 			From(kv.MustGetStringMap(t.getter, yamlPromocodesKey)).
 			Please()
 		if err != nil {
-			panic(errors.Wrap(err, "failed to figure out task producer fields"))
+			panic(errors.Wrap(err, "failed to figure out promocoder fields"))
 		}
 
 		return cfg

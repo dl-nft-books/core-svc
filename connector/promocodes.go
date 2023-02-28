@@ -18,33 +18,23 @@ func (c *Connector) GetPromocodeById(id int64) (*models.PromocodeResponse, error
 	fullEndpoint := fmt.Sprintf("%s/%s/%d", c.baseUrl, generatorEndpoint, id)
 
 	// getting response
-	found, err := c.get(fullEndpoint, &promocode)
+	_, err := c.get(fullEndpoint, &promocode)
 	if err != nil {
 		// errors are already wrapped
 		return nil, errors.From(err, logan.F{"id": id})
 	}
-	if !found {
-		return nil, nil
-	}
-
 	return &promocode, nil
 }
 
 func (c *Connector) RollbackPromocode(id int64) error {
-	var res int64
-
 	// setting full endpoint
 	fullEndpoint := fmt.Sprintf("%s/%s/%s/%s/%d", c.baseUrl, generatorEndpoint, promocodesEndpoint, "rollback", id)
 
 	// getting response
-	found, err := c.get(fullEndpoint, &res)
+	err := c.update(fullEndpoint, []byte{}, nil)
 	if err != nil {
 		// errors are already wrapped
 		return errors.From(err, logan.F{"id": id})
 	}
-	if !found {
-		return nil
-	}
-
 	return nil
 }

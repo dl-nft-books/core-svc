@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"gitlab.com/distributed_lab/logan/v3"
 	"net/http"
 
 	"gitlab.com/distributed_lab/ape"
@@ -14,6 +15,7 @@ func DeletePromocodeById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewPromocodeByIdRequest(r)
 	if err != nil {
+		logger.WithError(err).Error("failed to fetch delete promocode request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -25,6 +27,7 @@ func DeletePromocodeById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if promocode == nil {
+		logger.WithFields(logan.F{"promocode_id": request.Id}).Error("promocode with such id is not found")
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}

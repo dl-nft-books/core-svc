@@ -12,14 +12,11 @@ import (
 
 func RollbackPromocode(w http.ResponseWriter, r *http.Request) {
 
-	var (
-		errorInactive = problems.Forbidden()
-		logger        = helpers.Log(r)
-	)
-	errorInactive.Detail = "promocode has been expired"
+	var logger = helpers.Log(r)
 
 	request, err := requests.NewPromocodeByIdRequest(r)
 	if err != nil {
+		logger.WithError(err).Error("failed to fetch rollback promocode request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -35,8 +32,8 @@ func RollbackPromocode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if promocode.State == resources.PromocodeExpired {
-		logger.WithError(err).Info(errorInactive)
-		ape.RenderErr(w, errorInactive)
+		logger.WithError(Inactive())
+		ape.RenderErr(w, Inactive())
 		return
 	}
 	promocodesQ := helpers.DB(r).Promocodes().New().UpdateUsages(promocode.Usages - 1)
