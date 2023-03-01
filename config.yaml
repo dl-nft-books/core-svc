@@ -31,6 +31,11 @@ task_cleaner:
     max_abnormal_period: 10s
   cleaning_period: 20m # minutes / How long task can stay unresolved until it will be deleted
 
+ipfser:
+  base_uri: https://gateway.pinata.cloud/ipfs/
+  number_of_retries: 5
+  retry_period: 2s
+
 api: # Api restrictions
   max_failed_attempts: 10
   request_delay: 5m
