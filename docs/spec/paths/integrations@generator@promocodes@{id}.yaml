@@ -4,12 +4,12 @@ parameters:
     required: true
     schema:
       type: string
-      description: Token id to be requested
+      description: Promocode id to be requested
 get:
   tags:
-    - Tokens
-  summary: Get token by ID
-  operationId: GetTokenByID
+    - Promocodes
+  summary: Get Promocode by ID
+  operationId: GetPromocodeByID
   responses:
     '200':
       description: Success
@@ -21,11 +21,7 @@ get:
               - data
             properties:
               data:
-                $ref: '#/components/schemas/Token'
-              included:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Payment'
+                $ref: '#/components/schemas/Promocode'
     '400':
       description: Bad request
     '404':
@@ -34,9 +30,9 @@ get:
       description: Internal error
 patch:
   tags:
-    - Tokens
-  summary: Update Token
-  operationId: updateToken
+    - Promocodes
+  summary: Update Promocode
+  operationId: updatePromocode
   requestBody:
     content:
       application/vnd.api+json:
@@ -47,15 +43,25 @@ patch:
           properties:
             data:
               type: object
-              $ref: '#/components/schemas/UpdateToken'
+              $ref: '#/components/schemas/UpdatePromocode'
   responses:
-    '200':
+    '204':
       description: Success
     '400':
       description: Invalid request
     '404':
       description: Not Found
-    '401':
-      description: Not allowed
+    '500':
+      description: Internal Error
+delete:
+  tags:
+    - Promocodes
+  summary: Delete Promocode
+  operationId: deletePromocode
+  responses:
+    '204':
+      description: Success
+    '404':
+      description: Not Found
     '500':
       description: Internal Error

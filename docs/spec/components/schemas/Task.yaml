@@ -19,19 +19,24 @@ allOf:
           token_id:
             type: integer
             format: int64
+            description: Id of token
             example: 123
           book_id:
             type: integer
             format: int64
+            description: Id of book
             example: 2
           signature:
             type: string
+            description: personal string on first page
             example: I love Distributed Lab!!!
           file_ipfs_hash:
             type: string
+            description: hash of file on IPFS
             example: QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
           metadata_ipfs_hash:
             type: string
+            description: hash of metadata on IPFS
             example: QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
           uri:
             type: string
@@ -51,6 +56,7 @@ allOf:
                 value: 4
               - name: finished_uploading
                 value: 5
+            description: task solution status
             example: 2
       relationships:
         type: object

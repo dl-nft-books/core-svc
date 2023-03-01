@@ -15,11 +15,18 @@ allOf:
           initial_usages:
             type: integer
             format: int64
+            description: how many times you can use promocode
+            example: 10
+          expiration_date:
+            type: string
+            format: time.Time
+            description: Time of expiration
+            example: '2022-11-03T21:36:21.022589Z'
           usages:
             type: integer
             format: int64
-          expiration_date:
-            type: time.Time
+            description: how many times promocode has been used
+            example: 8
           state:
             type: integer
             format: PromocodeState
@@ -30,3 +37,5 @@ allOf:
                 value: 2
               - name: fully_used
                 value: 3
+            description: promocode status
+            example: 1

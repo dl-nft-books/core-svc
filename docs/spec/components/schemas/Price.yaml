@@ -15,6 +15,7 @@ allOf:
           price:
             type: string
             description: price per one token ($)
+            example: '2.3'
           end_timestamp:
             type: integer
             format: int64
@@ -22,6 +23,7 @@ allOf:
           discount:
             type: string
             description: amount of discount where 1% = 10^25
+            example: '10000000000000000000000000'
       relationships:
         type: object
         required:

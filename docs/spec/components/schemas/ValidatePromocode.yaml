@@ -22,6 +22,8 @@ allOf:
                 value: 3
               - name: not_found
                 value: 4
+            description: promocode status
+            example: 1
       relationships:
         type: object
         properties:

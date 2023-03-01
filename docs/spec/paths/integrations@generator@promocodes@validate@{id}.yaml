@@ -1,0 +1,31 @@
+parameters:
+  - in: path
+    name: promocode
+    required: true
+    schema:
+      type: string
+      description: Promocode to be requested
+patch:
+  tags:
+    - Promocodes
+  summary: Validate Promocode
+  operationId: validatePromocode
+  responses:
+    '200':
+      description: Success
+      content:
+        application/vnd.api+json:
+          schema:
+            type: object
+            required:
+              - data
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/ValidatePromocode'
+    '400':
+      description: Invalid request
+    '404':
+      description: Not Found
+    '500':
+      description: Internal Error

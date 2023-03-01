@@ -41,6 +41,7 @@ allOf:
             description: Timestamp when the user have purchased a book
           book_url:
             type: string
+            description: Url of book
             example: "ipfs.io/ipfs/url goes brrrrrrr"
       relationships:
         type: object

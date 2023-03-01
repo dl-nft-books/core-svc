@@ -21,6 +21,7 @@ allOf:
           token_id:
             type: integer
             format: int64
+            description: Id of token
             example: 13
           name:
             type: string
@@ -33,9 +34,10 @@ allOf:
           image_url:
             type: string
             description: Url to the token's image
-            example: ipfs.io/ipfs/url goes brrrrrrr
+            example: ipfs.io/ipfs/url
           signature:
             type: string
+            description: personal string on first page
             example: I hate managing 4 backend services in a week
           status:
             type: integer
@@ -45,6 +47,7 @@ allOf:
                 value: 1
               - name: finished_uploading
                 value: 2
+            description: token uploading status
             example: 2
           owner:
             type: string
@@ -56,6 +59,7 @@ allOf:
             description: Hash of a metadata file
           is_token_payment:
             type: boolean
+            description: true if user payed by token and false if by nft exchange
             example: true
       relationships:
         type: object

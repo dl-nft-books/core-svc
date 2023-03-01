@@ -11,20 +11,13 @@ get:
       required: false
       schema:
         type: integer
-    - name: 'filter[token_address]'
+    - name: 'filter[nft_address]'
       in: query
-      description: Token address to be filtered with
+      description: NFT collection address to be filtered with
       explode: false
       required: false
       schema:
         type: string
-    - name: 'filter[promocode_id]'
-      in: query
-      description: Promocode ID to be filtered with
-      explode: false
-      required: false
-      schema:
-        type: integer
     - name: 'filter[platform]'
       in: query
       example: 'ethereum'

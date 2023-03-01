@@ -14,7 +14,7 @@ post:
             data:
               $ref: '#/components/schemas/CreateTask'
   responses:
-    '200':
+    '201':
       description: Task created successfully
       content:
         application/vnd.api+json:
@@ -44,37 +44,47 @@ get:
         type: array
         items:
           type: string
-    - name: 'filter[id]'
+    - name: 'filter[token_id]'
       in: query
-      description: Array of task IDs to be filtered with
+      description: Token ID to be filtered with
       explode: false
       required: false
       schema:
-        type: array
-        items:
-          type: integer
-    - name: 'filter[state]'
+        type: integer
+    - name: 'filter[account]'
       in: query
-      description: Array of task states to be filtered with
+      description: Payer account to be filtered with
       explode: false
       required: false
       schema:
-        type: array
-        items:
-          type: integer
-          enum:
-            - name: pending
-              value: 1
-            - name: generating
-              value: 2
-            - name: finished_generation
-              value: 3
-            - name: uploading
-              value: 4
-            - name: finished_uploading
-              value: 5
+        type: string
+    - name: 'filter[ipfs_hash]'
+      in: query
+      description: Metadata IPFS hash to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: string
+    - name: 'filter[status]'
+      in: query
+      description: Task states to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: integer
+        enum:
+          - name: pending
+            value: 1
+          - name: generating
+            value: 2
+          - name: finished_generation
+            value: 3
+          - name: uploading
+            value: 4
+          - name: finished_uploading
+            value: 5
   responses:
-    '201':
+    '200':
       description: Success
       content:
         application/json:

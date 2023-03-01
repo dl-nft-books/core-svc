@@ -12,11 +12,11 @@ import (
 type ListTokensRequest struct {
 	pgdb.OffsetPageParams
 	Sorts pgdb.Sorts `url:"sort" default:"id"`
-	
-	Account        []string                `filter:"account"`
-	Status         []resources.TokenStatus `filter:"status"`
-	TokenId        *int64                  `filter:"token_id""`
-	ChainId        []int64                 `filter:"chain_id""`
+
+	Account        []string                `filter:"account"`   //
+	Status         []resources.TokenStatus `filter:"status"`    //
+	TokenId        *int64                  `filter:"token_id""` //
+	ChainId        []int64                 `filter:"chain_id""` //
 	MetadataHash   []string                `filter:"metadata_hash"`
 	Name           []string                `filter:"name"`
 	IsTokenPayment *bool                   `filter:"is_token_payment"`

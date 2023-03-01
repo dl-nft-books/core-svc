@@ -36,15 +36,6 @@ get:
   parameters:
     - $ref: '#/components/parameters/pageNumberParam'
     - $ref: '#/components/parameters/pageLimitParam'
-    - name: 'filter[account]'
-      in: query
-      description: Array of account addresses to be filtered with
-      explode: false
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
     - name: 'filter[chain_id]'
       in: query
       description: Array of chain_ids to be filtered with
@@ -53,16 +44,46 @@ get:
       schema:
         type: integer
         example: 5
-    - name: 'filter[id]'
+    - name: 'filter[token_id]'
       in: query
-      description: Array of task IDs to be filtered with
+      description: Token ID to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: integer
+    - name: 'filter[account]'
+      in: query
+      description: Array of payer accounts to be filtered with
       explode: false
       required: false
       schema:
         type: array
         items:
-          type: integer
-    - name: 'filter[state]'
+          type: string
+    - name: 'filter[metadata_hash]'
+      in: query
+      description: Array of metadata IPFS hash to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: string
+    - name: 'filter[is_token_payment]'
+      in: query
+      description: True if token payment and false if nft exchange
+      explode: false
+      required: false
+      schema:
+        type: boolean
+    - name: 'filter[name]'
+      in: query
+      description: Array of names (titles) to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    - name: 'filter[status]'
       in: query
       description: Array of task states to be filtered with
       explode: false

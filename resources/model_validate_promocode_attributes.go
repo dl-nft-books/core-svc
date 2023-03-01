@@ -5,5 +5,6 @@
 package resources
 
 type ValidatePromocodeAttributes struct {
+	// promocode status
 	State PromocodeState `json:"state"`
 }

@@ -11,6 +11,7 @@ allOf:
           token_id:
             type: integer
             format: int64
+            description: Id of token
             example: 13
           status:
             type: integer
@@ -20,6 +21,7 @@ allOf:
                 value: 1
               - name: finished_uploading
                 value: 2
+            description: token uploading status
             example: 2
           owner:
             type: string

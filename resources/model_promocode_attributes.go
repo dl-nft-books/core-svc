@@ -4,17 +4,19 @@
 
 package resources
 
-import (
-	"time"
-)
+import "time"
 
 type PromocodeAttributes struct {
 	// between 0.0 and 1.0 representing discount percentage
-	Discount       float64        `json:"discount"`
-	ExpirationDate time.Time      `json:"expiration_date"`
-	Id             int64          `json:"id"`
-	InitialUsages  int64          `json:"initial_usages"`
-	Promocode      string         `json:"promocode"`
-	State          PromocodeState `json:"state"`
-	Usages         int64          `json:"usages"`
+	Discount float64 `json:"discount"`
+	// Time of expiration
+	ExpirationDate time.Time `json:"expiration_date"`
+	Id             int64     `json:"id"`
+	// how many times you can use promocode
+	InitialUsages int64  `json:"initial_usages"`
+	Promocode     string `json:"promocode"`
+	// promocode status
+	State PromocodeState `json:"state"`
+	// how many times promocode has been used
+	Usages int64 `json:"usages"`
 }
