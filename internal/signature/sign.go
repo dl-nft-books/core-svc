@@ -2,11 +2,9 @@ package signature
 
 import (
 	"crypto/ecdsa"
-
 	"github.com/ethereum/go-ethereum/common"
 	"gitlab.com/distributed_lab/logan/v3"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
@@ -40,7 +38,6 @@ func SignMintInfo(
 	if mintInfo.TokenAddress == "" {
 		mintInfo.TokenAddress = defaultAddress
 	}
-
 	signature, err := signMintInfoByEIP712(privateKey, mintInfo, domainData)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to sign EIP712 hash")
@@ -56,13 +53,12 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 	[]byte,
 	error,
 ) {
-	spew.Dump(mintInfo)
-
 	data := &eip712.TypedData{
 		Types: apitypes.Types{
 			"Mint": []apitypes.Type{
 				{Name: "paymentTokenAddress", Type: "address"},
 				{Name: "paymentTokenPrice", Type: "uint256"},
+				{Name: "discount", Type: "uint256"},
 				{Name: "endTimestamp", Type: "uint256"},
 				{Name: "tokenURI", Type: "bytes32"},
 			},
@@ -83,6 +79,7 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 		Message: apitypes.TypedDataMessage{
 			"paymentTokenAddress": mintInfo.TokenAddress,
 			"paymentTokenPrice":   mintInfo.PricePerOneToken.String(),
+			"discount":            mintInfo.Discount.String(),
 			"endTimestamp":        math.NewHexOrDecimal256(mintInfo.EndTimestamp),
 			"tokenURI":            mintInfo.HashedTokenURI,
 		},

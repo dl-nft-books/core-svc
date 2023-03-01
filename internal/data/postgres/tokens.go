@@ -3,26 +3,27 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
-
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
-
 	"github.com/Masterminds/squirrel"
 	"github.com/fatih/structs"
 	"gitlab.com/distributed_lab/kit/pgdb"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
+	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"strings"
 )
 
 const (
 	tokensTable = "tokens"
 
-	tokensId           = "id"
-	tokensAccount      = "account"
-	tokensTokenId      = "token_id"
-	tokensBookId       = "book_id"
-	tokensPaymentId    = "payment_id"
-	tokensMetadataHash = "metadata_hash"
-	tokensSignature    = "signature"
-	tokensStatus       = "status"
+	tokensId             = "id"
+	tokensAccount        = "account"
+	tokensTokenId        = "token_id"
+	tokensBookId         = "book_id"
+	tokensPaymentId      = "payment_id"
+	tokensMetadataHash   = "metadata_hash"
+	tokensSignature      = "signature"
+	tokensStatus         = "status"
+	tokensChainId        = "chain_id"
+	tokensIsTokenPayment = "is_token_payment"
 )
 
 type tokensQ struct {
@@ -67,7 +68,10 @@ func (q *tokensQ) FilterByStatus(status ...resources.TokenStatus) data.TokensQ {
 }
 
 func (q *tokensQ) FilterByAccount(account ...string) data.TokensQ {
-	q.selector = q.selector.Where(squirrel.Eq{tokensAccount: account})
+	for i := range account {
+		account[i] = strings.ToLower(account[i])
+	}
+	q.selector = q.selector.Where(squirrel.Eq{fmt.Sprintf("lower(%v)", tokensAccount): account})
 	return q
 }
 
@@ -83,6 +87,29 @@ func (q *tokensQ) FilterByBookId(bookId ...int64) data.TokensQ {
 
 func (q *tokensQ) FilterByPaymentId(paymentId ...int64) data.TokensQ {
 	q.selector = q.selector.Where(squirrel.Eq{tokensPaymentId: paymentId})
+	return q
+}
+
+func (q *tokensQ) FilterByChainId(chainId ...int64) data.TokensQ {
+	q.selector = q.selector.Where(squirrel.Eq{tokensChainId: chainId})
+	return q
+}
+
+func (q *tokensQ) FilterByMetadataHash(metadataHash ...string) data.TokensQ {
+	q.selector = q.selector.Where(squirrel.Eq{tokensMetadataHash: metadataHash})
+	return q
+}
+
+func (q *tokensQ) FilterByName(name ...string) data.TokensQ {
+	for i := range name {
+		name[i] = strings.ToLower(name[i])
+	}
+	q.selector = q.selector.Where(squirrel.Eq{fmt.Sprintf("lower(%v)", tokensAccount): name})
+	return q
+}
+
+func (q *tokensQ) FilterByIsTokenPayment(isTokenPayment bool) data.TokensQ {
+	q.selector = q.selector.Where(squirrel.Eq{tokensIsTokenPayment: isTokenPayment})
 	return q
 }
 
@@ -128,6 +155,11 @@ func (q *tokensQ) UpdateStatus(newStatus resources.TokenStatus) data.TokensQ {
 
 func (q *tokensQ) UpdateOwner(newOwner string) data.TokensQ {
 	q.updater = q.updater.Set(tokensAccount, newOwner)
+	return q
+}
+
+func (q *tokensQ) UpdateMetadataHash(newMetadataHash string) data.TokensQ {
+	q.updater = q.updater.Set(tokensMetadataHash, newMetadataHash)
 	return q
 }
 

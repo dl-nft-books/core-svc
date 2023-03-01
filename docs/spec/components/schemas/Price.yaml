@@ -10,14 +10,20 @@ allOf:
         required:
           - price
           - end_timestamp
+          - discount
         properties:
           price:
             type: string
             description: price per one token ($)
+            example: '2.3'
           end_timestamp:
             type: integer
             format: int64
             description: Timestamp when signature will expire
+          discount:
+            type: string
+            description: amount of discount where 1% = 10^25
+            example: '10000000000000000000000000'
       relationships:
         type: object
         required:

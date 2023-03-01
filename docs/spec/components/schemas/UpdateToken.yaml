@@ -11,6 +11,7 @@ allOf:
           token_id:
             type: integer
             format: int64
+            description: Id of token
             example: 13
           status:
             type: integer
@@ -20,8 +21,13 @@ allOf:
                 value: 1
               - name: finished_uploading
                 value: 2
+            description: token uploading status
             example: 2
           owner:
             type: string
             example: '0x77dADb3Ce09Ef981A008fDC1cE40D8A023E0925e'
             description: Address of a user who purchased this token
+          metadata_hash:
+            type: string
+            example: 'Qmblablabla'
+            description: Token's metadata hash

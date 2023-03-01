@@ -53,5 +53,9 @@ patch:
       description: Success
     '400':
       description: Invalid request
+    '404':
+      description: Not Found
     '401':
       description: Not allowed
+    '500':
+      description: Internal Error

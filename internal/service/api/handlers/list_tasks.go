@@ -16,7 +16,7 @@ func ListTasks(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewListTasksRequest(r)
 	if err != nil {
-		logger.WithError(err).Error("invalid request")
+		logger.WithError(err).Error("failed to fetch list tasks request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}

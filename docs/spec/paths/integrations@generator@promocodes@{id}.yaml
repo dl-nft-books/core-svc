@@ -1,0 +1,67 @@
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      description: Promocode id to be requested
+get:
+  tags:
+    - Promocodes
+  summary: Get Promocode by ID
+  operationId: GetPromocodeByID
+  responses:
+    '200':
+      description: Success
+      content:
+        application/vnd.api+json:
+          schema:
+            type: object
+            required:
+              - data
+            properties:
+              data:
+                $ref: '#/components/schemas/Promocode'
+    '400':
+      description: Bad request
+    '404':
+      description: Not found
+    '500':
+      description: Internal error
+patch:
+  tags:
+    - Promocodes
+  summary: Update Promocode
+  operationId: updatePromocode
+  requestBody:
+    content:
+      application/vnd.api+json:
+        schema:
+          type: object
+          required:
+            - data
+          properties:
+            data:
+              type: object
+              $ref: '#/components/schemas/UpdatePromocode'
+  responses:
+    '204':
+      description: Success
+    '400':
+      description: Invalid request
+    '404':
+      description: Not Found
+    '500':
+      description: Internal Error
+delete:
+  tags:
+    - Promocodes
+  summary: Delete Promocode
+  operationId: deletePromocode
+  responses:
+    '204':
+      description: Success
+    '404':
+      description: Not Found
+    '500':
+      description: Internal Error

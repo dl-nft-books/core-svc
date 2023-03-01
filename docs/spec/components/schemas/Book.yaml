@@ -19,6 +19,7 @@ allOf:
           - banner
           - token_id
           - deploy_status
+          - chain_id
         properties:
           title:
             type: string
@@ -61,6 +62,11 @@ allOf:
           token_id:
             type: integer
             description: id from the contract that corresponds to the given book
+            example: 5
+          chain_id:
+            type: integer
+            format: int64
+            description: id of network chain
             example: 5
           deploy_status:
             type: integer

@@ -6,6 +6,7 @@ type DB interface {
 	Tasks() TasksQ
 	KeyValue() KeyValueQ
 	Tokens() TokensQ
+	Promocodes() PromocodesQ
 
 	Transaction(func() error) error
 }

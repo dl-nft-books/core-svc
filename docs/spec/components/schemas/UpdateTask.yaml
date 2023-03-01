@@ -26,4 +26,5 @@ allOf:
                 value: 4
               - name: finished_uploading
                 value: 5
+            description: task solution status
             example: 2

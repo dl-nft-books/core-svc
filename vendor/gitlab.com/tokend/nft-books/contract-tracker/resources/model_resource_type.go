@@ -8,6 +8,7 @@ type ResourceType string
 
 // List of ResourceType
 const (
-	BOOK    ResourceType = "book"
-	PAYMENT ResourceType = "payment"
+	BOOK        ResourceType = "book"
+	NFT_PAYMENT ResourceType = "nft-payment"
+	PAYMENT     ResourceType = "payment"
 )

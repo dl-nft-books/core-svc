@@ -14,11 +14,14 @@ allOf:
         properties:
           signature:
             type: string
+            description: personal string on first page
             example: I love Distributed Lab!!!
           account:
             type: string
+            description: payer account
             example: '0xcD3C5Ecb0159DFD0B7b338341CF6594224aE2083'
           book_id:
             type: integer
             format: int64
+            description: id of book
             example: 2

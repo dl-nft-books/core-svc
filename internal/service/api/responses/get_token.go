@@ -7,44 +7,46 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"net/http"
 )
 
 var (
-	NonSingleTaskErr   = errors.New("either no tasks or duplicate for the given hash was found")
 	PaymentNotFoundErr = errors.New("payment with specified id was not found")
 )
 
-func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, tasksQ data.TasksQ) (*resources.TokenResponse, error) {
+func NewGetTokenResponse(r *http.Request, token data.Token, trackerApi *tracker.Connector) (*resources.TokenResponse, error) {
 	var response resources.TokenResponse
+	if token.IsTokenPayment {
+		paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
+				"payment_id": token.PaymentId,
+			})
+		}
+		if paymentResponse == nil {
+			return nil, errors.From(PaymentNotFoundErr, logan.F{
+				"payment_id": PaymentNotFoundErr,
+			})
+		}
+		response.Included.Add(convertPaymentToResource(*paymentResponse))
+	}
 
-	paymentResponse, err := trackerApi.GetPaymentById(token.PaymentId)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
-			"payment_id": token.PaymentId,
-		})
-	}
-	if paymentResponse == nil {
-		return nil, errors.From(PaymentNotFoundErr, logan.F{
-			"payment_id": PaymentNotFoundErr,
-		})
+	if !token.IsTokenPayment {
+		paymentResponse, err := trackerApi.GetNftPaymentById(token.PaymentId)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get payment by id", logan.F{
+				"payment_id": token.PaymentId,
+			})
+		}
+		if paymentResponse == nil {
+			return nil, errors.From(PaymentNotFoundErr, logan.F{
+				"payment_id": PaymentNotFoundErr,
+			})
+		}
+		response.Included.Add(convertNftPaymentToResource(*paymentResponse))
 	}
 
-	tasks, err := tasksQ.New().Select(data.TaskSelector{
-		IpfsHash: &token.MetadataHash,
-	})
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get task by hash", logan.F{
-			"metadata_hash": token.MetadataHash,
-		})
-	}
-	if len(tasks) != 1 {
-		return nil, errors.From(NonSingleTaskErr, logan.F{
-			"metadata_hash": token.MetadataHash,
-		})
-	}
-	task := tasks[0]
-
-	metadata, err := helpers.GetMetadataFromHash(token.MetadataHash)
+	metadata, err := helpers.GetMetadataFromHash(r, token.MetadataHash)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get metadata from hash")
 	}
@@ -52,18 +54,18 @@ func NewGetTokenResponse(token data.Token, trackerApi *tracker.Connector, tasksQ
 	response.Data = resources.Token{
 		Key: resources.NewKeyInt64(token.Id, resources.TOKENS),
 		Attributes: resources.TokenAttributes{
-			Owner:       token.Account,
-			Description: metadata.Description,
-			ImageUrl:    metadata.Image,
-			Name:        metadata.Name,
-			Signature:   task.Signature,
-			Status:      token.Status,
-			TokenId:     token.TokenId,
+			Owner:          token.Account,
+			Description:    metadata.Description,
+			MetadataHash:   token.MetadataHash,
+			ImageUrl:       metadata.Image,
+			Name:           metadata.Name,
+			Signature:      token.Signature,
+			Status:         token.Status,
+			TokenId:        token.TokenId,
+			IsTokenPayment: token.IsTokenPayment,
 		},
 		Relationships: getTokenRelationships(token),
 	}
-
-	response.Included.Add(convertPaymentToResource(*paymentResponse))
 
 	return &response, nil
 }

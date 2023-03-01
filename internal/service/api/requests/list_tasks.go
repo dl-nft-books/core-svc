@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"github.com/pkg/errors"
 	"net/http"
 
 	"gitlab.com/distributed_lab/kit/pgdb"
@@ -23,7 +24,7 @@ func NewListTasksRequest(r *http.Request) (*ListTasksRequest, error) {
 
 	err := urlval.Decode(r.URL.Query(), &request)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to unmarshal list task request")
 	}
 
 	return &request, nil

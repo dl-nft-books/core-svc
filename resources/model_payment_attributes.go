@@ -6,7 +6,8 @@ package resources
 
 type PaymentAttributes struct {
 	// Amount of tokens paid
-	Amount  string `json:"amount"`
+	Amount string `json:"amount"`
+	// Book URL
 	BookUrl string `json:"book_url"`
 	// Token metadata information
 	Erc20Data Erc20Data `json:"erc20_data"`

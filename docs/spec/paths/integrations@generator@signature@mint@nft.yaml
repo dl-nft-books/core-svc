@@ -1,0 +1,47 @@
+get:
+  tags:
+    - Signature
+  summary: Get mint signature
+  operationId: getPrice
+  parameters:
+    - name: 'filter[token_id]'
+      in: query
+      description: Token ID to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: integer
+    - name: 'filter[nft_address]'
+      in: query
+      description: NFT collection address to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: string
+    - name: 'filter[platform]'
+      in: query
+      example: 'ethereum'
+      explode: false
+      required: false
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Price'
+              included:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Signature'
+    '400':
+      $ref: '#/components/responses/BadRequestError'
+    '404':
+      $ref: '#/components/responses/NotFoundError'
+    '500':
+      $ref: '#/components/responses/InternalError'

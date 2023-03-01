@@ -31,6 +31,10 @@ func (db *db) Tokens() data.TokensQ {
 	return NewTokensQ(db.raw)
 }
 
+func (db *db) Promocodes() data.PromocodesQ {
+	return NewPromocodesQ(db.raw)
+}
+
 func (db *db) Transaction(fn func() error) error {
 	return db.raw.Transaction(func() error {
 		return fn()

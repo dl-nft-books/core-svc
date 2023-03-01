@@ -4,9 +4,34 @@ get:
   summary: Get mint signature
   operationId: getPrice
   parameters:
-    - $ref: '#/components/parameters/PlatformParam'
-    - $ref: '#/components/parameters/TokenAddressParam'
-    - $ref: '#/components/parameters/TaskIDParam'
+    - name: 'filter[token_id]'
+      in: query
+      description: Token ID to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: integer
+    - name: 'filter[token_address]'
+      in: query
+      description: Token address to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: string
+    - name: 'filter[promocode_id]'
+      in: query
+      description: Promocode ID to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: integer
+    - name: 'filter[platform]'
+      in: query
+      example: 'ethereum'
+      explode: false
+      required: false
+      schema:
+        type: string
   responses:
     '200':
       description: Success

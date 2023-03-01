@@ -50,6 +50,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		Signature: request.Data.Attributes.Signature,
 		Account:   request.Data.Attributes.Account,
 		Status:    resources.TaskPending,
+		CreatedAt: time.Now(),
 	})
 	if err != nil {
 		helpers.Log(r).WithError(err).Errorf("failed to create new task with book id #%v", bookId)

@@ -5,7 +5,10 @@
 package resources
 
 type CreateTaskAttributes struct {
-	Account   string `json:"account"`
-	BookId    int64  `json:"book_id"`
+	// payer account
+	Account string `json:"account"`
+	// id of book
+	BookId int64 `json:"book_id"`
+	// personal string on first page
 	Signature string `json:"signature"`
 }

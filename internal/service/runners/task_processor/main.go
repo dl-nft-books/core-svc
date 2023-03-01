@@ -2,29 +2,27 @@ package task_processor
 
 import (
 	"context"
-	"strconv"
-
-	booker "gitlab.com/tokend/nft-books/book-svc/connector"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
-
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/running"
 	documenter "gitlab.com/tokend/nft-books/blob-svc/connector/api"
+	booker "gitlab.com/tokend/nft-books/book-svc/connector"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
+	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
 	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"strconv"
 )
 
 const cursorKey = "task_processor_cursor"
 
 type TaskProcessor struct {
-	name     string
-	logger   *logan.Entry
-	db       data.DB
-	selector data.TaskSelector
-
+	name            string
+	logger          *logan.Entry
+	db              data.DB
+	selector        data.TaskSelector
+	ipfser          config.IpfserCfg
 	runnerCfg       config.RunnerData
 	signatureParams *config.SignatureParams
 
@@ -39,7 +37,7 @@ func New(cfg config.Config) *TaskProcessor {
 		name:   cfg.TaskProcessorCfg().Name,
 		db:     postgres.NewDB(cfg.DB()),
 		logger: cfg.Log(),
-
+		ipfser: cfg.IpfserCfg(),
 		selector: data.TaskSelector{
 			PageParams: &pgdb.CursorPageParams{
 				Cursor: cfg.TaskProcessorCfg().Cursor,

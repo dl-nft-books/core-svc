@@ -39,6 +39,7 @@ allOf:
             description: Timestamp when the user have purchased a book
           book_url:
             type: string
+            description: Book URL
             example: ipfs.io/ipfs/url goes brrrrrrr
           erc20_data:
             allOf:

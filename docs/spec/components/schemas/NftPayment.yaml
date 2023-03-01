@@ -1,0 +1,56 @@
+allOf:
+  - $ref: '#/components/schemas/NftPaymentKey'
+  - type: object
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - payer_address
+          - nft_address
+          - nft_id
+          - floor_price
+          - minted_token_price
+          - book_url
+          - purchase_timestamp
+        properties:
+          payer_address:
+            type: string
+            example: '0x77dADb3Ce09Ef981A008fDC1cE40D8A023E0925e'
+            description: Address of a user who bought a book
+          nft_address:
+            type: string
+            example: '0x77dADb3Ce09Ef981A008fDC1cE40D8A023E0925e'
+            description: Address of a nft collection
+          nft_id:
+            type: integer
+            example: "100500"
+            description: Nft id
+          floor_price:
+            type: string
+            example: "100500"
+            description: Floor nft price
+          minted_token_price:
+            type: string
+            example: "103"
+            description: Price of a minted token in $
+          purchase_timestamp:
+            type: string
+            example: "2006-01-02"
+            description: Timestamp when the user have purchased a book
+          book_url:
+            type: string
+            description: Url of book
+            example: "ipfs.io/ipfs/url goes brrrrrrr"
+      relationships:
+        type: object
+        properties:
+          book:
+            type: object
+            description: Information about related book for nft payment
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/BookKey'
+

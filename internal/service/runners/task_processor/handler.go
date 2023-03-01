@@ -14,8 +14,6 @@ import (
 	"gitlab.com/tokend/nft-books/generator-svc/internal/service/runners/helpers"
 )
 
-const baseURI = "https://ipfs.io/ipfs/"
-
 var bookNotFoundErr = errors.New("book was not found")
 
 func (p *TaskProcessor) handleTask(task data.Task) error {
@@ -38,15 +36,17 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	fileKey := response.Data.Attributes.File.Attributes.Key
 
 	p.logger.Debug("Key retrieved successfully")
-	p.logger.Debug("Retrieving document link from S3...")
+	p.logger.Debugf("Retrieving document link from S3... (fileKey=%s)", fileKey)
 
 	fileLink, err := p.documenter.GetDocumentLink(fileKey)
 	if err != nil {
-		return errors.Wrap(err, "failed to get document link")
+		return errors.Wrap(err, "failed to get document link", logan.F{
+			"file_key": fileKey,
+		})
 	}
 
 	p.logger.Debug("Link retrieved successfully")
-	p.logger.Debug("Downloading document...")
+	p.logger.Debugf("Downloading document...")
 
 	rawDocument, err := helpers.DownloadDocument(fileLink.Data.Attributes.Url)
 	if err != nil {
@@ -108,13 +108,13 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 		bookTitle       = response.Data.Attributes.Title
 		bookDescription = response.Data.Attributes.Description
 	)
-
-	ipfsMetadataHash, err := helpers.PrecalculateMetadataIPFSHash(opensea.Metadata{
+	openseaData := opensea.Metadata{
 		Name:        fmt.Sprintf("%s #%v", bookTitle, task.Id),
 		Description: bookDescription,
 		Image:       bannerLink.Data.Attributes.Url,
-		FileURL:     baseURI + ipfsFileHash,
-	})
+		FileURL:     p.ipfser.BaseUri + ipfsFileHash,
+	}
+	ipfsMetadataHash, err := helpers.PrecalculateMetadataIPFSHash(openseaData)
 	if err != nil {
 		return errors.Wrap(err, "failed to precalculate ipfs hash for a metadata file")
 	}
@@ -124,7 +124,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	if err = p.db.Tasks().UpdateMetadataIpfsHash(ipfsMetadataHash).Update(task.Id); err != nil {
 		return errors.Wrap(err, "failed to update ipfs hash")
 	}
-	if err = p.db.Tasks().UpdateUri(baseURI + ipfsMetadataHash).Update(task.Id); err != nil {
+	if err = p.db.Tasks().UpdateUri(p.ipfser.BaseUri + ipfsMetadataHash).Update(task.Id); err != nil {
 		return errors.Wrap(err, "failed to update task uri")
 	}
 

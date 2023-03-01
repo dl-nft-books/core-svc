@@ -6,14 +6,16 @@ import (
 )
 
 type Token struct {
-	Id           int64                 `db:"id" structs:"-" json:"-"`
-	Account      string                `db:"account" structs:"account"`
-	TokenId      int64                 `db:"token_id" structs:"token_id"`
-	BookId       int64                 `db:"book_id" structs:"book_id" json:"book_id"`
-	PaymentId    int64                 `db:"payment_id" structs:"payment_id" json:"payment_id"`
-	MetadataHash string                `db:"metadata_hash" structs:"metadata_hash" json:"metadata_hash"`
-	Signature    string                `db:"signature" structs:"signature" json:"signature"`
-	Status       resources.TokenStatus `db:"status" structs:"status" json:"status"`
+	Id             int64                 `db:"id" structs:"-" json:"-"`
+	Account        string                `db:"account" structs:"account"`
+	TokenId        int64                 `db:"token_id" structs:"token_id"`
+	BookId         int64                 `db:"book_id" structs:"book_id" json:"book_id"`
+	PaymentId      int64                 `db:"payment_id" structs:"payment_id" json:"payment_id"`
+	MetadataHash   string                `db:"metadata_hash" structs:"metadata_hash" json:"metadata_hash"`
+	Signature      string                `db:"signature" structs:"signature" json:"signature"`
+	Status         resources.TokenStatus `db:"status" structs:"status" json:"status"`
+	ChainId        int64                 `db:"chain_id" structs:"chain_id" json:"chain_id"`
+	IsTokenPayment bool                  `db:"is_token_payment" structs:"is_token_payment" json:"is_token_payment"`
 }
 
 type TokensQ interface {
@@ -25,6 +27,10 @@ type TokensQ interface {
 	FilterByTokenId(tokenId ...int64) TokensQ
 	FilterByBookId(bookId ...int64) TokensQ
 	FilterByPaymentId(paymentId ...int64) TokensQ
+	FilterByChainId(chainId ...int64) TokensQ
+	FilterByMetadataHash(metadataHash ...string) TokensQ
+	FilterByName(name ...string) TokensQ
+	FilterByIsTokenPayment(isTokenPayment bool) TokensQ
 
 	Get() (*Token, error)
 	Select() ([]Token, error)
@@ -38,5 +44,6 @@ type TokensQ interface {
 	UpdateStatus(newStatus resources.TokenStatus) TokensQ
 	UpdateTokenId(newTokenId int64) TokensQ
 	UpdateOwner(newOwner string) TokensQ
+	UpdateMetadataHash(newMetadataHash string) TokensQ
 	Update(id int64) error
 }

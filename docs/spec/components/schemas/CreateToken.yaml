@@ -14,10 +14,13 @@ allOf:
           - metadata_hash
           - status
           - signature
+          - chain_id
+          - is_token_payment
         properties:
           token_id:
             type: integer
             format: int64
+            description: id of token
             example: 13
           status:
             type: integer
@@ -27,6 +30,7 @@ allOf:
                 value: 1
               - name: finished_uploading
                 value: 2
+            description: status of uploading
             example: 2
           account:
             type: string
@@ -38,7 +42,17 @@ allOf:
             description: Hash of a metadata file
           signature:
             type: string
+            description: personal string on first page
             example: I hate managing 4 backend services in a week
+          chain_id:
+            type: integer
+            format: int64
+            description: network chain id
+            example: 13
+          is_token_payment:
+            type: boolean
+            description: true if user payed by token and false if by nft exchange
+            example: true
       relationships:
         type: object
         required:

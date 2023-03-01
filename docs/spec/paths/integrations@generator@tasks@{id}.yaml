@@ -45,9 +45,13 @@ patch:
               type: object
               $ref: '#/components/schemas/UpdateTask'
   responses:
-    '200':
+    '204':
       description: Success
     '400':
       description: Invalid request
     '401':
       description: Not allowed
+    '404':
+      description: Not found
+    '500':
+      description: Internal Error

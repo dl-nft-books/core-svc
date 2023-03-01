@@ -15,7 +15,7 @@ import (
 func CreateToken(w http.ResponseWriter, r *http.Request) {
 	request, err := requests.NewCreateTokenRequest(r)
 	if err != nil {
-		helpers.Log(r).WithError(err).Error("failed to fetch create task request")
+		helpers.Log(r).WithError(err).Error("failed to fetch create token request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -38,13 +38,28 @@ func CreateToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdTokenId, err := helpers.DB(r).Tokens().Insert(data.Token{
-		Account:      request.Data.Attributes.Account,
-		TokenId:      request.Data.Attributes.TokenId,
-		BookId:       bookId,
-		PaymentId:    paymentId,
-		MetadataHash: request.Data.Attributes.MetadataHash,
-		Status:       request.Data.Attributes.Status,
+	token, err := helpers.DB(r).Tokens().FilterByMetadataHash(request.Data.Attributes.MetadataHash).Get()
+	if err != nil {
+		helpers.Log(r).WithError(err).Errorf("failed to get token")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	if token != nil {
+		helpers.Log(r).Errorf("token is already exists")
+		ape.RenderErr(w, problems.Forbidden())
+		return
+	}
+
+	createdTokenId, err := helpers.DB(r).New().Tokens().Insert(data.Token{
+		Account:        request.Data.Attributes.Account,
+		TokenId:        request.Data.Attributes.TokenId,
+		BookId:         bookId,
+		PaymentId:      paymentId,
+		MetadataHash:   request.Data.Attributes.MetadataHash,
+		Status:         request.Data.Attributes.Status,
+		ChainId:        request.Data.Attributes.ChainId,
+		Signature:      request.Data.Attributes.Signature,
+		IsTokenPayment: request.Data.Attributes.IsTokenPayment,
 	})
 	if err != nil {
 		helpers.Log(r).WithError(err).Errorf("failed to create new token with id of #%v", bookId)

@@ -1,0 +1,36 @@
+allOf:
+  - $ref: '#/components/schemas/TokenKey'
+  - type: object
+    required:
+      - attributes
+      - relationships
+    properties:
+      attributes:
+        type: object
+        required:
+          - state
+        properties:
+          state:
+            type: integer
+            format: PromocodeState
+            enum:
+              - name: active
+                value: 1
+              - name: expired
+                value: 2
+              - name: fully_used
+                value: 3
+              - name: not_found
+                value: 4
+            description: promocode status
+            example: 1
+      relationships:
+        type: object
+        properties:
+          promocode:
+            type: object
+            description: Promocode relation
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/PromocodeKey'

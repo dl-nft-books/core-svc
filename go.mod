@@ -30,12 +30,13 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/google/jsonapi v0.0.0-20200226002910-c8283f632fb7
+	github.com/google/uuid v1.3.0
 	github.com/miguelmota/go-solidity-sha3 v0.1.1
 	gitlab.com/tokend/nft-books/blob-svc v0.0.4-0.20221207105353-c6d1df229e8d
-	gitlab.com/tokend/nft-books/book-svc v0.0.0-20221209002637-1b58106f5357
-	gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20221209003416-5f1b6f0f90fb
+	gitlab.com/tokend/nft-books/book-svc v0.0.0-20230228125550-aba7e8800946
+	gitlab.com/tokend/nft-books/contract-tracker v0.0.0-20230209143753-8330131b841a
 	gitlab.com/tokend/nft-books/doorman v0.1.0-rc.1.0.20221208122624-848d4fe0422f
-	gitlab.com/tokend/nft-books/price-svc v0.0.0-20221202091547-364acb962d10
+	gitlab.com/tokend/nft-books/price-svc v0.0.0-20230228131314-005c29406a6d
 )
 
 require (
@@ -52,7 +53,6 @@ require (
 	github.com/getsentry/sentry-go v0.7.0 // indirect
 	github.com/go-gorp/gorp/v3 v3.0.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/i18n v0.0.0-20150820051429-8b358169da46 // indirect
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect

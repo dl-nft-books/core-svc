@@ -1,0 +1,23 @@
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      description: Promocode id to be requested
+patch:
+  tags:
+    - Promocodes
+  summary: Use Promocode
+  operationId: usePromocode
+  responses:
+    '204':
+      description: Success
+    '400':
+      description: Invalid request
+    '401':
+      description: Inactive promocode
+    '404':
+      description: Not Found
+    '500':
+      description: Internal Error

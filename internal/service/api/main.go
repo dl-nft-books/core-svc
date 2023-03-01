@@ -2,16 +2,14 @@ package api
 
 import (
 	"context"
-	"net"
-	"net/http"
-
-	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
-
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
+	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
 	doorman "gitlab.com/tokend/nft-books/doorman/connector"
 	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
+	"net"
+	"net/http"
 
 	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 
@@ -29,7 +27,8 @@ type service struct {
 	// Custom configs
 	ethMinterConfig *config.MintConfig
 	apiRestrictions config.ApiRestrictions
-
+	promocoder      config.PromocoderCfg
+	ipfser          config.IpfserCfg
 	// Connectors
 	pricer  *pricer.Connector
 	booker  *booker.Connector
@@ -38,13 +37,13 @@ type service struct {
 }
 
 func (s *service) run() error {
+
 	s.log.Info("Service started")
 	r := s.router()
 
 	if err := s.copus.RegisterChi(r); err != nil {
 		return errors.Wrap(err, "cop failed")
 	}
-
 	return http.Serve(s.listener, r)
 }
 
@@ -59,7 +58,8 @@ func newService(cfg config.Config) *service {
 		// Custom configs
 		ethMinterConfig: cfg.MintConfig(),
 		apiRestrictions: cfg.ApiRestrictions(),
-
+		promocoder:      cfg.PromocoderCfg(),
+		ipfser:          cfg.IpfserCfg(),
 		// Connectors
 		pricer:  cfg.PricerConnector(),
 		booker:  cfg.BookerConnector(),

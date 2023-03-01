@@ -16,7 +16,7 @@ func ListTokens(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewListTokensRequest(r)
 	if err != nil {
-		logger.WithError(err).Error("invalid request")
+		logger.WithError(err).Error("failed to fetch list tokens request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -27,10 +27,9 @@ func ListTokens(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-
-	tokensListResponse, err := responses.NewTokenListResponse(r, request, tokens, helpers.Tracker(r), helpers.DB(r).Tasks())
+	tokensListResponse, err := responses.NewTokenListResponse(r, request, tokens, helpers.Tracker(r))
 	if err != nil {
-		logger.WithError(err).Error("unable to form task list response")
+		logger.WithError(err).Error("unable to form token list response")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
@@ -48,7 +47,18 @@ func applyTokensQFilters(q data.TokensQ, request *requests.ListTokensRequest) da
 	if len(request.Status) > 0 {
 		q = q.FilterByStatus(request.Status...)
 	}
-
+	if len(request.ChainId) > 0 {
+		q = q.FilterByChainId(request.ChainId...)
+	}
+	if len(request.MetadataHash) > 0 {
+		q = q.FilterByMetadataHash(request.MetadataHash...)
+	}
+	if len(request.Name) > 0 {
+		q = q.FilterByName(request.Name...)
+	}
+	if request.IsTokenPayment != nil {
+		q = q.FilterByIsTokenPayment(*request.IsTokenPayment)
+	}
 	q = q.Page(request.OffsetPageParams)
 	q = q.Sort(request.Sorts)
 
