@@ -1,4 +1,4 @@
-# generator-svc
+# core-svc
 
 ## Description
 
