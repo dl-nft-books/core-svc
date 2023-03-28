@@ -7,8 +7,8 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/urlval"
-	"gitlab.com/tokend/nft-books/generator-svc/connector/models"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/connector/models"
+	"github.com/dl-nft-books/core-svc/resources"
 )
 
 const (

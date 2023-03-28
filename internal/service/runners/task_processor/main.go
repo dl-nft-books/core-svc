@@ -2,16 +2,16 @@ package task_processor
 
 import (
 	"context"
+	"github.com/dl-nft-books/core-svc/internal/config"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/internal/data/postgres"
+	"github.com/dl-nft-books/core-svc/resources"
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/running"
 	documenter "gitlab.com/tokend/nft-books/blob-svc/connector/api"
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"strconv"
 )
 
@@ -79,9 +79,8 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 
 		for _, task := range tasks {
 			errFields := logan.F{
-				"task_id":        task.Id,
-				"task_signature": task.Signature,
-				"task_status":    task.Status,
+				"task_id":     task.Id,
+				"task_status": task.Status,
 			}
 
 			if err = p.db.Tasks().UpdateStatus(resources.TaskGenerating).Update(task.Id); err != nil {

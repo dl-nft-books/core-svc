@@ -1,14 +1,15 @@
 package handlers
 
 import (
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/google/uuid"
 	"github.com/spf13/cast"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 	"net/http"
 
+	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
+	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 )
 
 func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
@@ -38,14 +39,27 @@ func UpdatePromocodeById(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.BadRequest(InvalidUsagesError)...)
 	}
 
-	promocodesQ := applyPromocodeUpdateFilters(r, helpers.DB(r).Promocodes().New(), *request)
+	promocodesQ, err := applyPromocodeUpdateFilters(r, helpers.DB(r).Promocodes().New(), *request)
 
-	if err = promocodesQ.FilterUpdateById(promocodeId).Update(); err != nil {
-		logger.WithError(err).Error("failed to get promocode")
+	if err != nil { // are already logged
+		ape.RenderErr(w, problems.InternalError())
+	}
+	if promocodesQ == nil {
+		ape.RenderErr(w, problems.Forbidden())
+	}
+
+	if err = (*promocodesQ).FilterUpdateById(promocodeId).Update(); err != nil {
+		logger.WithError(err).Error("failed to update promocode")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-
+	if request.Data.Attributes.Books != nil {
+		if err = helpers.DB(r).PromocodesBooks().UpdateBooks(promocodeId, *request.Data.Attributes.Books...); err != nil {
+			logger.WithError(err).Error("failed to update books in promocode")
+			ape.RenderErr(w, problems.InternalError())
+			return
+		}
+	}
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -53,7 +67,7 @@ func validateUsages(request requests.UpdatePromocodeRequest, promocode data.Prom
 	return request.Data.Attributes.InitialUsages == nil || promocode.Usages <= *request.Data.Attributes.InitialUsages
 }
 
-func applyPromocodeUpdateFilters(r *http.Request, q data.PromocodesQ, request requests.UpdatePromocodeRequest) data.PromocodesQ {
+func applyPromocodeUpdateFilters(r *http.Request, q data.PromocodesQ, request requests.UpdatePromocodeRequest) (*data.PromocodesQ, error) {
 	if request.Data.Attributes.State != nil {
 		q = q.UpdateState(*request.Data.Attributes.State)
 	}
@@ -69,5 +83,21 @@ func applyPromocodeUpdateFilters(r *http.Request, q data.PromocodesQ, request re
 	if request.Data.Attributes.Discount != nil {
 		q = q.UpdateDiscount(helpers.Trancate(*request.Data.Attributes.Discount, helpers.Promocoder(r).Decimal))
 	}
-	return q
+	if request.Data.Attributes.Promocode != nil {
+		if *request.Data.Attributes.Promocode == "" {
+			q = q.FilterByPromocode(uuid.NewString())
+			return &q, nil
+		}
+		pr, err := helpers.DB(r).Promocodes().FilterByPromocode(*request.Data.Attributes.Promocode).Get()
+		if err != nil {
+			helpers.Log(r).WithError(err).Error("failed to check promocode existing")
+			return nil, err
+		}
+		if pr != nil {
+			helpers.Log(r).Error("promocode is already exists")
+			return nil, nil
+		}
+		q = q.UpdatePromocode(*request.Data.Attributes.Promocode)
+	}
+	return &q, nil
 }

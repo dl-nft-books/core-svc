@@ -6,9 +6,9 @@ import (
 
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
+	"github.com/dl-nft-books/core-svc/resources"
 )
 
 func NewTaskListResponse(r *http.Request, request *requests.ListTasksRequest, tasks []data.Task, booksApi booker.Connector) (*resources.TaskListResponse, error) {

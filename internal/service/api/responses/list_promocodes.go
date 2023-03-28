@@ -3,9 +3,9 @@ package responses
 import (
 	"net/http"
 
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
+	"github.com/dl-nft-books/core-svc/resources"
 )
 
 func NewPromocodeListResponse(r *http.Request, request *requests.ListPromocodesRequest, promocodes []data.Promocode) (*resources.PromocodeListResponse, error) {

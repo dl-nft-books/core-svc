@@ -6,11 +6,12 @@ create table tasks
     token_id           bigint    not null default 0,
     book_id            bigint    not null default 0,
     account            text      not null default '',
-    signature          text      not null default '',
-    file_ipfs_hash     text      not null default '',
+    banner_ipfs_hash   text      not null default '',
     metadata_ipfs_hash text      not null default '',
-    uri                text      not null default '',
-    status             int8      not null default 0
+    book_uri           text      not null default '',
+    banner             JSONB     NOT NULL,
+    status             int8      not null default 0,
+    created_at         timestamp not null default CURRENT_TIMESTAMP
 );
 
 -- +migrate Down

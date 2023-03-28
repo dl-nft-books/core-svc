@@ -11,7 +11,7 @@ import (
 	"net"
 	"net/http"
 
-	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
+	"github.com/dl-nft-books/core-svc/internal/config"
 
 	"gitlab.com/distributed_lab/kit/copus/types"
 	"gitlab.com/distributed_lab/logan/v3/errors"

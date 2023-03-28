@@ -1,17 +1,16 @@
 package task_processor
 
 import (
-	"bytes"
 	"fmt"
+	"gitlab.com/distributed_lab/logan/v3"
 	"net/http"
 
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/opensea"
+	"github.com/dl-nft-books/core-svc/internal/data/opensea"
 
-	"gitlab.com/distributed_lab/logan/v3"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	runnerHelpers "github.com/dl-nft-books/core-svc/internal/service/runners/helpers"
+
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	pdfGenerator "gitlab.com/tokend/nft-books/generator-svc/internal/pdf_generator"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/runners/helpers"
 )
 
 var bookNotFoundErr = errors.New("book was not found")
@@ -33,54 +32,45 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug("Book retrieved successfully")
 	p.logger.Debug("Retrieving document key...")
 
-	fileKey := response.Data.Attributes.File.Attributes.Key
+	bannerKey := response.Data.Attributes.File.Attributes.Key
 
 	p.logger.Debug("Key retrieved successfully")
-	p.logger.Debugf("Retrieving document link from S3... (fileKey=%s)", fileKey)
+	p.logger.Debugf("Retrieving document link from S3... (fileKey=%s)", bannerKey)
 
-	fileLink, err := p.documenter.GetDocumentLink(fileKey)
+	bannerLink, err := p.documenter.GetDocumentLink(bannerKey)
 	if err != nil {
 		return errors.Wrap(err, "failed to get document link", logan.F{
-			"file_key": fileKey,
+			"banner_key": bannerKey,
 		})
 	}
 
 	p.logger.Debug("Link retrieved successfully")
 	p.logger.Debugf("Downloading document...")
 
-	rawDocument, err := helpers.DownloadDocument(fileLink.Data.Attributes.Url)
+	rawDocument, err := runnerHelpers.DownloadDocument(bannerLink.Data.Attributes.Url)
 	if err != nil {
 		return errors.Wrap(err, "failed to download document")
 	}
 
 	p.logger.Debug("Document downloaded successfully...")
-	p.logger.Debug("Generating signature...")
 
-	reader := bytes.NewReader(rawDocument)
-	pdfSignatureGenerator := pdfGenerator.New(p.signatureParams)
-	rawDocumentWithSignature, err := pdfSignatureGenerator.GenerateSignature(reader, task.Signature)
-	if err != nil {
-		return errors.Wrap(err, "failed to generate signature")
-	}
-
-	p.logger.Debug("Signature generated successfully")
 	p.logger.Debug("Calculating document IPFS Hash...")
 
-	ipfsFileHash, err := helpers.PrecalculateIPFSHash(rawDocumentWithSignature)
+	ipfsBannerHash, err := runnerHelpers.PrecalculateIPFSHash(rawDocument)
 	if err != nil {
 		return errors.Wrap(err, "failed to precalculate IPFS hash")
 	}
 
-	p.logger.Debug(fmt.Sprintf("Precalculated IPFS hash: %s", ipfsFileHash))
+	p.logger.Debug(fmt.Sprintf("Precalculated IPFS hash: %s", ipfsBannerHash))
 
-	if err = p.db.Tasks().UpdateFileIpfsHash(ipfsFileHash).Update(task.Id); err != nil {
+	if err = p.db.Tasks().UpdateBannerIpfsHash(ipfsBannerHash).Update(task.Id); err != nil {
 		return errors.Wrap(err, "failed to update ipfs hash")
 	}
 
 	p.logger.Debug("Document IPFS Hash calculated successfully")
 	p.logger.Debug("Uploading document to S3...")
 
-	statusCode, err := p.documenter.UploadDocument(rawDocumentWithSignature, ipfsFileHash)
+	statusCode, err := p.documenter.UploadDocument(rawDocument, ipfsBannerHash)
 	if err != nil {
 		return errors.Wrap(err, "failed to upload file")
 	}
@@ -91,12 +81,12 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug("Document downloaded successfully")
 	p.logger.Debug("Retrieving banner key...")
 
-	bannerKey := response.Data.Attributes.Banner.Attributes.Key
+	fileKey := response.Data.Attributes.File.Attributes.Key
 
 	p.logger.Debug("Key retrieved successfully")
 	p.logger.Debug("Retrieving banner link for metadata...")
 
-	bannerLink, err := p.documenter.GetDocumentLink(bannerKey)
+	fileLink, err := p.documenter.GetDocumentLink(fileKey)
 	if err != nil {
 		return errors.Wrap(err, "failed to get document link")
 	}
@@ -111,10 +101,10 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	openseaData := opensea.Metadata{
 		Name:        fmt.Sprintf("%s #%v", bookTitle, task.Id),
 		Description: bookDescription,
-		Image:       bannerLink.Data.Attributes.Url,
-		FileURL:     p.ipfser.BaseUri + ipfsFileHash,
+		Image:       p.ipfser.BaseUri + ipfsBannerHash,
+		FileURL:     fileLink.Data.Attributes.Url,
 	}
-	ipfsMetadataHash, err := helpers.PrecalculateMetadataIPFSHash(openseaData)
+	ipfsMetadataHash, err := runnerHelpers.PrecalculateMetadataIPFSHash(openseaData)
 	if err != nil {
 		return errors.Wrap(err, "failed to precalculate ipfs hash for a metadata file")
 	}

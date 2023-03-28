@@ -1,8 +1,8 @@
 package models
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
+	"github.com/dl-nft-books/core-svc/resources"
 )
 
 type (

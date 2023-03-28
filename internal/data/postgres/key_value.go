@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"database/sql"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/internal/data"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/fatih/structs"

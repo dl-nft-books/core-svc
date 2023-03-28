@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/connector/models"
+	"github.com/dl-nft-books/core-svc/connector/models"
 )
 
 const (

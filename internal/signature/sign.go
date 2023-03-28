@@ -5,6 +5,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"gitlab.com/distributed_lab/logan/v3"
 
+	"github.com/dl-nft-books/core-svc/internal/config"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
@@ -12,7 +13,6 @@ import (
 	"github.com/ethersphere/bee/pkg/crypto/eip712"
 	sha3 "github.com/miguelmota/go-solidity-sha3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 )
 
 var (

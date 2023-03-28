@@ -1,17 +1,17 @@
 package handlers
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/jsonerrors"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/internal/data/postgres"
+	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
+	"github.com/dl-nft-books/core-svc/internal/service/api/jsonerrors"
+	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
+	"github.com/dl-nft-books/core-svc/resources"
 	"net/http"
 	"time"
 
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
@@ -44,10 +44,32 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Validating info
+	banner := request.Data.Attributes.Banner
+
+	if err = helpers.CheckBannerMimeType(banner.Attributes.MimeType, r); err != nil {
+		ape.RenderErr(w, problems.BadRequest(err)...)
+		return
+	}
+
+	// Setting banner link
+	if err = helpers.SetMediaLink(r, &banner); err != nil {
+		helpers.Log(r).WithError(err).Error("failed to set banner link")
+		ape.RenderErr(w, problems.BadRequest(err)...)
+		return
+	}
+
+	media := helpers.MarshalMedia(&banner)
+	if media == nil {
+		helpers.Log(r).Error("failed to marshal media")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+
 	// Then creating task
 	createdTaskId, err := helpers.DB(r).Tasks().Insert(data.Task{
 		BookId:    bookId,
-		Signature: request.Data.Attributes.Signature,
+		Banner:    media[0],
 		Account:   request.Data.Attributes.Account,
 		Status:    resources.TaskPending,
 		CreatedAt: time.Now(),

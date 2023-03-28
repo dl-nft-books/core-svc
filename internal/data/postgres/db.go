@@ -1,8 +1,8 @@
 package postgres
 
 import (
+	"github.com/dl-nft-books/core-svc/internal/data"
 	"gitlab.com/distributed_lab/kit/pgdb"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 )
 
 type db struct {
@@ -27,12 +27,16 @@ func (db *db) KeyValue() data.KeyValueQ {
 	return NewKeyValueQ(db.raw)
 }
 
-func (db *db) Tokens() data.TokensQ {
-	return NewTokensQ(db.raw)
-}
-
 func (db *db) Promocodes() data.PromocodesQ {
 	return NewPromocodesQ(db.raw)
+}
+
+func (db *db) PromocodesBooks() data.PromocodesBooksQ {
+	return NewPromocodesBooksQ(db.raw)
+}
+
+func (db *db) NftRequests() data.NftRequestsQ {
+	return NewNftRequestsQ(db.raw)
 }
 
 func (db *db) Transaction(fn func() error) error {

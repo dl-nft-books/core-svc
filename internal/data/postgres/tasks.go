@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/Masterminds/squirrel"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/resources"
 	"github.com/fatih/structs"
 	"gitlab.com/distributed_lab/kit/pgdb"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"time"
 )
 
@@ -86,7 +86,7 @@ func (q *tasksQ) Delete(id int64) error {
 	return q.database.Exec(statement)
 }
 
-func (q *tasksQ) UpdateFileIpfsHash(newIpfsHash string) data.TasksQ {
+func (q *tasksQ) UpdateBannerIpfsHash(newIpfsHash string) data.TasksQ {
 	q.updater = q.updater.Set(tasksFileIpfsHash, newIpfsHash)
 	return q
 }

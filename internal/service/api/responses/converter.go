@@ -3,7 +3,7 @@ package responses
 import (
 	booker "gitlab.com/tokend/nft-books/book-svc/connector/models"
 	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector/models"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/resources"
 )
 
 func convertPaymentToResource(paymentResponse tracker.GetPaymentResponse) resources.Resource {

@@ -1,4 +1,4 @@
-module gitlab.com/tokend/nft-books/generator-svc
+module github.com/dl-nft-books/core-svc
 
 go 1.18
 

@@ -1,13 +1,13 @@
 package handlers
 
 import (
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
+	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
+	"github.com/dl-nft-books/core-svc/resources"
 	"github.com/google/uuid"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"net/http"
 )
 
@@ -19,15 +19,35 @@ func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	prString := uuid.NewString()
-	promocodeID, err := helpers.DB(r).Promocodes().Insert(data.Promocode{
-		Promocode:      prString,
-		Discount:       helpers.Trancate(request.Data.Attributes.Discount, helpers.Promocoder(r).Decimal),
-		InitialUsages:  request.Data.Attributes.InitialUsages,
-		Usages:         0,
-		ExpirationDate: request.Data.Attributes.ExpirationDate,
-		State:          resources.PromocodeActive,
-	})
-	if err != nil {
+	if request.Data.Attributes.Promocode != nil && *request.Data.Attributes.Promocode != "" {
+		pr, err := helpers.DB(r).Promocodes().FilterByPromocode(*request.Data.Attributes.Promocode).Get()
+		if err != nil {
+			helpers.Log(r).WithError(err).Error("failed to check promocode existing")
+			ape.RenderErr(w, problems.InternalError())
+			return
+		}
+		if pr != nil {
+			helpers.Log(r).Error("promocode is already exists")
+			ape.RenderErr(w, problems.Forbidden())
+			return
+		}
+		prString = *request.Data.Attributes.Promocode
+	}
+	var promocodeID int64
+	if err = helpers.DB(r).Transaction(func() error {
+		promocodeID, err = helpers.DB(r).Promocodes().Insert(data.Promocode{
+			Promocode:      prString,
+			Discount:       helpers.Trancate(request.Data.Attributes.Discount, helpers.Promocoder(r).Decimal),
+			InitialUsages:  request.Data.Attributes.InitialUsages,
+			Usages:         0,
+			ExpirationDate: request.Data.Attributes.ExpirationDate,
+			State:          resources.PromocodeActive,
+		})
+		if err != nil {
+			return err
+		}
+		return helpers.DB(r).PromocodesBooks().Insert(promocodeID, request.Data.Attributes.Books...)
+	}); err != nil {
 		helpers.Log(r).WithError(err).Errorf("failed to create new promocode")
 		ape.RenderErr(w, problems.InternalError())
 		return

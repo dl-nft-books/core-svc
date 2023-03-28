@@ -1,15 +1,15 @@
 package handlers
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/resources"
 	"net/http"
 
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
+	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
 
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
+	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
+	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 )
 
 func ValidatePromocodeById(w http.ResponseWriter, r *http.Request) {

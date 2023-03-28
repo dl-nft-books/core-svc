@@ -1,11 +1,10 @@
 package api
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/handlers"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/middlewares"
-
+	"github.com/dl-nft-books/core-svc/internal/data/postgres"
+	"github.com/dl-nft-books/core-svc/internal/service/api/handlers"
+	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
+	"github.com/dl-nft-books/core-svc/internal/service/api/middlewares"
 	"github.com/go-chi/chi"
 	"gitlab.com/distributed_lab/ape"
 )
@@ -46,24 +45,11 @@ func (s *service) router() chi.Router {
 			})
 		})
 
-		r.Route("/tokens", func(r chi.Router) {
-			r.Get("/", handlers.ListTokens)
-			r.With(middlewares.CheckAccessToken).Post("/", handlers.CreateToken)
-
-			r.Route("/{id}", func(r chi.Router) {
-				r.Get("/", handlers.GetTokenById)
-				r.With(middlewares.CheckAccessToken).Patch("/", handlers.UpdateToken)
-			})
-		})
-
 		r.Route("/promocodes", func(r chi.Router) {
 			r.Get("/", handlers.ListPromocodes)
 			r.Post("/", handlers.CreatePromocode)
 
 			r.Get("/validate/{promocode}", handlers.ValidatePromocodeById)
-
-			r.Patch("/rollback/{id}", handlers.RollbackPromocode)
-			r.Patch("/use/{id}", handlers.UsePromocode)
 
 			r.Route("/{id}", func(r chi.Router) {
 				r.Get("/", handlers.GetPromocodeById)
@@ -71,7 +57,15 @@ func (s *service) router() chi.Router {
 				r.Patch("/", handlers.UpdatePromocodeById)
 			})
 		})
+		r.Route("/nft-request", func(r chi.Router) {
+			r.Post("/", handlers.CreateNftRequest)
+			r.Get("/", handlers.ListNftRequests)
 
+			r.Route("/{id}", func(r chi.Router) {
+				r.Get("/", handlers.GetNftRequestById)
+				r.With(middlewares.CheckAccessToken).Patch("/", handlers.UpdateNftRequestById)
+			})
+		})
 		r.Route("/signature", func(r chi.Router) {
 			r.Get("/mint", handlers.SignMint)
 			r.Get("/mint/nft", handlers.SignMintByNft)

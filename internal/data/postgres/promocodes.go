@@ -3,8 +3,8 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/resources"
 	"time"
 
 	"github.com/Masterminds/squirrel"
@@ -134,6 +134,11 @@ func (q *promocodesQ) UpdateUsages(newUsages int64) data.PromocodesQ {
 
 func (q *promocodesQ) UpdateExpirationDate(newExpirationDate time.Time) data.PromocodesQ {
 	q.updater = q.updater.Set(promocodesExpirationDate, newExpirationDate)
+	return q
+}
+
+func (q *promocodesQ) UpdatePromocode(promocode string) data.PromocodesQ {
+	q.updater = q.updater.Set(promocodesPromocode, promocode)
 	return q
 }
 

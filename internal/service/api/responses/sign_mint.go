@@ -1,8 +1,8 @@
 package responses
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/internal/signature"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/internal/signature"
+	"github.com/dl-nft-books/core-svc/resources"
 )
 
 func NewSignMintResponse(price string, discount string, signature *signature.Parameters, endTimestamp int64) resources.PriceResponse {

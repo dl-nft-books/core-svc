@@ -3,8 +3,8 @@ package responses
 import (
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	booker "gitlab.com/tokend/nft-books/book-svc/connector"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/resources"
 )
 
 func NewGetTaskResponse(task data.Task, booker *booker.Connector) (*resources.TaskResponse, error) {

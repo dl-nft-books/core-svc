@@ -5,8 +5,9 @@ type DB interface {
 
 	Tasks() TasksQ
 	KeyValue() KeyValueQ
-	Tokens() TokensQ
 	Promocodes() PromocodesQ
+	NftRequests() NftRequestsQ
+	PromocodesBooks() PromocodesBooksQ
 
 	Transaction(func() error) error
 }

@@ -3,7 +3,7 @@ package helpers
 import (
 	"bytes"
 	"encoding/json"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/opensea"
+	"github.com/dl-nft-books/core-svc/internal/data/opensea"
 
 	chunker "github.com/ipfs/go-ipfs-chunker"
 	dagMock "github.com/ipfs/go-merkledag/test"

@@ -11,6 +11,7 @@ allOf:
           - discount
           - initial_usages
           - expiration_date
+          - books
         properties:
           discount:
             type: float64
@@ -26,3 +27,14 @@ allOf:
             format: time.Time
             description: Time of expiration
             example: '2022-11-03T21:36:21.022589Z'
+          promocode:
+            type: string
+            example: 'PROMOCODE20'
+            description: Custom promocode
+          books:
+            type: array
+            items:
+              type: integer
+              format: int64
+              example: 1
+            description: Book with can support this promocode

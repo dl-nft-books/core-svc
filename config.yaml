@@ -15,6 +15,12 @@ task_processor:
     min_abnormal_period: 10s
     max_abnormal_period: 10s
 
+mime_types:
+  banner:
+    - image/png
+    - image/jpeg
+    - image/jpg
+
 promocodes:
   name: promocode_checker
   decimal: 2 # number of digits after decimal point

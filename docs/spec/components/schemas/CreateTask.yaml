@@ -8,18 +8,17 @@ allOf:
       attributes:
         type: object
         required:
-          - signature
           - account
           - book_id
+          - banner
         properties:
-          signature:
-            type: string
-            description: personal string on first page
-            example: I love Distributed Lab!!!
           account:
             type: string
             description: payer account
             example: '0xcD3C5Ecb0159DFD0B7b338341CF6594224aE2083'
+          banner:
+            description: Banner info
+            $ref: '#/components/schemas/Media'
           book_id:
             type: integer
             format: int64

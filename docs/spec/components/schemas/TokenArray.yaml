@@ -1,6 +1,0 @@
-type: array
-description: Array of tokens
-items:
-  allOf:
-    - $ref: '#/components/schemas/Token'
-    - type: object

@@ -5,7 +5,7 @@ import (
 
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
+	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 )
 
 func CheckAccessToken(next http.Handler) http.Handler {

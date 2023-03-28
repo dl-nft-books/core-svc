@@ -1,8 +1,8 @@
 package data
 
 import (
+	"github.com/dl-nft-books/core-svc/resources"
 	"gitlab.com/distributed_lab/kit/pgdb"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"time"
 )
 
@@ -53,6 +53,8 @@ type PromocodesQ interface {
 	UpdateInitialUsages(newInitialUsages int64) PromocodesQ
 	UpdateUsages(newUsages int64) PromocodesQ
 	UpdateExpirationDate(newExpirationDate time.Time) PromocodesQ
+	UpdatePromocode(promocode string) PromocodesQ
+
 	Update() error
 	FilterExpired() PromocodesQ
 	FilterFullyUsed() PromocodesQ
