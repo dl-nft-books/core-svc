@@ -10,6 +10,7 @@ type ResourceType string
 const (
 	BANNERS            ResourceType = "banners"
 	BOOKS              ResourceType = "books"
+	BOOK_NETWORK       ResourceType = "book-network"
 	TASKS              ResourceType = "tasks"
 	FILES              ResourceType = "files"
 	NFT_PAYMENT        ResourceType = "nft-payment"

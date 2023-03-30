@@ -10,4 +10,6 @@ type CreateTaskAttributes struct {
 	Banner  Media  `json:"banner"`
 	// id of book
 	BookId int64 `json:"book_id"`
+	// id of network chain
+	ChainId int64 `json:"chain_id"`
 }

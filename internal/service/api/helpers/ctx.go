@@ -6,12 +6,11 @@ import (
 	"github.com/dl-nft-books/core-svc/internal/data"
 	"net/http"
 
-	s3connector "gitlab.com/tokend/nft-books/blob-svc/connector/api"
-	booker "gitlab.com/tokend/nft-books/book-svc/connector"
-	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
-	"gitlab.com/tokend/nft-books/doorman/connector"
+	s3connector "github.com/dl-nft-books/blob-svc/connector/api"
+	booker "github.com/dl-nft-books/book-svc/connector"
+	"github.com/dl-nft-books/doorman/connector"
 
-	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
+	pricer "github.com/dl-nft-books/price-svc/connector"
 
 	"gitlab.com/distributed_lab/logan/v3"
 )
@@ -129,16 +128,6 @@ func Booker(r *http.Request) *booker.Connector {
 func CtxBooker(entry *booker.Connector) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
 		return context.WithValue(ctx, bookerCtxKey, entry)
-	}
-}
-
-func Tracker(r *http.Request) *tracker.Connector {
-	return r.Context().Value(trackerCtxKey).(*tracker.Connector)
-}
-
-func CtxTracker(entry *tracker.Connector) func(context.Context) context.Context {
-	return func(ctx context.Context) context.Context {
-		return context.WithValue(ctx, trackerCtxKey, entry)
 	}
 }
 

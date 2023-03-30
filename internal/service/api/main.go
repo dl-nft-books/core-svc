@@ -2,12 +2,11 @@ package api
 
 import (
 	"context"
+	booker "github.com/dl-nft-books/book-svc/connector"
+	doorman "github.com/dl-nft-books/doorman/connector"
+	pricer "github.com/dl-nft-books/price-svc/connector"
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
-	booker "gitlab.com/tokend/nft-books/book-svc/connector"
-	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
-	doorman "gitlab.com/tokend/nft-books/doorman/connector"
-	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 	"net"
 	"net/http"
 
@@ -32,7 +31,6 @@ type service struct {
 	// Connectors
 	pricer  *pricer.Connector
 	booker  *booker.Connector
-	tracker *tracker.Connector
 	doorman doorman.ConnectorI
 }
 
@@ -63,7 +61,6 @@ func newService(cfg config.Config) *service {
 		// Connectors
 		pricer:  cfg.PricerConnector(),
 		booker:  cfg.BookerConnector(),
-		tracker: cfg.TrackerConnector(),
 		doorman: cfg.DoormanConnector(),
 	}
 }

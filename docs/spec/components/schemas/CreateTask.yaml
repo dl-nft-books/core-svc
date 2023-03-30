@@ -10,6 +10,7 @@ allOf:
         required:
           - account
           - book_id
+          - chain_id
           - banner
         properties:
           account:
@@ -23,4 +24,9 @@ allOf:
             type: integer
             format: int64
             description: id of book
+            example: 2
+          chain_id:
+            type: integer
+            format: int64
+            description: id of network chain
             example: 2

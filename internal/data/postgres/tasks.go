@@ -16,10 +16,10 @@ const (
 
 	tasksId               = "id"
 	tasksAccount          = "account"
-	tasksSignature        = "signature"
 	tasksFileIpfsHash     = "file_ipfs_hash"
 	tasksMetadataIpfsHash = "metadata_ipfs_hash"
 	tasksTokenId          = "token_id"
+	tasksChainId          = "chain_id"
 	tasksStatus           = "status"
 	tasksUri              = "uri"
 	TasksCreatedAt        = "created_at"
@@ -137,6 +137,9 @@ func applyTasksSelector(sql squirrel.SelectBuilder, selector data.TaskSelector) 
 	}
 	if selector.TokenId != nil {
 		sql = sql.Where(squirrel.Eq{tasksTokenId: *selector.TokenId})
+	}
+	if selector.ChainId != nil {
+		sql = sql.Where(squirrel.Eq{tasksChainId: *selector.ChainId})
 	}
 	if selector.IpfsHash != nil {
 		sql = sql.Where(squirrel.Eq{tasksMetadataIpfsHash: *selector.IpfsHash})

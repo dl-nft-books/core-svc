@@ -25,6 +25,11 @@ allOf:
             format: int64
             description: Id of book
             example: 2
+          chain_id:
+            type: integer
+            format: int64
+            description: Id of network chain
+            example: 2
           banner_ipfs_hash:
             type: string
             description: hash of banner on IPFS

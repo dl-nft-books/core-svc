@@ -7,11 +7,10 @@ import (
 	"gitlab.com/distributed_lab/kit/kv"
 	"gitlab.com/distributed_lab/kit/pgdb"
 
-	s3config "gitlab.com/tokend/nft-books/blob-svc/connector/config"
-	booker "gitlab.com/tokend/nft-books/book-svc/connector"
-	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
-	doormanCfg "gitlab.com/tokend/nft-books/doorman/connector/config"
-	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
+	s3config "github.com/dl-nft-books/blob-svc/connector/config"
+	booker "github.com/dl-nft-books/book-svc/connector"
+	doormanCfg "github.com/dl-nft-books/doorman/connector/config"
+	pricer "github.com/dl-nft-books/price-svc/connector"
 )
 
 type Config interface {
@@ -25,7 +24,6 @@ type Config interface {
 	booker.Booker
 	pricer.Pricer
 	s3config.Documenter
-	tracker.Tracker
 	doormanCfg.DoormanConfiger
 
 	// Internal service configuration
@@ -48,7 +46,6 @@ type config struct {
 	booker.Booker
 	pricer.Pricer
 	s3config.Documenter
-	tracker.Tracker
 	doormanCfg.DoormanConfiger
 
 	// Internal service configuration
@@ -77,7 +74,6 @@ func New(getter kv.Getter) Config {
 		Documenter:      s3config.NewDocumenter(getter),
 		Pricer:          pricer.NewPricer(getter),
 		Booker:          booker.NewBooker(getter),
-		Tracker:         tracker.NewTracker(getter),
 		DoormanConfiger: doormanCfg.NewDoormanConfiger(getter),
 
 		// Internal service configuration

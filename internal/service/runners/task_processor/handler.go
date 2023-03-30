@@ -95,11 +95,11 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug("Calculating metadata IPFS Hash...")
 
 	var (
-		bookTitle       = response.Data.Attributes.Title
+		//bookTitle       = response.Data.Attributes.Title
 		bookDescription = response.Data.Attributes.Description
 	)
 	openseaData := opensea.Metadata{
-		Name:        fmt.Sprintf("%s #%v", bookTitle, task.Id),
+		//Name:        fmt.Sprintf("%s #%v", bookTitle, task.Id),
 		Description: bookDescription,
 		Image:       p.ipfser.BaseUri + ipfsBannerHash,
 		FileURL:     fileLink.Data.Attributes.Url,

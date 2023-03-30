@@ -10,6 +10,8 @@ type TaskAttributes struct {
 	BannerIpfsHash string `json:"banner_ipfs_hash"`
 	// Id of book
 	BookId int64 `json:"book_id"`
+	// Id of network chain
+	ChainId *int64 `json:"chain_id,omitempty"`
 	// hash of metadata on IPFS
 	MetadataIpfsHash string `json:"metadata_ipfs_hash"`
 	// task solution status

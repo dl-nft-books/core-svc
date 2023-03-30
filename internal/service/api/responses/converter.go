@@ -1,49 +1,26 @@
 package responses
 
 import (
-	booker "gitlab.com/tokend/nft-books/book-svc/connector/models"
-	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector/models"
+	booker "github.com/dl-nft-books/book-svc/connector/models"
 	"github.com/dl-nft-books/core-svc/resources"
 )
 
-func convertPaymentToResource(paymentResponse tracker.GetPaymentResponse) resources.Resource {
-	return &resources.Payment{
-		Key: resources.Key{
-			ID:   paymentResponse.Data.Key.ID,
-			Type: resources.ResourceType(paymentResponse.Data.Key.Type),
-		},
-		Attributes: resources.PaymentAttributes{
-			Amount:            paymentResponse.Data.Attributes.Amount,
-			BookUrl:           paymentResponse.Data.Attributes.BookUrl,
-			Erc20Data:         resources.Erc20Data(paymentResponse.Data.Attributes.Erc20Data),
-			MintedTokenPrice:  paymentResponse.Data.Attributes.MintedTokenPrice,
-			PayerAddress:      paymentResponse.Data.Attributes.PayerAddress,
-			PaymentTokenPrice: paymentResponse.Data.Attributes.PaymentTokenPrice,
-			PurchaseTimestamp: paymentResponse.Data.Attributes.PurchaseTimestamp,
-		},
-		Relationships: nil,
-	}
-}
-
-func convertNftPaymentToResource(paymentResponse tracker.GetNftPaymentResponse) resources.Resource {
-	return &resources.NftPayment{
-		Key: resources.Key{
-			ID:   paymentResponse.Data.Key.ID,
-			Type: resources.ResourceType(paymentResponse.Data.Key.Type),
-		},
-		Attributes: resources.NftPaymentAttributes{
-			FloorPrice:        paymentResponse.Data.Attributes.FloorPrice,
-			NftAddress:        paymentResponse.Data.Attributes.NftAddress,
-			NftId:             paymentResponse.Data.Attributes.NftId,
-			BookUrl:           paymentResponse.Data.Attributes.BookUrl,
-			MintedTokenPrice:  paymentResponse.Data.Attributes.MintedTokenPrice,
-			PayerAddress:      paymentResponse.Data.Attributes.PayerAddress,
-			PurchaseTimestamp: paymentResponse.Data.Attributes.PurchaseTimestamp,
-		},
-		Relationships: nil,
-	}
-}
 func convertBookToResource(bookResponse booker.GetBookResponse) resources.Resource {
+	var networks []resources.BookNetwork
+	for _, network := range bookResponse.Data.Attributes.Networks {
+		networks = append(networks, resources.BookNetwork{
+			Key: resources.Key{
+				ID:   network.ID,
+				Type: resources.BOOK_NETWORK,
+			},
+			Attributes: resources.BookNetworkAttributes{
+				ChainId:         network.Attributes.ChainId,
+				ContractAddress: network.Attributes.ContractAddress,
+				DeployStatus:    resources.DeployStatus(network.Attributes.DeployStatus),
+				TokenId:         network.Attributes.TokenId,
+			},
+		})
+	}
 	return &resources.Book{
 		Key: resources.Key{
 			ID:   bookResponse.Data.Key.ID,
@@ -62,13 +39,8 @@ func convertBookToResource(bookResponse booker.GetBookResponse) resources.Resour
 					Url:      bookResponse.Data.Attributes.Banner.Attributes.Url,
 				},
 			},
-			ContractAddress: bookResponse.Data.Attributes.ContractAddress,
-			ContractName:    bookResponse.Data.Attributes.ContractName,
-			ContractSymbol:  bookResponse.Data.Attributes.ContractSymbol,
-			ContractVersion: bookResponse.Data.Attributes.ContractVersion,
-			CreatedAt:       bookResponse.Data.Attributes.CreatedAt,
-			DeployStatus:    resources.DeployStatus(bookResponse.Data.Attributes.DeployStatus),
-			Description:     bookResponse.Data.Attributes.Description,
+			CreatedAt:   bookResponse.Data.Attributes.CreatedAt,
+			Description: bookResponse.Data.Attributes.Description,
 			File: resources.Media{
 				Key: resources.Key{
 					ID:   bookResponse.Data.Attributes.File.Key.ID,
@@ -81,9 +53,7 @@ func convertBookToResource(bookResponse booker.GetBookResponse) resources.Resour
 					Url:      bookResponse.Data.Attributes.File.Attributes.Url,
 				},
 			},
-			Price:   bookResponse.Data.Attributes.Price,
-			Title:   bookResponse.Data.Attributes.Title,
-			TokenId: int32(bookResponse.Data.Attributes.TokenId),
+			Networks: networks,
 		},
 	}
 }

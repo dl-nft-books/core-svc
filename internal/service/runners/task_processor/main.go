@@ -10,8 +10,8 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/running"
-	documenter "gitlab.com/tokend/nft-books/blob-svc/connector/api"
-	booker "gitlab.com/tokend/nft-books/book-svc/connector"
+	documenter "github.com/dl-nft-books/blob-svc/connector/api"
+	booker "github.com/dl-nft-books/book-svc/connector"
 	"strconv"
 )
 

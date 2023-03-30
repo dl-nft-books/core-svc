@@ -1,10 +1,10 @@
 package responses
 
 import (
-	"gitlab.com/distributed_lab/logan/v3/errors"
-	booker "gitlab.com/tokend/nft-books/book-svc/connector"
+	booker "github.com/dl-nft-books/book-svc/connector"
 	"github.com/dl-nft-books/core-svc/internal/data"
 	"github.com/dl-nft-books/core-svc/resources"
+	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
 func NewGetTaskResponse(task data.Task, booker *booker.Connector) (*resources.TaskResponse, error) {

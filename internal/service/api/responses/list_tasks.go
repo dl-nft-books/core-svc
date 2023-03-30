@@ -1,7 +1,7 @@
 package responses
 
 import (
-	booker "gitlab.com/tokend/nft-books/book-svc/connector"
+	booker "github.com/dl-nft-books/book-svc/connector"
 	"net/http"
 
 	"gitlab.com/distributed_lab/logan/v3"

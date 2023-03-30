@@ -3,12 +3,12 @@ package connector
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/dl-nft-books/core-svc/connector/models"
+	"github.com/dl-nft-books/core-svc/resources"
 	"github.com/spf13/cast"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/urlval"
-	"github.com/dl-nft-books/core-svc/connector/models"
-	"github.com/dl-nft-books/core-svc/resources"
 )
 
 const (
@@ -23,9 +23,10 @@ func (c *Connector) CreateTask(params models.CreateTaskParams) (id int64, err er
 			Data: resources.CreateTask{
 				Key: resources.NewKeyInt64(0, resources.TASKS),
 				Attributes: resources.CreateTaskAttributes{
-					Account:   params.Account,
-					BookId:    params.BookId,
-					Signature: params.Signature,
+					Account: params.Account,
+					BookId:  params.BookId,
+					ChainId: params.ChainId,
+					Banner:  params.Banner,
 				},
 			},
 			Included: resources.Included{},

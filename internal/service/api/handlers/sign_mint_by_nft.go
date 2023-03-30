@@ -2,16 +2,17 @@ package handlers
 
 import (
 	"fmt"
+	bookModel "github.com/dl-nft-books/book-svc/connector/models"
 	"math/big"
 	"net/http"
 	"time"
 
-	"gitlab.com/distributed_lab/ape"
-	"gitlab.com/distributed_lab/ape/problems"
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
 	"github.com/dl-nft-books/core-svc/internal/signature"
+	"gitlab.com/distributed_lab/ape"
+	"gitlab.com/distributed_lab/ape/problems"
 )
 
 func SignMintByNft(w http.ResponseWriter, r *http.Request) {
@@ -37,26 +38,29 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Getting book's mintInfo
-	book, err := helpers.Booker(r).GetBookById(task.BookId)
+	// Getting book's mintInfo
+	bookResponse, err := helpers.Booker(r).ListBooks(bookModel.ListBooksParams{
+		Id:      []int64{task.BookId},
+		ChainId: []int64{task.ChainId},
+	})
 	if err != nil {
 		logger.WithError(err).Error("failed to get a book")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	if book == nil {
-		logger.Warnf("Book with specified id %d was not found", task.BookId)
+	if len(bookResponse.Data) == 0 {
+		logger.Warnf("Book with specified id %d in network with chain id %d was not found", task.BookId, task.ChainId)
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
+	book := bookResponse.Data[0]
 
 	// Forming signature mintInfo
 	mintConfig := helpers.Minter(r)
 
 	domainData := signature.EIP712DomainData{
-		VerifyingAddress: book.Data.Attributes.ContractAddress,
-		ContractName:     book.Data.Attributes.ContractName,
-		ContractVersion:  book.Data.Attributes.ContractVersion,
-		ChainID:          book.Data.Attributes.ChainId,
+		VerifyingAddress: book.Attributes.Networks[0].Attributes.ContractAddress,
+		ChainID:          book.Attributes.Networks[0].Attributes.ChainId,
 	}
 	mintInfo := signature.MintInfo{
 		TokenAddress: request.NftAddress,

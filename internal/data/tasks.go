@@ -11,6 +11,7 @@ type Task struct {
 	Id               int64                `db:"id" structs:"-" json:"-"`
 	BookId           int64                `db:"book_id" structs:"book_id" json:"book_id"`
 	TokenId          int64                `db:"token_id" structs:"token_id"`
+	ChainId          int64                `db:"chain_id" structs:"chain_id"`
 	Account          string               `db:"account" structs:"account"`
 	BannerIpfsHash   string               `db:"banner_ipfs_hash" structs:"banner_ipfs_hash"`
 	MetadataIpfsHash string               `db:"metadata_ipfs_hash" structs:"metadata_ipfs_hash"`
@@ -28,6 +29,7 @@ type TaskSelector struct {
 	IpfsHash     *string
 	Status       *resources.TaskStatus
 	TokenId      *int64
+	ChainId      *int64
 	Period       *time.Duration
 }
 
