@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"fmt"
-	bookModel "github.com/dl-nft-books/book-svc/connector/models"
 	"math/big"
 	"net/http"
 	"time"
@@ -38,29 +37,23 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Getting book's mintInfo
-	// Getting book's mintInfo
-	bookResponse, err := helpers.Booker(r).ListBooks(bookModel.ListBooksParams{
-		Id:      []int64{task.BookId},
-		ChainId: []int64{task.ChainId},
-	})
+	book, err := helpers.Booker(r).GetBookById(task.BookId, task.ChainId)
 	if err != nil {
 		logger.WithError(err).Error("failed to get a book")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	if len(bookResponse.Data) == 0 {
+	if book == nil {
 		logger.Warnf("Book with specified id %d in network with chain id %d was not found", task.BookId, task.ChainId)
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
-	book := bookResponse.Data[0]
-
 	// Forming signature mintInfo
 	mintConfig := helpers.Minter(r)
 
 	domainData := signature.EIP712DomainData{
-		VerifyingAddress: book.Attributes.Networks[0].Attributes.ContractAddress,
-		ChainID:          book.Attributes.Networks[0].Attributes.ChainId,
+		VerifyingAddress: book.Data.Attributes.Networks[0].Attributes.ContractAddress,
+		ChainID:          book.Data.Attributes.Networks[0].Attributes.ChainId,
 	}
 	mintInfo := signature.MintInfo{
 		TokenAddress: request.NftAddress,

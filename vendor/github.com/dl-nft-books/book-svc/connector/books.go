@@ -16,18 +16,18 @@ const booksEndpoint = "books"
 
 func (c *Connector) UpdateBook(params models.UpdateBookParams) error {
 	request := requests.UpdateBookRequest{
-		ID: cast.ToInt64(params.ID),
+		ID: cast.ToInt64(params.Id),
 		Data: resources.UpdateBook{
-			Key: resources.NewKeyInt64(cast.ToInt64(params.ID), resources.BOOKS),
+			Key: resources.NewKeyInt64(cast.ToInt64(params.Id), resources.BOOKS),
 			Attributes: resources.UpdateBookAttributes{
-				Banner:      params.Attributes.Banner,
-				Description: params.Attributes.Description,
-				File:        params.Attributes.File,
+				Banner:      params.Banner,
+				Description: params.Description,
+				File:        params.File,
 				Network: &resources.BookNetwork{
 					Attributes: resources.BookNetworkAttributes{
-						ChainId:         params.Attributes.Network.Attributes.ChainId,
-						ContractAddress: params.Attributes.Network.Attributes.ContractAddress,
-						DeployStatus:    params.Attributes.Network.Attributes.DeployStatus,
+						ChainId:         params.ChainId,
+						ContractAddress: params.ContractAddress,
+						DeployStatus:    params.DeployStatus,
 					},
 				},
 			},
@@ -58,17 +58,17 @@ func (c *Connector) ListBooks(request models.ListBooksParams) (*models.ListBooks
 	return &result, nil
 }
 
-func (c *Connector) GetBookById(id int64) (*models.GetBookResponse, error) {
+func (c *Connector) GetBookById(bookId int64, chainId ...int64) (*models.GetBookResponse, error) {
 	var result models.GetBookResponse
 
 	// setting full endpoint
-	fullEndpoint := fmt.Sprintf("%s/%s/%d", c.baseUrl, booksEndpoint, id)
+	fullEndpoint := fmt.Sprintf("%s/%s/%d?%s", c.baseUrl, booksEndpoint, bookId, urlval.MustEncode(chainId))
 
 	// getting response
 	found, err := c.get(fullEndpoint, &result)
 	if err != nil {
 		// errors are already wrapped
-		return nil, errors.From(err, logan.F{"id": id})
+		return nil, errors.From(err, logan.F{"id": bookId})
 	}
 	if !found {
 		return nil, nil

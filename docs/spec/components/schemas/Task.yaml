@@ -10,6 +10,7 @@ allOf:
         required:
           - token_id
           - book_id
+          - chain_id
           - banner_ipfs_hash
           - metadata_ipfs_hash
           - uri

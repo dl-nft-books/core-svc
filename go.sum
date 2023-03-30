@@ -189,8 +189,8 @@ github.com/dgryski/go-farm v0.0.0-20190104051053-3adb47b1fb0f/go.mod h1:SqUrOPUn
 github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2/go.mod h1:SqUrOPUnsFjfmXRMNPybcSiG0BgUW2AuFH8PAnS2iTw=
 github.com/dl-nft-books/blob-svc v0.0.4-0.20230329152701-87d01e0d57b1 h1:YxFBtfliodjS0qx61AGRkJz7fiF2XHesPKHmoS2/JFQ=
 github.com/dl-nft-books/blob-svc v0.0.4-0.20230329152701-87d01e0d57b1/go.mod h1:tuG5Ti1c4LnFxKyaigIsKwe0y6Falxfb//+rz2+IuuM=
-github.com/dl-nft-books/book-svc v0.0.0-20230330092253-c6b69327fc7a h1:OUJ/cmNE3TLeW5QisjgW9fG1cNIs+OS96/a78Uik9j4=
-github.com/dl-nft-books/book-svc v0.0.0-20230330092253-c6b69327fc7a/go.mod h1:E6+den3RHZeiwEJOQ98XJIVWPbHbxk0XjPsEYQvxXB4=
+github.com/dl-nft-books/book-svc v0.0.0-20230330122637-df443bfdd7b4 h1:5mRwAG5LJjroEkOte6iOCNOd+LcY91FZQOmgzx97xOI=
+github.com/dl-nft-books/book-svc v0.0.0-20230330122637-df443bfdd7b4/go.mod h1:E6+den3RHZeiwEJOQ98XJIVWPbHbxk0XjPsEYQvxXB4=
 github.com/dl-nft-books/doorman v0.1.0-rc.1.0.20230329143604-2590a5e15d38 h1:YzbKI36bN0rgDOf1tDcPZYXRD3kR2NLn2uYNEL+4E/Y=
 github.com/dl-nft-books/doorman v0.1.0-rc.1.0.20230329143604-2590a5e15d38/go.mod h1:5WJHU1A3BCPtueHD7fWEW/IDdslcs6mOy5Lg+AKj7Bk=
 github.com/dl-nft-books/go-sdk v0.1.3-0.20230323134428-c084d93a35a8 h1:/T7X/jECBSsfP50UQoGr6hbjR1tenvu8DJDbA7SPcGw=

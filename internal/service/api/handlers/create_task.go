@@ -32,7 +32,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	bookId := request.Data.Attributes.BookId
 
 	// Check if book exists
-	getBookResponse, err := helpers.Booker(r).GetBookById(bookId)
+	getBookResponse, err := helpers.Booker(r).GetBookById(bookId, request.Data.Attributes.ChainId)
 	if err != nil {
 		helpers.Log(r).WithError(err).Errorf("failed to get book with id #%v", bookId)
 		ape.RenderErr(w, problems.InternalError())

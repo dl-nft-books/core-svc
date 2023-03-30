@@ -20,7 +20,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug("Retrieving book...")
 
 	// Making an api request to retrieve a book
-	response, err := p.booksApi.GetBookById(task.BookId)
+	response, err := p.booksApi.GetBookById(task.BookId, task.ChainId)
 
 	if err != nil {
 		return errors.Wrap(err, "failed to get book by id")

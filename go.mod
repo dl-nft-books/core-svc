@@ -29,7 +29,7 @@ require (
 
 require (
 	github.com/dl-nft-books/blob-svc v0.0.4-0.20230329152701-87d01e0d57b1
-	github.com/dl-nft-books/book-svc v0.0.0-20230330092253-c6b69327fc7a
+	github.com/dl-nft-books/book-svc v0.0.0-20230330122637-df443bfdd7b4
 	github.com/dl-nft-books/doorman v0.1.0-rc.1.0.20230329143604-2590a5e15d38
 	github.com/dl-nft-books/price-svc v0.0.0-20230329163011-979c17fbecbe
 	github.com/google/jsonapi v0.0.0-20200226002910-c8283f632fb7

@@ -4,11 +4,11 @@ import (
 	booker "github.com/dl-nft-books/book-svc/connector"
 	"net/http"
 
-	"gitlab.com/distributed_lab/logan/v3"
-	"gitlab.com/distributed_lab/logan/v3/errors"
 	"github.com/dl-nft-books/core-svc/internal/data"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 	"github.com/dl-nft-books/core-svc/resources"
+	"gitlab.com/distributed_lab/logan/v3"
+	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
 func NewTaskListResponse(r *http.Request, request *requests.ListTasksRequest, tasks []data.Task, booksApi booker.Connector) (*resources.TaskListResponse, error) {
@@ -26,7 +26,7 @@ func NewTaskListResponse(r *http.Request, request *requests.ListTasksRequest, ta
 
 		response.Data = append(response.Data, taskResource)
 
-		bookResponse, err := booksApi.GetBookById(task.BookId)
+		bookResponse, err := booksApi.GetBookById(task.BookId, task.ChainId)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to get book by its id", logan.F{
 				"book_id": task.BookId,

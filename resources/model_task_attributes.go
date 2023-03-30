@@ -11,7 +11,7 @@ type TaskAttributes struct {
 	// Id of book
 	BookId int64 `json:"book_id"`
 	// Id of network chain
-	ChainId *int64 `json:"chain_id,omitempty"`
+	ChainId int64 `json:"chain_id"`
 	// hash of metadata on IPFS
 	MetadataIpfsHash string `json:"metadata_ipfs_hash"`
 	// task solution status

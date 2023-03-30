@@ -3,7 +3,6 @@ package handlers
 import (
 	"fmt"
 	bookModel "github.com/dl-nft-books/book-svc/connector/models"
-	bookResourse "github.com/dl-nft-books/book-svc/resources"
 	"github.com/dl-nft-books/core-svc/internal/data"
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
@@ -50,29 +49,25 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Getting book's mintInfo
-	bookResponse, err := helpers.Booker(r).ListBooks(bookModel.ListBooksParams{
-		Id:      []int64{task.BookId},
-		ChainId: []int64{task.ChainId},
-	})
+	book, err := helpers.Booker(r).GetBookById(task.BookId, task.ChainId)
 	if err != nil {
 		logger.WithError(err).Error("failed to get a book")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	if len(bookResponse.Data) == 0 {
+	if book == nil {
 		logger.Warnf("Book with specified id %d in network with chain id %d was not found", task.BookId, task.ChainId)
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
-	book := bookResponse.Data[0]
 	// Forming signature mintInfo
 	mintConfig := helpers.Minter(r)
 
 	domainData := signature.EIP712DomainData{
-		VerifyingAddress: book.Attributes.Networks[0].Attributes.ContractAddress,
+		VerifyingAddress: book.Data.Attributes.Networks[0].Attributes.ContractAddress,
 		//ContractName:     book.Attributes.ContractName,
 		//ContractVersion:  book.Attributes.ContractVersion,
-		ChainID: book.Attributes.Networks[0].Attributes.ChainId,
+		ChainID: book.Data.Attributes.Networks[0].Attributes.ChainId,
 	}
 	mintInfo := signature.MintInfo{
 		TokenAddress: request.TokenAddress,
@@ -80,7 +75,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		EndTimestamp: time.Now().Add(mintConfig.Expiration).Unix(),
 	}
 
-	mintInfo.PricePerOneToken, err = getPricePerOneToken(w, r, request, book, mintConfig.Precision)
+	mintInfo.PricePerOneToken, err = getPricePerOneToken(w, r, request, *book, mintConfig.Precision)
 	if err != nil {
 		logger.WithError(err).Error("failed to get price")
 		ape.RenderErr(w, problems.InternalError())
@@ -159,7 +154,7 @@ func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, isVoucherToken
 	//No discount applied
 	return big.NewInt(0), true
 }
-func getPricePerOneToken(w http.ResponseWriter, r *http.Request, request *requests.SignMintRequest, book bookResourse.Book, precision int) (*big.Int, error) {
+func getPricePerOneToken(w http.ResponseWriter, r *http.Request, request *requests.SignMintRequest, book bookModel.GetBookResponse, precision int) (*big.Int, error) {
 	logger := helpers.Log(r)
 	//if book.Data.Attributes.VoucherToken == request.TokenAddress {
 	//	return big.NewInt(0), nil
@@ -167,7 +162,7 @@ func getPricePerOneToken(w http.ResponseWriter, r *http.Request, request *reques
 
 	// Normal scenario without voucher
 	// Getting price per token in dollars
-	priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress, book.Attributes.Networks[0].Attributes.ChainId)
+	priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress, book.Data.Attributes.Networks[0].Attributes.ChainId)
 	if err != nil {
 		logger.WithError(err).Error("failed to get price response")
 		ape.RenderErr(w, problems.InternalError())

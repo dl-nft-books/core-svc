@@ -13,7 +13,7 @@ func NewGetTaskResponse(task data.Task, booker *booker.Connector) (*resources.Ta
 	taskResource := task.Resource()
 	taskResource.Relationships = getTaskRelationships(task)
 
-	bookResponse, err := booker.GetBookById(task.BookId)
+	bookResponse, err := booker.GetBookById(task.BookId, task.ChainId)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get a book")
 	}
