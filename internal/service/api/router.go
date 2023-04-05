@@ -45,15 +45,15 @@ func (s *service) router() chi.Router {
 		})
 
 		r.Route("/promocodes", func(r chi.Router) {
-			r.Get("/", handlers.ListPromocodes)
-			r.Post("/", handlers.CreatePromocode)
+			r.With(middlewares.CheckAccessToken).Get("/", handlers.ListPromocodes)
+			r.With(middlewares.CheckAccessToken).Post("/", handlers.CreatePromocode)
 
 			r.Get("/validate/{promocode}", handlers.ValidatePromocodeById)
 
 			r.Route("/{id}", func(r chi.Router) {
-				r.Get("/", handlers.GetPromocodeById)
-				r.Delete("/", handlers.DeletePromocodeById)
-				r.Patch("/", handlers.UpdatePromocodeById)
+				r.With(middlewares.CheckAccessToken).Get("/", handlers.GetPromocodeById)
+				r.With(middlewares.CheckAccessToken).Delete("/", handlers.DeletePromocodeById)
+				r.With(middlewares.CheckAccessToken).Patch("/", handlers.UpdatePromocodeById)
 			})
 		})
 		r.Route("/nft-request", func(r chi.Router) {

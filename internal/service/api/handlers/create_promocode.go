@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
+	"gitlab.com/distributed_lab/logan/v3"
 	"net/http"
 )
 
@@ -16,6 +17,18 @@ func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		helpers.Log(r).WithError(err).Error("failed to fetch create promocode request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
+		return
+	}
+	address := r.Context().Value("address").(string)
+	isMarketplaceManager, err := helpers.CheckMarketplacePerrmision(*helpers.Networker(r), address)
+	if err != nil {
+		helpers.Log(r).WithError(err).WithFields(logan.F{"account": address}).Debug("failed to check permissions")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	if !isMarketplaceManager {
+		helpers.Log(r).WithFields(logan.F{"account": address}).Debug("you don't have permission to create book")
+		ape.RenderErr(w, problems.Forbidden())
 		return
 	}
 	prString := uuid.NewString()

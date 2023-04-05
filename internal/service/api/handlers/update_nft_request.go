@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"fmt"
+	"github.com/dl-nft-books/core-svc/resources"
 	"github.com/spf13/cast"
 	"net/http"
 
@@ -32,6 +34,11 @@ func UpdateNftRequestById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if nftRequest.Status != resources.RequestPending {
+		logger.WithError(err).Error(fmt.Sprintf("can not canceled nft request with status %v", nftRequest.Status))
+		ape.RenderErr(w, problems.Forbidden())
+		return
+	}
 	if err = helpers.DB(r).NftRequests().New().
 		UpdateStatus(request.Data.Attributes.Status).
 		FilterUpdateById(nftRequestId).

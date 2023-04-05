@@ -4,10 +4,10 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"net/http"
 
-	"gitlab.com/distributed_lab/ape"
-	"gitlab.com/distributed_lab/ape/problems"
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
+	"gitlab.com/distributed_lab/ape"
+	"gitlab.com/distributed_lab/ape/problems"
 )
 
 func DeletePromocodeById(w http.ResponseWriter, r *http.Request) {
@@ -20,6 +20,18 @@ func DeletePromocodeById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	address := r.Context().Value("address").(string)
+	isMarketplaceManager, err := helpers.CheckMarketplacePerrmision(*helpers.Networker(r), address)
+	if err != nil {
+		helpers.Log(r).WithError(err).WithFields(logan.F{"account": address}).Debug("failed to check permissions")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	if !isMarketplaceManager {
+		helpers.Log(r).WithFields(logan.F{"account": address}).Debug("you don't have permission to create book")
+		ape.RenderErr(w, problems.Forbidden())
+		return
+	}
 	promocode, err := helpers.DB(r).Promocodes().FilterById(request.Id).Get()
 	if err != nil {
 		logger.WithError(err).Error("failed to get promocode")

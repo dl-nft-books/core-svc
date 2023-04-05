@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/dl-nft-books/core-svc/internal/config"
 	"github.com/dl-nft-books/core-svc/internal/data"
+	networker "github.com/dl-nft-books/network-svc/connector"
 	"net/http"
 
 	s3connector "github.com/dl-nft-books/blob-svc/connector/api"
@@ -32,7 +33,7 @@ const (
 	// Connectors
 	pricerCtxKey
 	bookerCtxKey
-	trackerCtxKey
+	networkerCtxKey
 	doormanConnectorCtxKey
 	documenterConnectorCtxKey
 )
@@ -128,6 +129,16 @@ func Booker(r *http.Request) *booker.Connector {
 func CtxBooker(entry *booker.Connector) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
 		return context.WithValue(ctx, bookerCtxKey, entry)
+	}
+}
+
+func Networker(r *http.Request) *networker.Connector {
+	return r.Context().Value(networkerCtxKey).(*networker.Connector)
+}
+
+func CtxNetworker(entry *networker.Connector) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, networkerCtxKey, entry)
 	}
 }
 

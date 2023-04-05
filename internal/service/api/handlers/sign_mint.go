@@ -89,12 +89,12 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	//isVoucherTokenApplied := book.Data.Attributes.VoucherToken == request.TokenAddress
-	//
-	//mintInfo.Discount, ok = getPromocodeDiscount(w, r, isVoucherTokenApplied, promocode)
-	//if !ok {
-	//	return
-	//}
+	if promocode != nil {
+		mintInfo.Discount, ok = getPromocodeDiscount(w, r, promocode)
+		if !ok {
+			return
+		}
+	}
 
 	// Signing the mint transaction
 	mintSignature, err := signature.SignMintInfo(&mintInfo, &domainData, &mintConfig)
@@ -123,22 +123,13 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	))
 }
 
-func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, isVoucherTokenApplied bool, promocode *data.Promocode) (*big.Int, bool) {
+func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, promocode *data.Promocode) (*big.Int, bool) {
 	logger := helpers.Log(r)
 	// Promocodes and vouchers can't be used together
-	if !isVoucherTokenApplied && promocode != nil {
-		//Validating promocode
-		promocodeResponse, err := responses.NewValidatePromocodeResponse(*promocode)
-
-		if err != nil {
-			logger.WithError(err).Error("failed to get promocode response")
-			ape.RenderErr(w, problems.InternalError())
-			return nil, false
-		}
-
+	if promocode != nil {
 		//Checking promocode state
-		if promocodeResponse.Data.Attributes.State != resources.PromocodeActive {
-			logger.WithError(err).Error(Inactive())
+		if promocode.State != resources.PromocodeActive {
+			logger.Error(Inactive())
 			ape.RenderErr(w, problems.BadRequest(Inactive())...)
 			return nil, false
 		}

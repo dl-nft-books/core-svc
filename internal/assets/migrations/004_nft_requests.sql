@@ -7,8 +7,6 @@ create table nft_requests
     collection_address     float      not null default 0,
     nft_id     bigint      not null default 0,
     book_id     bigint      not null default 0,
-    chain_id     bigint      not null default 0,
-    floor_price        text   not null default 0,
     status             int8      not null default 0,
     created_at    timestamp not null default CURRENT_TIMESTAMP
 );

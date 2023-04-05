@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	generatorEndpoint = "generator"
-	tasksEndpoint     = "tasks"
+	coreEndpoint  = "core"
+	tasksEndpoint = "tasks"
 )
 
 func (c *Connector) CreateTask(params models.CreateTaskParams) (id int64, err error) {
@@ -33,7 +33,7 @@ func (c *Connector) CreateTask(params models.CreateTaskParams) (id int64, err er
 		}
 	)
 
-	endpoint := fmt.Sprintf("%s/%s/%s", c.baseUrl, generatorEndpoint, tasksEndpoint)
+	endpoint := fmt.Sprintf("%s/%s/%s", c.baseUrl, coreEndpoint, tasksEndpoint)
 	requestAsBytes, err := json.Marshal(request)
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to marshal request")
@@ -59,7 +59,7 @@ func (c *Connector) UpdateTask(params models.UpdateTaskParams) error {
 		Included: resources.Included{},
 	}
 
-	endpoint := fmt.Sprintf("%s/%s/%s/%s", c.baseUrl, generatorEndpoint, tasksEndpoint, request.Data.Key.ID)
+	endpoint := fmt.Sprintf("%s/%s/%s/%s", c.baseUrl, coreEndpoint, tasksEndpoint, request.Data.Key.ID)
 	requestAsBytes, err := json.Marshal(request)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal request")
@@ -72,7 +72,7 @@ func (c *Connector) ListTasks(request models.ListTasksRequest) (*models.ListTask
 	var result models.ListTasksResponse
 
 	// setting full endpoint
-	fullEndpoint := fmt.Sprintf("%s/%s/%s?%s", c.baseUrl, generatorEndpoint, tasksEndpoint, urlval.MustEncode(request))
+	fullEndpoint := fmt.Sprintf("%s/%s/%s?%s", c.baseUrl, coreEndpoint, tasksEndpoint, urlval.MustEncode(request))
 
 	// getting response
 	if _, err := c.get(fullEndpoint, &result); err != nil {
@@ -87,7 +87,7 @@ func (c *Connector) GetTaskById(id int64) (*models.TaskResponse, error) {
 	var result models.TaskResponse
 
 	// setting full endpoint
-	fullEndpoint := fmt.Sprintf("%s/%s/%s/%d", c.baseUrl, generatorEndpoint, tasksEndpoint, id)
+	fullEndpoint := fmt.Sprintf("%s/%s/%s/%d", c.baseUrl, coreEndpoint, tasksEndpoint, id)
 
 	// getting response
 	found, err := c.get(fullEndpoint, &result)

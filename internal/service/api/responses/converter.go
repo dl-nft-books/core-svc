@@ -16,8 +16,6 @@ func convertBookToResource(bookResponse booker.GetBookResponse) resources.Resour
 			Attributes: resources.BookNetworkAttributes{
 				ChainId:         network.Attributes.ChainId,
 				ContractAddress: network.Attributes.ContractAddress,
-				DeployStatus:    resources.DeployStatus(network.Attributes.DeployStatus),
-				TokenId:         network.Attributes.TokenId,
 			},
 		})
 	}
