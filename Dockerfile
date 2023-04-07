@@ -11,7 +11,7 @@ RUN GOOS=linux go build  -o /usr/local/bin/core-svc /go/src/github.com/dl-nft-bo
 
 FROM alpine:3.9
 
-COPY --from=buildbase /usr/local/bin/generator-svc /usr/local/bin/core-svc
+COPY --from=buildbase /usr/local/bin/core-svc /usr/local/bin/core-svc
 RUN apk add --no-cache ca-certificates
 
 ENTRYPOINT ["generator-svc"]
