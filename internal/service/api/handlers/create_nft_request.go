@@ -12,6 +12,8 @@ import (
 	"time"
 )
 
+const recreatingRequestInterval = time.Hour * 24
+
 func CreateNftRequest(w http.ResponseWriter, r *http.Request) {
 	request, err := requests.NewCreateNftRequestRequest(r)
 	if err != nil {
@@ -19,6 +21,22 @@ func CreateNftRequest(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
+	nftReq, err := helpers.DB(r).NftRequests().
+		FilterByPayerAddress(request.Data.Attributes.PayerAddress).
+		FilterByCollectionAddress(request.Data.Attributes.CollectionAddress).
+		FilterByNftId(request.Data.Attributes.NftId).Get()
+
+	if nftReq != nil && nftReq.Status != resources.RequestRejected {
+		helpers.Log(r).WithError(err).Error("request with such nft is already exists")
+		ape.RenderErr(w, problems.BadRequest(err)...)
+		return
+	}
+	if nftReq != nil && time.Now().Sub(nftReq.LastUpdatedAt) < recreatingRequestInterval {
+		helpers.Log(r).WithError(err).Error("request with such nft is already exists")
+		ape.RenderErr(w, problems.BadRequest(err)...)
+		return
+	}
+
 	bookId, err := strconv.Atoi(request.Data.Relationships.Book.Data.ID)
 	if err != nil {
 		helpers.Log(r).WithError(err).Error("failed to convert book_id")
@@ -33,6 +51,7 @@ func CreateNftRequest(w http.ResponseWriter, r *http.Request) {
 		BookId:            int64(bookId),
 		Status:            resources.RequestPending,
 		CreatedAt:         time.Now(),
+		LastUpdatedAt:     time.Now(),
 	})
 	if err != nil {
 		helpers.Log(r).WithError(err).Errorf("failed to create new nft request")

@@ -15,6 +15,7 @@ type NftRequest struct {
 	BookId            int64                      `db:"book_id" structs:"book_id"`
 	Status            resources.NftRequestStatus `db:"status" structs:"status"`
 	CreatedAt         time.Time                  `db:"created_at" structs:"created_at"`
+	LastUpdatedAt     time.Time                  `db:"last_updated_at" structs:"last_updated_at"`
 }
 
 func (nftRequest *NftRequest) Resource() resources.NftRequest {
@@ -28,6 +29,7 @@ func (nftRequest *NftRequest) Resource() resources.NftRequest {
 			PayerAddress:      nftRequest.PayerAddress,
 			Status:            nftRequest.Status,
 			CreatedAt:         nftRequest.CreatedAt,
+			LastUpdatedAt:     nftRequest.LastUpdatedAt,
 		},
 		Relationships: resources.NftRequestRelationships{
 			Book: resources.Relation{

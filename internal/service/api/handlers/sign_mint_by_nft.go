@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/dl-nft-books/core-svc/solidity/generated/contractsregistry"
+	"github.com/ethereum/go-ethereum/common"
 	"math/big"
 	"net/http"
 	"time"
@@ -51,8 +53,33 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 	// Forming signature mintInfo
 	mintConfig := helpers.Minter(r)
 
+	network, err := helpers.Networker(r).GetNetworkDetailedByChainID(task.ChainId)
+	if err != nil {
+		logger.WithError(err).Error("failed to get network")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	if network == nil {
+		logger.Error("network with such id doesn't exists")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
+	contractRegistry, err := contractsregistry.NewContractsregistry(common.HexToAddress(network.FactoryAddress), network.RpcUrl)
+	if err != nil {
+		logger.WithError(err).Error("failed to create contract registry")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
+	contractName, err := contractRegistry.MARKETPLACENAME(nil)
+	if err != nil {
+		logger.WithError(err).Error("failed to get marketplace contract name")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
 	domainData := signature.EIP712DomainData{
 		VerifyingAddress: book.Data.Attributes.Networks[0].Attributes.ContractAddress,
+		ContractName:     contractName,
+		ContractVersion:  "1",
 		ChainID:          book.Data.Attributes.Networks[0].Attributes.ChainId,
 	}
 	mintInfo := signature.MintInfo{

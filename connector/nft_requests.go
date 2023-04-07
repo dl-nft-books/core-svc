@@ -15,7 +15,7 @@ const (
 
 func (c *Connector) UpdateNFTRequestStatus(id int64, status resources.NftRequestStatus) error {
 	request := resources.UpdateNftRequest{
-		Key: resources.NewKeyInt64(id, resources.TASKS),
+		Key: resources.NewKeyInt64(id, resources.NFT_REQUEST),
 		Attributes: resources.UpdateNftRequestAttributes{
 			Status: status,
 		},

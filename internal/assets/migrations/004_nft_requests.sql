@@ -8,7 +8,8 @@ create table nft_requests
     nft_id     bigint      not null default 0,
     book_id     bigint      not null default 0,
     status             int8      not null default 0,
-    created_at    timestamp not null default CURRENT_TIMESTAMP
+    created_at    timestamp not null default CURRENT_TIMESTAMP,
+    last_updated_at    timestamp not null default CURRENT_TIMESTAMP
 );
 
 -- +migrate Down

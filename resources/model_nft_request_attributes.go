@@ -13,6 +13,8 @@ type NftRequestAttributes struct {
 	CollectionAddress string `json:"collection_address"`
 	// Timestamp when the user have purchased a book
 	CreatedAt time.Time `json:"created_at"`
+	// Last updated status time
+	LastUpdatedAt time.Time `json:"last_updated_at"`
 	// Id of NFT
 	NftId int64 `json:"nft_id"`
 	// Address of a user who bought a book

@@ -55,7 +55,7 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 ) {
 	data := &eip712.TypedData{
 		Types: apitypes.Types{
-			"Mint": []apitypes.Type{
+			"Buy": []apitypes.Type{
 				{Name: "paymentTokenAddress", Type: "address"},
 				{Name: "paymentTokenPrice", Type: "uint256"},
 				{Name: "discount", Type: "uint256"},
@@ -69,7 +69,7 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 				{Name: "verifyingContract", Type: "address"},
 			},
 		},
-		PrimaryType: "Mint",
+		PrimaryType: "Buy",
 		Domain: apitypes.TypedDataDomain{
 			Name:              domainData.ContractName,
 			Version:           domainData.ContractVersion,

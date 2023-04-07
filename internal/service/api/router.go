@@ -63,6 +63,7 @@ func (s *service) router() chi.Router {
 			r.Route("/{id}", func(r chi.Router) {
 				r.Get("/", handlers.GetNftRequestById)
 				r.With(middlewares.CheckAccessToken).Patch("/", handlers.UpdateNftRequestById)
+				r.Patch("/cancel", handlers.CancelNftRequestById)
 			})
 		})
 		r.Route("/signature", func(r chi.Router) {
