@@ -118,5 +118,6 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 		mintInfo.Discount.String(),
 		mintSignature,
 		mintInfo.EndTimestamp,
+		mintInfo.TokenId,
 	))
 }

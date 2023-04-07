@@ -11,4 +11,6 @@ type PriceAttributes struct {
 	EndTimestamp int64 `json:"end_timestamp"`
 	// price per one token ($)
 	Price string `json:"price"`
+	// future token id
+	TokenId int64 `json:"token_id"`
 }

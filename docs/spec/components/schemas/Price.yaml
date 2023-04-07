@@ -11,6 +11,7 @@ allOf:
           - price
           - end_timestamp
           - discount
+          - token_id
         properties:
           price:
             type: string
@@ -24,6 +25,11 @@ allOf:
             type: string
             description: amount of discount where 1% = 10^25
             example: '10000000000000000000000000'
+          token_id:
+            type: integer
+            format: int64
+            description: future token id
+            example: 2
       relationships:
         type: object
         required:
