@@ -14,6 +14,7 @@ type Task struct {
 	ChainId          int64                `db:"chain_id" structs:"chain_id"`
 	Account          string               `db:"account" structs:"account"`
 	BannerIpfsHash   string               `db:"banner_ipfs_hash" structs:"banner_ipfs_hash"`
+	TokenName        string               `db:"token_name" structs:"token_name"`
 	MetadataIpfsHash string               `db:"metadata_ipfs_hash" structs:"metadata_ipfs_hash"`
 	Uri              string               `db:"uri" structs:"uri"`
 	Banner           string               `db:"banner" structs:"banner"`
@@ -60,6 +61,8 @@ func (t Task) Resource() resources.Task {
 		Attributes: resources.TaskAttributes{
 			TokenId:          t.TokenId,
 			BookId:           t.BookId,
+			ChainId:          t.ChainId,
+			TokenName:        t.TokenName,
 			BannerIpfsHash:   t.BannerIpfsHash,
 			MetadataIpfsHash: t.MetadataIpfsHash,
 			Uri:              t.Uri,

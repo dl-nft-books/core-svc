@@ -71,6 +71,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		BookId:    bookId,
 		Banner:    media[0],
 		Account:   request.Data.Attributes.Account,
+		TokenName: request.Data.Attributes.TokenName,
 		Status:    resources.TaskPending,
 		CreatedAt: time.Now(),
 	})

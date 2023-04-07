@@ -12,4 +12,6 @@ type CreateTaskAttributes struct {
 	BookId int64 `json:"book_id"`
 	// id of network chain
 	ChainId int64 `json:"chain_id"`
+	// name of future token
+	TokenName string `json:"token_name"`
 }

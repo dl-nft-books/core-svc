@@ -12,6 +12,7 @@ allOf:
           - book_id
           - chain_id
           - banner
+          - token_name
         properties:
           account:
             type: string
@@ -30,3 +31,7 @@ allOf:
             format: int64
             description: id of network chain
             example: 2
+          token_name:
+            type: string
+            description: name of future token
+            example: BDS

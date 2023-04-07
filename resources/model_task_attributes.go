@@ -17,6 +17,8 @@ type TaskAttributes struct {
 	// task solution status
 	Status TaskStatus `json:"status"`
 	// Id of token
-	TokenId int64  `json:"token_id"`
-	Uri     string `json:"uri"`
+	TokenId int64 `json:"token_id"`
+	// name of future token
+	TokenName string `json:"token_name"`
+	Uri       string `json:"uri"`
 }
