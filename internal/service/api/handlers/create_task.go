@@ -7,6 +7,9 @@ import (
 	"github.com/dl-nft-books/core-svc/internal/service/api/jsonerrors"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 	"github.com/dl-nft-books/core-svc/resources"
+	"github.com/dl-nft-books/core-svc/solidity/generated/contractsregistry"
+	"github.com/dl-nft-books/core-svc/solidity/generated/marketplace"
+	"github.com/ethereum/go-ethereum/common"
 	"net/http"
 	"time"
 
@@ -43,7 +46,6 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
-
 	// Validating info
 	banner := request.Data.Attributes.Banner
 
@@ -65,13 +67,52 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-
+	network, err := helpers.Networker(r).GetNetworkDetailedByChainID(request.Data.Attributes.ChainId)
+	if err != nil {
+		helpers.Log(r).WithError(err).Error("failed to get network")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	if network == nil {
+		helpers.Log(r).Error("network with such id doesn't exists")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
+	contractRegistry, err := contractsregistry.NewContractsregistry(common.HexToAddress(network.FactoryAddress), network.RpcUrl)
+	if err != nil {
+		helpers.Log(r).WithError(err).Error("failed to create contract registry")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	marketplaceContractAddress, err := contractRegistry.GetMarketplaceContract(nil)
+	if err != nil {
+		helpers.Log(r).WithError(err).Error("failed to get marketplace contract name")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	marketplaceContract, err := marketplace.NewMarketplace(marketplaceContractAddress, network.RpcUrl)
+	if err != nil {
+		helpers.Log(r).WithError(err).Error("failed to create contract registry")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	books, err := marketplaceContract.GetBaseTokenParams(nil, []common.Address{common.HexToAddress(getBookResponse.Data.Attributes.Networks[0].Attributes.ContractAddress)})
+	if err != nil {
+		helpers.Log(r).WithError(err).Error("failed to get book from contract")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	if books == nil {
+		helpers.Log(r).Error("book with such contract address doesn't exists")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
 	// Then creating task
 	createdTaskId, err := helpers.DB(r).Tasks().Insert(data.Task{
 		BookId:    bookId,
 		Banner:    media[0],
 		Account:   request.Data.Attributes.Account,
-		TokenName: request.Data.Attributes.TokenName,
+		TokenName: books[0].TokenName,
 		Status:    resources.TaskPending,
 		CreatedAt: time.Now(),
 	})
