@@ -14,4 +14,4 @@ FROM alpine:3.9
 COPY --from=buildbase /usr/local/bin/core-svc /usr/local/bin/core-svc
 RUN apk add --no-cache ca-certificates
 
-ENTRYPOINT ["generator-svc"]
+ENTRYPOINT ["core-svc"]

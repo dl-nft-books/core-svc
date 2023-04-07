@@ -16,7 +16,7 @@ type Task struct {
 	BannerIpfsHash   string               `db:"banner_ipfs_hash" structs:"banner_ipfs_hash"`
 	TokenName        string               `db:"token_name" structs:"token_name"`
 	MetadataIpfsHash string               `db:"metadata_ipfs_hash" structs:"metadata_ipfs_hash"`
-	Uri              string               `db:"uri" structs:"uri"`
+	Uri              string               `db:"book_uri" structs:"book_uri"`
 	Banner           string               `db:"banner" structs:"banner"`
 	Status           resources.TaskStatus `db:"status" structs:"status"`
 	CreatedAt        time.Time            `db:"created_at" structs:"created_at"`
