@@ -9,8 +9,6 @@ import (
 	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
 	"github.com/dl-nft-books/core-svc/internal/signature"
 	"github.com/dl-nft-books/core-svc/resources"
-	"github.com/dl-nft-books/core-svc/solidity/generated/contractsregistry"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
@@ -76,21 +74,21 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
-	contractRegistry, err := contractsregistry.NewContractsregistry(common.HexToAddress(network.FactoryAddress), network.RpcUrl)
-	if err != nil {
-		logger.WithError(err).Error("failed to create contract registry")
-		ape.RenderErr(w, problems.NotFound())
-		return
-	}
-	contractName, err := contractRegistry.MARKETPLACENAME(nil)
-	if err != nil {
-		logger.WithError(err).Error("failed to get marketplace contract name")
-		ape.RenderErr(w, problems.NotFound())
-		return
-	}
+	//contractRegistry, err := contractsregistry.NewContractsregistry(common.HexToAddress(network.FactoryAddress), network.RpcUrl)
+	//if err != nil {
+	//	logger.WithError(err).Error("failed to create contract registry")
+	//	ape.RenderErr(w, problems.NotFound())
+	//	return
+	//}
+	//contractName, err := contractRegistry.MARKETPLACENAME(nil)
+	//if err != nil {
+	//	logger.WithError(err).Error("failed to get marketplace contract name")
+	//	ape.RenderErr(w, problems.NotFound())
+	//	return
+	//}
 	domainData := signature.EIP712DomainData{
 		VerifyingAddress: book.Data.Attributes.Networks[0].Attributes.ContractAddress,
-		ContractName:     contractName,
+		ContractName:     "Marketplace",
 		ContractVersion:  "1",
 		ChainID:          task.ChainId,
 	}
