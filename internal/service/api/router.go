@@ -29,6 +29,7 @@ func (s *service) router() chi.Router {
 			// Connectors
 			helpers.CtxPricer(s.pricer),
 			helpers.CtxBooker(s.booker),
+			helpers.CtxNetworker(s.networker),
 			helpers.CtxDoormanConnector(s.doorman),
 		),
 	)
