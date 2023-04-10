@@ -72,5 +72,5 @@ cop:
   disabled: true
   endpoint: "http://..."
   upstream: "http://..."
-  service_name: generator-svc
+  service_name: core-svc
   service_port: 80

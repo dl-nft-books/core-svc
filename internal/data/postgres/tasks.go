@@ -21,7 +21,7 @@ const (
 	tasksTokenId          = "token_id"
 	tasksChainId          = "chain_id"
 	tasksStatus           = "status"
-	tasksUri              = "uri"
+	tasksUri              = "book_uri"
 	TasksCreatedAt        = "created_at"
 )
 
