@@ -2,10 +2,8 @@ package task_processor
 
 import (
 	"fmt"
-	"gitlab.com/distributed_lab/logan/v3"
-	"net/http"
-
 	"github.com/dl-nft-books/core-svc/internal/data/opensea"
+	"gitlab.com/distributed_lab/logan/v3"
 
 	"github.com/dl-nft-books/core-svc/internal/data"
 	runnerHelpers "github.com/dl-nft-books/core-svc/internal/service/runners/helpers"
@@ -32,28 +30,28 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug("Book retrieved successfully")
 
 	p.logger.Debug("Calculating banner IPFS Hash...")
-
-	ipfsBannerHash, err := runnerHelpers.PrecalculateIPFSHash(task.Banner)
-	if err != nil {
-		return errors.Wrap(err, "failed to precalculate IPFS hash")
-	}
-
-	p.logger.Debug(fmt.Sprintf("Precalculated IPFS hash: %s", ipfsBannerHash))
-
-	if err = p.db.Tasks().UpdateBannerIpfsHash(ipfsBannerHash).Update(task.Id); err != nil {
-		return errors.Wrap(err, "failed to update banner ipfs hash")
-	}
-
-	p.logger.Debug("Banner IPFS Hash calculated successfully")
-	p.logger.Debug("Uploading banner to S3...")
-
-	statusCode, err := p.documenter.UploadDocument(task.Banner, ipfsBannerHash)
-	if err != nil {
-		return errors.Wrap(err, "failed to upload banner")
-	}
-	if statusCode != http.StatusOK {
-		return errors.From(errors.New("failed to upload banner"), logan.F{"status code": statusCode})
-	}
+	ipfsBannerHash := "Qmrkksllfwnrwf"
+	//ipfsBannerHash, err := runnerHelpers.PrecalculateIPFSHash(task.Banner)
+	//if err != nil {
+	//	return errors.Wrap(err, "failed to precalculate IPFS hash")
+	//}
+	//
+	//p.logger.Debug(fmt.Sprintf("Precalculated IPFS hash: %s", ipfsBannerHash))
+	//
+	//if err = p.db.Tasks().UpdateBannerIpfsHash(ipfsBannerHash).Update(task.Id); err != nil {
+	//	return errors.Wrap(err, "failed to update banner ipfs hash")
+	//}
+	//
+	//p.logger.Debug("Banner IPFS Hash calculated successfully")
+	//p.logger.Debug("Uploading banner to S3...")
+	//
+	//statusCode, err := p.documenter.UploadDocument(task.Banner, ipfsBannerHash)
+	//if err != nil {
+	//	return errors.Wrap(err, "failed to upload banner")
+	//}
+	//if statusCode != http.StatusOK {
+	//	return errors.From(errors.New("failed to upload banner"), logan.F{"status code": statusCode})
+	//}
 
 	p.logger.Debug("Banner downloaded successfully")
 	p.logger.Debug("Retrieving document key...")

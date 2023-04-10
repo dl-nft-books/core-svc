@@ -89,8 +89,8 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 	// Then creating task
 	createdTaskId, err := helpers.DB(r).Tasks().Insert(data.Task{
-		BookId:    bookId,
-		Banner:    request.Data.Attributes.Banner,
+		BookId: bookId,
+		//Banner:    request.Data.Attributes.Banner,
 		Account:   request.Data.Attributes.Account,
 		TokenName: books[0].TokenName,
 		Status:    resources.TaskPending,
