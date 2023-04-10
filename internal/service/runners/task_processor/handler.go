@@ -30,33 +30,10 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	}
 
 	p.logger.Debug("Book retrieved successfully")
-	p.logger.Debug("Retrieving document key...")
 
-	bannerKey := response.Data.Attributes.File.Attributes.Key
+	p.logger.Debug("Calculating banner IPFS Hash...")
 
-	p.logger.Debug("Key retrieved successfully")
-	p.logger.Debugf("Retrieving document link from S3... (fileKey=%s)", bannerKey)
-
-	bannerLink, err := p.documenter.GetDocumentLink(bannerKey)
-	if err != nil {
-		return errors.Wrap(err, "failed to get document link", logan.F{
-			"banner_key": bannerKey,
-		})
-	}
-
-	p.logger.Debug("Link retrieved successfully")
-	p.logger.Debugf("Downloading document...")
-
-	rawDocument, err := runnerHelpers.DownloadDocument(bannerLink.Data.Attributes.Url)
-	if err != nil {
-		return errors.Wrap(err, "failed to download document")
-	}
-
-	p.logger.Debug("Document downloaded successfully...")
-
-	p.logger.Debug("Calculating document IPFS Hash...")
-
-	ipfsBannerHash, err := runnerHelpers.PrecalculateIPFSHash(rawDocument)
+	ipfsBannerHash, err := runnerHelpers.PrecalculateIPFSHash(task.Banner)
 	if err != nil {
 		return errors.Wrap(err, "failed to precalculate IPFS hash")
 	}
@@ -64,42 +41,39 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug(fmt.Sprintf("Precalculated IPFS hash: %s", ipfsBannerHash))
 
 	if err = p.db.Tasks().UpdateBannerIpfsHash(ipfsBannerHash).Update(task.Id); err != nil {
-		return errors.Wrap(err, "failed to update ipfs hash")
+		return errors.Wrap(err, "failed to update banner ipfs hash")
 	}
 
-	p.logger.Debug("Document IPFS Hash calculated successfully")
-	p.logger.Debug("Uploading document to S3...")
+	p.logger.Debug("Banner IPFS Hash calculated successfully")
+	p.logger.Debug("Uploading banner to S3...")
 
-	statusCode, err := p.documenter.UploadDocument(rawDocument, ipfsBannerHash)
+	statusCode, err := p.documenter.UploadDocument(task.Banner, ipfsBannerHash)
 	if err != nil {
-		return errors.Wrap(err, "failed to upload file")
+		return errors.Wrap(err, "failed to upload banner")
 	}
 	if statusCode != http.StatusOK {
-		return errors.From(errors.New("failed to upload file"), logan.F{"status code": statusCode})
+		return errors.From(errors.New("failed to upload banner"), logan.F{"status code": statusCode})
 	}
 
-	p.logger.Debug("Document downloaded successfully")
-	p.logger.Debug("Retrieving banner key...")
+	p.logger.Debug("Banner downloaded successfully")
+	p.logger.Debug("Retrieving document key...")
 
 	fileKey := response.Data.Attributes.File.Attributes.Key
 
 	p.logger.Debug("Key retrieved successfully")
-	p.logger.Debug("Retrieving banner link for metadata...")
+	p.logger.Debug("Retrieving document link for metadata...")
 
 	fileLink, err := p.documenter.GetDocumentLink(fileKey)
 	if err != nil {
 		return errors.Wrap(err, "failed to get document link")
 	}
 
-	p.logger.Debug("Banner link retrieved successfully")
+	p.logger.Debug("Document link retrieved successfully")
 	p.logger.Debug("Calculating metadata IPFS Hash...")
 
-	var (
-		bookDescription = response.Data.Attributes.Description
-	)
 	openseaData := opensea.Metadata{
 		Name:        fmt.Sprintf("%s #%v", task.TokenName, task.Id),
-		Description: bookDescription,
+		Description: response.Data.Attributes.Description,
 		Image:       p.ipfser.BaseUri + ipfsBannerHash,
 		FileURL:     fileLink.Data.Attributes.Url,
 	}
@@ -111,7 +85,7 @@ func (p *TaskProcessor) handleTask(task data.Task) error {
 	p.logger.Debug(fmt.Sprintf("Precalculated IPFS hash: %s", ipfsMetadataHash))
 
 	if err = p.db.Tasks().UpdateMetadataIpfsHash(ipfsMetadataHash).Update(task.Id); err != nil {
-		return errors.Wrap(err, "failed to update ipfs hash")
+		return errors.Wrap(err, "failed to update metadata ipfs hash")
 	}
 	if err = p.db.Tasks().UpdateUri(p.ipfser.BaseUri + ipfsMetadataHash).Update(task.Id); err != nil {
 		return errors.Wrap(err, "failed to update task uri")

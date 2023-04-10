@@ -12,6 +12,7 @@ allOf:
           - book_id
           - chain_id
           - token_name
+          - banner
           - banner_ipfs_hash
           - metadata_ipfs_hash
           - uri
@@ -50,7 +51,9 @@ allOf:
               https://ipfs.io/ipfs/QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
           banner:
             description: Banner info
-            $ref: '#/components/schemas/Media'
+            type: array
+            items:
+              type: byte
           status:
             type: integer
             format: TaskStatus

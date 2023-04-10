@@ -46,27 +46,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
-	// Validating info
-	banner := request.Data.Attributes.Banner
 
-	if err = helpers.CheckBannerMimeType(banner.Attributes.MimeType, r); err != nil {
-		ape.RenderErr(w, problems.BadRequest(err)...)
-		return
-	}
-
-	// Setting banner link
-	if err = helpers.SetMediaLink(r, &banner); err != nil {
-		helpers.Log(r).WithError(err).Error("failed to set banner link")
-		ape.RenderErr(w, problems.BadRequest(err)...)
-		return
-	}
-
-	media := helpers.MarshalMedia(&banner)
-	if media == nil {
-		helpers.Log(r).Error("failed to marshal media")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
 	network, err := helpers.Networker(r).GetNetworkDetailedByChainID(request.Data.Attributes.ChainId)
 	if err != nil {
 		helpers.Log(r).WithError(err).Error("failed to get network")
@@ -110,7 +90,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	// Then creating task
 	createdTaskId, err := helpers.DB(r).Tasks().Insert(data.Task{
 		BookId:    bookId,
-		Banner:    media[0],
+		Banner:    request.Data.Attributes.Banner,
 		Account:   request.Data.Attributes.Account,
 		TokenName: books[0].TokenName,
 		Status:    resources.TaskPending,

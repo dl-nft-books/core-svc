@@ -9,8 +9,6 @@ import (
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
-const maxSignatureLength = 64
-
 type CreateTaskRequest struct {
 	resources.CreateTaskRequest
 }
@@ -31,6 +29,14 @@ func (r CreateTaskRequest) validate() error {
 			validation.Required,
 		),
 		"data/attributes/book_id": validation.Validate(
+			&r.Data.Attributes.BookId,
+			validation.Required,
+		),
+		"data/attributes/chain_id": validation.Validate(
+			&r.Data.Attributes.BookId,
+			validation.Required,
+		),
+		"data/attributes/banner": validation.Validate(
 			&r.Data.Attributes.BookId,
 			validation.Required,
 		),
