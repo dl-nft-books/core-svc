@@ -116,6 +116,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
+	mintInfo.Discount = formattedDiscountMultiplier
 	if promocode != nil {
 		mintInfo.Discount, ok = getPromocodeDiscount(w, r, promocode)
 		if !ok {
