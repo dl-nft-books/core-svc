@@ -8,6 +8,7 @@ import (
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 	"github.com/dl-nft-books/core-svc/resources"
 	"github.com/dl-nft-books/core-svc/solidity/generated/contractsregistry"
+	"github.com/dl-nft-books/core-svc/solidity/generated/erc721mintabletoken"
 	"github.com/dl-nft-books/core-svc/solidity/generated/marketplace"
 	"github.com/ethereum/go-ethereum/common"
 	"net/http"
@@ -87,11 +88,14 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
+	erc721Contract, err := erc721mintabletoken.NewErc721mintabletoken(books[0].TokenContract, network.RpcUrl)
+	tokenId, err := erc721Contract.NextTokenId(nil)
 	// Then creating task
 	createdTaskId, err := helpers.DB(r).Tasks().Insert(data.Task{
 		BookId:  bookId,
 		ChainId: network.ChainId,
 		//Banner:    request.Data.Attributes.Banner,
+		TokenId:   tokenId.Int64(),
 		Account:   request.Data.Attributes.Account,
 		TokenName: books[0].TokenName,
 		Status:    resources.TaskPending,
