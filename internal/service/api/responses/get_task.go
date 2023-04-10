@@ -17,7 +17,6 @@ func NewGetTaskResponse(task data.Task, booker *booker.Connector) (*resources.Ta
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get a book")
 	}
-
 	response.Data = taskResource
 	response.Included.Add(convertBookToResource(*bookResponse))
 

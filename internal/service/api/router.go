@@ -34,7 +34,7 @@ func (s *service) router() chi.Router {
 		),
 	)
 
-	r.Route("/integrations/generator", func(r chi.Router) {
+	r.Route("/integrations/core", func(r chi.Router) {
 		r.Route("/tasks", func(r chi.Router) {
 			r.Post("/", handlers.CreateTask)
 			r.Get("/", handlers.ListTasks)
