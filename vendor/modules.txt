@@ -27,6 +27,9 @@ github.com/certifi/gocertifi
 # github.com/crackcomm/go-gitignore v0.0.0-20170627025303-887ab5e44cc3
 ## explicit
 github.com/crackcomm/go-gitignore
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+github.com/davecgh/go-spew/spew
 # github.com/deckarep/golang-set v1.8.0
 ## explicit; go 1.17
 github.com/deckarep/golang-set

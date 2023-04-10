@@ -92,7 +92,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		VerifyingAddress: book.Data.Attributes.Networks[0].Attributes.ContractAddress,
 		ContractName:     contractName,
 		ContractVersion:  "1",
-		ChainID:          book.Data.Attributes.Networks[0].Attributes.ChainId,
+		ChainID:          task.ChainId,
 	}
 	mintInfo := signature.MintInfo{
 		TokenContract: book.Data.Attributes.Networks[0].Attributes.ContractAddress,

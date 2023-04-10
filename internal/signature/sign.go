@@ -2,6 +2,7 @@ package signature
 
 import (
 	"crypto/ecdsa"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/ethereum/go-ethereum/common"
 	"gitlab.com/distributed_lab/logan/v3"
 
@@ -38,11 +39,11 @@ func SignMintInfo(
 	if mintInfo.TokenAddress == "" {
 		mintInfo.TokenAddress = defaultAddress
 	}
+	spew.Dump(config)
 	signature, err := signMintInfoByEIP712(privateKey, mintInfo, domainData)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to sign EIP712 hash")
 	}
-
 	return parseSignatureParameters(signature)
 }
 
@@ -82,13 +83,16 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 			"tokenContract":       mintInfo.TokenContract,
 			"futureTokenId":       math.NewHexOrDecimal256(mintInfo.TokenId),
 			"paymentTokenAddress": mintInfo.TokenAddress,
-			"paymentTokenPrice":   mintInfo.PricePerOneToken.String(),
-			"discount":            mintInfo.Discount.String(),
+			"paymentTokenPrice":   mintInfo.PricePerOneToken,
+			"discount":            mintInfo.Discount,
 			"endTimestamp":        math.NewHexOrDecimal256(mintInfo.EndTimestamp),
 			"tokenURI":            mintInfo.HashedTokenURI,
 		},
 	}
 
+	spew.Dump(mintInfo)
+	spew.Dump(domainData)
+	spew.Dump(data)
 	return signer.NewDefaultSigner(privateKey).SignTypedData(data)
 }
 
