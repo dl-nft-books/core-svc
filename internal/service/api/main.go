@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	documenter "github.com/dl-nft-books/blob-svc/connector/api"
 	booker "github.com/dl-nft-books/book-svc/connector"
 	doorman "github.com/dl-nft-books/doorman/connector"
 	networker "github.com/dl-nft-books/network-svc/connector"
@@ -30,10 +31,11 @@ type service struct {
 	promocoder      config.PromocoderCfg
 	ipfser          config.IpfserCfg
 	// Connectors
-	pricer    *pricer.Connector
-	booker    *booker.Connector
-	networker *networker.Connector
-	doorman   doorman.ConnectorI
+	pricer     *pricer.Connector
+	booker     *booker.Connector
+	networker  *networker.Connector
+	doorman    doorman.ConnectorI
+	documenter *documenter.Connector
 }
 
 func (s *service) run() error {
@@ -61,10 +63,11 @@ func newService(cfg config.Config) *service {
 		promocoder:      cfg.PromocoderCfg(),
 		ipfser:          cfg.IpfserCfg(),
 		// Connectors
-		pricer:    cfg.PricerConnector(),
-		booker:    cfg.BookerConnector(),
-		networker: cfg.NetworkConnector(),
-		doorman:   cfg.DoormanConnector(),
+		pricer:     cfg.PricerConnector(),
+		booker:     cfg.BookerConnector(),
+		networker:  cfg.NetworkConnector(),
+		doorman:    cfg.DoormanConnector(),
+		documenter: cfg.DocumenterConnector(),
 	}
 }
 

@@ -108,14 +108,14 @@ func CtxPricer(entry *pricer.Connector) func(context.Context) context.Context {
 	}
 }
 
-func CtxDocumenterConnector(entry s3connector.Connector) func(context.Context) context.Context {
+func CtxDocumenterConnector(entry *s3connector.Connector) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
 		return context.WithValue(ctx, documenterConnectorCtxKey, entry)
 	}
 }
 
-func DocumenterConnector(r *http.Request) s3connector.Connector {
-	return r.Context().Value(documenterConnectorCtxKey).(s3connector.Connector)
+func DocumenterConnector(r *http.Request) *s3connector.Connector {
+	return r.Context().Value(documenterConnectorCtxKey).(*s3connector.Connector)
 }
 
 func MimeTypes(r *http.Request) *config.MimeTypes {
