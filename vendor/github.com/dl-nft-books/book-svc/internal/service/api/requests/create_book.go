@@ -41,8 +41,8 @@ func (r CreateBookRequest) validate() error {
 		"/included/file/attributes/name":      validation.Validate(&r.Data.Attributes.File.Attributes.Name, validation.Required),
 		"/included/file/attributes/mime_type": validation.Validate(&r.Data.Attributes.File.Attributes.MimeType, validation.Required),
 		"/included/file/attributes/key":       validation.Validate(&r.Data.Attributes.File.Attributes.Key, validation.Required),
-		"/data/attributes/chain_ids": validation.Validate(
-			&r.Data.Attributes.ChainIds,
+		"/data/attributes/networks": validation.Validate(
+			&r.Data.Attributes.Networks,
 			validation.Required,
 			validation.Length(1, MaxDescriptionLength)),
 	}.Filter()

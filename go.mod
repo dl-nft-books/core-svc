@@ -30,7 +30,7 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dl-nft-books/blob-svc v0.0.4-0.20230329152701-87d01e0d57b1
-	github.com/dl-nft-books/book-svc v0.0.0-20230331104951-7d7513e5807a
+	github.com/dl-nft-books/book-svc v0.0.0-20230411130424-8a2d7515116f
 	github.com/dl-nft-books/doorman v0.1.0-rc.1.0.20230329143604-2590a5e15d38
 	github.com/dl-nft-books/network-svc v0.0.0-20230329160452-99950496eafe
 	github.com/dl-nft-books/price-svc v0.0.0-20230329163011-979c17fbecbe

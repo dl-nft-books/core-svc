@@ -46,7 +46,7 @@ github.com/dl-nft-books/blob-svc/connector/api
 github.com/dl-nft-books/blob-svc/connector/config
 github.com/dl-nft-books/blob-svc/connector/models
 github.com/dl-nft-books/blob-svc/resources
-# github.com/dl-nft-books/book-svc v0.0.0-20230331104951-7d7513e5807a
+# github.com/dl-nft-books/book-svc v0.0.0-20230411130424-8a2d7515116f
 ## explicit; go 1.18
 github.com/dl-nft-books/book-svc/connector
 github.com/dl-nft-books/book-svc/connector/models

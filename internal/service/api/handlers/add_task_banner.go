@@ -5,8 +5,6 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
-
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 	"gitlab.com/distributed_lab/ape"
@@ -53,12 +51,6 @@ func AddTaskBanner(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	taskResponse, err := responses.NewGetTaskResponse(*task, helpers.Booker(r))
-	if err != nil {
-		logger.WithError(err).Error("failed to get task response")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
 
-	ape.Render(w, *taskResponse)
+	w.WriteHeader(http.StatusNoContent)
 }
