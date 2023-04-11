@@ -18,7 +18,7 @@ func (c *Connector) UploadDocument(raw []byte, key string) (int, error) {
 
 	// forming multipart/form-data request : setting headers
 	h := make(textproto.MIMEHeader)
-	h.Set("Content-Disposition", fmt.Sprintf(`form-data; name="Document"; filename="document.png"`))
+	h.Set("Content-Disposition", fmt.Sprintf(`form-data; name="Document"; filename="blob"`))
 	h.Set("Content-Type", "image/png")
 
 	// forming multipart/form-data request : adding file
@@ -27,22 +27,22 @@ func (c *Connector) UploadDocument(raw []byte, key string) (int, error) {
 
 	part, err := writer.CreatePart(h)
 	if err != nil {
-		return http.StatusBadRequest, err
+		return http.StatusBadRequest, errors.Wrap(err, "failed to create part")
 	}
 
 	_, err = part.Write(raw)
 	if err != nil {
-		return http.StatusBadRequest, err
+		return http.StatusBadRequest, errors.Wrap(err, "failed to write to part")
 	}
 
 	// forming multipart/form-data request : adding `Key` field
 	fw, err := writer.CreateFormField("Key")
 	if err != nil {
-		return http.StatusBadRequest, err
+		return http.StatusBadRequest, errors.Wrap(err, "failed to add key")
 	}
 	_, err = io.Copy(fw, strings.NewReader(key))
 	if err != nil {
-		return http.StatusBadRequest, err
+		return http.StatusBadRequest, errors.Wrap(err, "failed to copy key")
 	}
 
 	writer.Close()
