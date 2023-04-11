@@ -11,17 +11,11 @@ allOf:
           - account
           - book_id
           - chain_id
-          - banner
         properties:
           account:
             type: string
             description: payer account
             example: '0xcD3C5Ecb0159DFD0B7b338341CF6594224aE2083'
-          banner:
-            description: Banner info
-            type: array
-            items:
-              type: byte
           book_id:
             type: integer
             format: int64

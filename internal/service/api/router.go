@@ -42,6 +42,7 @@ func (s *service) router() chi.Router {
 			r.Route("/{id}", func(r chi.Router) {
 				r.Get("/", handlers.GetTaskByID)
 				r.With(middlewares.CheckAccessToken).Patch("/", handlers.UpdateTask)
+				r.Post("/banner", handlers.AddTaskBanner)
 			})
 		})
 

@@ -16,7 +16,8 @@ const (
 
 	tasksId               = "id"
 	tasksAccount          = "account"
-	tasksFileIpfsHash     = "file_ipfs_hash"
+	tasksBanner           = "banner"
+	tasksBannerIpfsHash   = "banner_ipfs_hash"
 	tasksMetadataIpfsHash = "metadata_ipfs_hash"
 	tasksTokenId          = "token_id"
 	tasksChainId          = "chain_id"
@@ -86,8 +87,13 @@ func (q *tasksQ) Delete(id int64) error {
 	return q.database.Exec(statement)
 }
 
+func (q *tasksQ) UpdateBanner(banner []byte) data.TasksQ {
+	q.updater = q.updater.Set(tasksBanner, banner)
+	return q
+}
+
 func (q *tasksQ) UpdateBannerIpfsHash(newIpfsHash string) data.TasksQ {
-	q.updater = q.updater.Set(tasksFileIpfsHash, newIpfsHash)
+	q.updater = q.updater.Set(tasksBannerIpfsHash, newIpfsHash)
 	return q
 }
 

@@ -47,6 +47,7 @@ type TasksQ interface {
 	Delete(id int64) error
 	Transaction(fn func(q TasksQ) error) error
 
+	UpdateBanner(banner []byte) TasksQ
 	UpdateBannerIpfsHash(newIpfsHash string) TasksQ
 	UpdateMetadataIpfsHash(newIpfsHash string) TasksQ
 	UpdateUri(newUri string) TasksQ

@@ -2,6 +2,8 @@ package task_processor
 
 import (
 	"context"
+	documenter "github.com/dl-nft-books/blob-svc/connector/api"
+	booker "github.com/dl-nft-books/book-svc/connector"
 	"github.com/dl-nft-books/core-svc/internal/config"
 	"github.com/dl-nft-books/core-svc/internal/data"
 	"github.com/dl-nft-books/core-svc/internal/data/postgres"
@@ -10,8 +12,6 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/running"
-	documenter "github.com/dl-nft-books/blob-svc/connector/api"
-	booker "github.com/dl-nft-books/book-svc/connector"
 	"strconv"
 )
 
@@ -82,7 +82,10 @@ func (p *TaskProcessor) run(ctx context.Context) error {
 				"task_id":     task.Id,
 				"task_status": task.Status,
 			}
-
+			if len(task.Banner) == 0 {
+				p.logger.WithFields(errFields).Warn("task doesn't have banner")
+				continue
+			}
 			if err = p.db.Tasks().UpdateStatus(resources.TaskGenerating).Update(task.Id); err != nil {
 				return errors.Wrap(err, "failed to update task status", errFields)
 			}
