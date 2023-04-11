@@ -173,12 +173,6 @@ func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, promocode *dat
 }
 func getPricePerOneToken(w http.ResponseWriter, r *http.Request, request *requests.SignMintRequest, book bookModel.GetBookResponse, precision int) (*big.Int, error) {
 	logger := helpers.Log(r)
-	//if book.Data.Attributes.VoucherToken == request.TokenAddress {
-	//	return big.NewInt(0), nil
-	//}
-
-	// Normal scenario without voucher
-	// Getting price per token in dollars
 	priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress, book.Data.Attributes.Networks[0].Attributes.ChainId)
 	if err != nil {
 		logger.WithError(err).Error("failed to get price response")

@@ -1,11 +1,15 @@
 package handlers
 
 import (
+	"github.com/dl-nft-books/book-svc/connector"
+	"github.com/dl-nft-books/book-svc/connector/models"
 	"github.com/dl-nft-books/core-svc/internal/data"
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 	"github.com/dl-nft-books/core-svc/resources"
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
+	"github.com/spf13/cast"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 	"gitlab.com/distributed_lab/logan/v3"
@@ -46,6 +50,12 @@ func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 		}
 		prString = *request.Data.Attributes.Promocode
 	}
+	books, err := getBooks(request.Data.Attributes.Books, helpers.Booker(r))
+	if err != nil {
+		helpers.Log(r).WithError(err).Errorf("failed to get books for promocode")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
 	var promocodeID int64
 	if err = helpers.DB(r).Transaction(func() error {
 		promocodeID, err = helpers.DB(r).Promocodes().Insert(data.Promocode{
@@ -59,7 +69,7 @@ func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			return err
 		}
-		return helpers.DB(r).PromocodesBooks().Insert(promocodeID, request.Data.Attributes.Books...)
+		return helpers.DB(r).PromocodesBooks().Insert(promocodeID, books...)
 	}); err != nil {
 		helpers.Log(r).WithError(err).Errorf("failed to create new promocode")
 		ape.RenderErr(w, problems.InternalError())
@@ -69,4 +79,19 @@ func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 	ape.Render(w, resources.KeyResponse{
 		Data: resources.NewKeyInt64(promocodeID, resources.PROMOCODE),
 	})
+}
+
+func getBooks(books *[]int64, booker *connector.Connector) ([]int64, error) {
+	var bookIds []int64
+	if books != nil && len(*books) > 0 {
+		return *books, nil
+	}
+	booksResponse, err := booker.ListBooks(models.ListBooksParams{})
+	if err != nil {
+		return bookIds, errors.Wrap(err, "failed to get books")
+	}
+	for _, book := range booksResponse.Data {
+		bookIds = append(bookIds, cast.ToInt64(book.ID))
+	}
+	return bookIds, nil
 }

@@ -8,7 +8,7 @@ import "time"
 
 type CreatePromocodeAttributes struct {
 	// Book with can support this promocode
-	Books []int64 `json:"books"`
+	Books *[]int64 `json:"books,omitempty"`
 	// between 0.0 and 1.0 representing discount percentage
 	Discount float64 `json:"discount"`
 	// Time of expiration

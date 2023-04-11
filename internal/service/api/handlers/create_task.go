@@ -89,7 +89,17 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	erc721Contract, err := erc721mintabletoken.NewErc721mintabletoken(books[0].TokenContract, network.RpcUrl)
+	if err != nil {
+		helpers.Log(r).WithError(err).Error("failed to create new erc721 mintable token")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
 	tokenId, err := erc721Contract.NextTokenId(nil)
+	if err != nil {
+		helpers.Log(r).WithError(err).Error("failed to get future token id")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
 	// Then creating task
 	createdTaskId, err := helpers.DB(r).Tasks().Insert(data.Task{
 		BookId:  bookId,

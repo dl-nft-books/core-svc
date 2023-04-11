@@ -2,18 +2,17 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/dl-nft-books/core-svc/solidity/generated/contractsregistry"
-	"github.com/ethereum/go-ethereum/common"
-	"math/big"
-	"net/http"
-	"time"
-
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
 	"github.com/dl-nft-books/core-svc/internal/signature"
+	"github.com/dl-nft-books/core-svc/solidity/generated/contractsregistry"
+	"github.com/ethereum/go-ethereum/common"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
+	"math/big"
+	"net/http"
+	"time"
 )
 
 func SignMintByNft(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +20,7 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewSignMintByNftRequest(r)
 	if err != nil {
-		logger.WithError(err).Error("failed to fetch new sign mint by nft request")
+		logger.WithError(err).Error("failed to fetch new sign mint request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -70,22 +69,25 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
-	contractName, err := contractRegistry.MARKETPLACENAME(nil)
+	marketplaceContractAddress, err := contractRegistry.GetMarketplaceContract(nil)
 	if err != nil {
 		logger.WithError(err).Error("failed to get marketplace contract name")
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
 	domainData := signature.EIP712DomainData{
-		VerifyingAddress: book.Data.Attributes.Networks[0].Attributes.ContractAddress,
-		ContractName:     contractName,
+		VerifyingAddress: marketplaceContractAddress.String(),
+		ContractName:     "Marketplace",
 		ContractVersion:  "1",
-		ChainID:          book.Data.Attributes.Networks[0].Attributes.ChainId,
+		ChainID:          task.ChainId,
 	}
 	mintInfo := signature.MintInfo{
-		TokenAddress: request.NftAddress,
-		Discount:     big.NewInt(0),
-		TokenURI:     task.MetadataIpfsHash,
+		TokenContract: book.Data.Attributes.Networks[0].Attributes.ContractAddress,
+		TokenId:       task.TokenId,
+		Discount:      big.NewInt(0),
+		TokenAddress:  request.NftAddress,
+		TokenURI:      task.MetadataIpfsHash,
+		EndTimestamp:  time.Now().Add(mintConfig.Expiration).Unix(),
 	}
 
 	// Getting price per token in dollars
@@ -102,8 +104,6 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-
-	mintInfo.EndTimestamp = time.Now().Add(mintConfig.Expiration).Unix()
 
 	// Signing the mint transaction
 	mintSignature, err := signature.SignMintInfo(&mintInfo, &domainData, &mintConfig)
