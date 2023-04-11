@@ -9,6 +9,8 @@ git:
   - add: /
     to: /go/src/core-svc
     stageDependencies:
+      install:
+        - go.mod
       setup:
         - "**/*"
 shell:
@@ -20,6 +22,7 @@ shell:
     - export CGO_ENABLED=1
     - export GO111MODULE=on
     - export GOOS=linux
+    - cd /go/src/core-svc
     - go mod tidy
     - go mod vendor
     - go build  -o /usr/local/bin/core-svc  /go/src/core-svc
