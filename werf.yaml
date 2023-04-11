@@ -7,7 +7,7 @@ docker:
   WORKDIR: /go/src/core-svc
 git:
   - add: /
-    to: /
+    to: /go/src/core-svc
     stageDependencies:
       install:
         - go.mod
@@ -19,8 +19,8 @@ shell:
     - git config --global url."https://{{  env "CI_JOB_TOKEN" }}@github.com/".insteadOf https://github.com/
     - go env -w GOPRIVATE=github.com/*
   setup:
-    - export CGO_ENABLED=0
-    - export GO111MODULE=off
+    - export CGO_ENABLED=1
+    - export GO111MODULE=on
     - export GOOS=linux
     - go mod tidy
     - go mod vendor
