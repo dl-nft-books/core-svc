@@ -21,8 +21,11 @@ func NewValidatePromocodeResponse(promocode data.Promocode) (*resources.Validate
 				Data: &relKey,
 			},
 		}
-		resPromocode := promocode.Resource()
-		response.Included.Add(&resPromocode)
+		resPromocode, err := promocode.Resource()
+		if err != nil {
+			return nil, err
+		}
+		response.Included.Add(resPromocode)
 	}
 	return &response, nil
 }

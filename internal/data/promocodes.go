@@ -1,6 +1,7 @@
 package data
 
 import (
+	"encoding/json"
 	"github.com/dl-nft-books/core-svc/resources"
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"time"
@@ -14,10 +15,15 @@ type Promocode struct {
 	Usages         int64                    `db:"usages" structs:"usages"`
 	ExpirationDate time.Time                `db:"expiration_date" structs:"expiration_date"`
 	State          resources.PromocodeState `db:"state" structs:"state"`
+	Books          []byte                   `db:"books" structs:"books"`
 }
 
-func (promocode *Promocode) Resource() resources.Promocode {
-	return resources.Promocode{
+func (promocode *Promocode) Resource() (*resources.Promocode, error) {
+	var books []int64
+	if err := json.Unmarshal(promocode.Books, &books); err != nil {
+		return nil, err
+	}
+	return &resources.Promocode{
 		Key: resources.NewKeyInt64(promocode.Id, resources.PROMOCODE),
 		Attributes: resources.PromocodeAttributes{
 			Id:             promocode.Id,
@@ -27,8 +33,9 @@ func (promocode *Promocode) Resource() resources.Promocode {
 			Usages:         promocode.Usages,
 			ExpirationDate: promocode.ExpirationDate,
 			State:          promocode.State,
+			Books:          books,
 		},
-	}
+	}, nil
 }
 
 type PromocodesQ interface {

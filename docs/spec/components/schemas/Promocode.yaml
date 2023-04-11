@@ -14,6 +14,7 @@ allOf:
           - expiration_date
           - usages
           - state
+          - books
         properties:
           id:
             type: integer
@@ -51,3 +52,10 @@ allOf:
                 value: 3
             description: promocode status
             example: 1
+          books:
+            type: array
+            items:
+              type: integer
+              format: int64
+              example: 1
+            description: Book with can support this promocode
