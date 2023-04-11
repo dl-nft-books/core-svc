@@ -46,11 +46,18 @@ func AddTaskBanner(w http.ResponseWriter, r *http.Request) {
 	}
 	// Convert buffer to []byte slice
 	fileBytes := buf.Bytes()
-	if err = helpers.DB(r).Tasks().UpdateBanner(fileBytes).Update(id); err != nil {
-		logger.WithError(err).Error("failed to add task banner")
-		ape.RenderErr(w, problems.InternalError())
+	err = helpers.HandleTask(r, logger, *task, fileBytes)
+	if err != nil {
+		logger.WithError(err).Error("failed to handle task")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	//if err = helpers.DB(r).Tasks().UpdateBanner(fileBytes).Update(id); err != nil {
+	//	logger.WithError(err).Error("failed to add task banner")
+	//	ape.RenderErr(w, problems.InternalError())
+	//	return
+	//}
 
 	w.WriteHeader(http.StatusNoContent)
 }

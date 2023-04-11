@@ -2,11 +2,11 @@ package cli
 
 import (
 	"context"
-	"gitlab.com/distributed_lab/logan/v3"
-	"gitlab.com/distributed_lab/logan/v3/errors"
 	"github.com/dl-nft-books/core-svc/internal/config"
 	"github.com/dl-nft-books/core-svc/internal/service/api"
 	"github.com/dl-nft-books/core-svc/internal/service/runners"
+	"gitlab.com/distributed_lab/logan/v3"
+	"gitlab.com/distributed_lab/logan/v3/errors"
 	"os"
 	"os/signal"
 	"sync"
@@ -19,9 +19,9 @@ var (
 	app = kingpin.New("generator-svc", "service responsible for generating a book's pdf with a custom signature on it, handling status of uploading process, and storing tokens")
 
 	// Run commands
-	runCommand              = app.Command("run", "run command")
-	apiCommand              = runCommand.Command("api", "run api")
-	taskProcessorCommand    = runCommand.Command("task-processor", "run task processor")
+	runCommand = app.Command("run", "run command")
+	apiCommand = runCommand.Command("api", "run api")
+	//taskProcessorCommand    = runCommand.Command("task-processor", "run task processor")
 	promocodeCheckerCommand = runCommand.Command("promocode-checker", "run promocode checker")
 	allCommand              = runCommand.Command("all", "run all")
 
@@ -61,11 +61,11 @@ func Run(args []string) bool {
 	case apiCommand.FullCommand():
 		run(waitGroup, ctx, cfg, api.Run)
 		log.Info("started api...")
-	case taskProcessorCommand.FullCommand():
-		for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
-			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
-			log.Infof("started task_processor #%d", i+1)
-		}
+	//case taskProcessorCommand.FullCommand():
+	//	for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
+	//		run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
+	//		log.Infof("started task_processor #%d", i+1)
+	//	}
 	case promocodeCheckerCommand.FullCommand():
 		run(waitGroup, ctx, cfg, runners.RunPromocodeChecker)
 		log.Info("started promocode_checker...")
@@ -74,10 +74,10 @@ func Run(args []string) bool {
 			run(waitGroup, ctx, cfg, processor)
 			log.Infof("started %v", name)
 		}
-		for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
-			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
-			log.Infof("started task_processor #%d", i+1)
-		}
+		//for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
+		//	run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
+		//	log.Infof("started task_processor #%d", i+1)
+		//}
 	case migrateUpCommand.FullCommand():
 		err = MigrateUp(cfg)
 	case migrateDownCommand.FullCommand():
