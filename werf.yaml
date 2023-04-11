@@ -9,8 +9,6 @@ git:
   - add: /
     to: /go/src/core-svc
     stageDependencies:
-      install:
-        - go.mod
       setup:
         - "**/*"
 shell:
