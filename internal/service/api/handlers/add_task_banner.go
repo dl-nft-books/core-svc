@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"bytes"
+	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
+	"github.com/dl-nft-books/core-svc/resources"
 	"io"
 	"net/http"
 
@@ -46,18 +48,35 @@ func AddTaskBanner(w http.ResponseWriter, r *http.Request) {
 	}
 	// Convert buffer to []byte slice
 	fileBytes := buf.Bytes()
+
+	if err = helpers.DB(r).Tasks().UpdateStatus(resources.TaskGenerating).Update(task.Id); err != nil {
+		logger.WithError(err).Error("failed to update task status")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
 	err = helpers.HandleTask(r, logger, *task, fileBytes)
 	if err != nil {
 		logger.WithError(err).Error("failed to handle task")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if err = helpers.DB(r).Tasks().UpdateStatus(resources.TaskFinishedGeneration).Update(task.Id); err != nil {
+		logger.WithError(err).Error("failed to update task status")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	task, err = helpers.DB(r).Tasks().GetById(id)
+	if err != nil {
+		logger.WithError(err).Error("failed to get task")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	taskResponse, err := responses.NewGetTaskResponse(*task, helpers.Booker(r))
+	if err != nil {
+		logger.WithError(err).Error("failed to get task response")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
 
-	//if err = helpers.DB(r).Tasks().UpdateBanner(fileBytes).Update(id); err != nil {
-	//	logger.WithError(err).Error("failed to add task banner")
-	//	ape.RenderErr(w, problems.InternalError())
-	//	return
-	//}
-
-	w.WriteHeader(http.StatusNoContent)
+	ape.Render(w, *taskResponse)
 }
