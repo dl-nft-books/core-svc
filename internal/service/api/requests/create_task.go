@@ -36,9 +36,9 @@ func (r CreateTaskRequest) validate() error {
 			&r.Data.Attributes.BookId,
 			validation.Required,
 		),
-		//"data/attributes/banner": validation.Validate(
-		//	&r.Data.Attributes.BookId,
-		//	validation.Required,
-		//),
+		"data/attributes/banner": validation.Validate(
+			&r.Data.Attributes.BookId,
+			validation.Required,
+		),
 	}.Filter()
 }

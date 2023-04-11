@@ -4,6 +4,7 @@ import (
 	"github.com/dl-nft-books/core-svc/internal/data"
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"gitlab.com/distributed_lab/ape/problems"
+	"gitlab.com/distributed_lab/logan/v3"
 	"net/http"
 
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
@@ -20,18 +21,18 @@ func ListPromocodes(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
-	//address := r.Context().Value("address").(string)
-	//isMarketplaceManager, err := helpers.CheckMarketplacePerrmision(*helpers.Networker(r), address)
-	//if err != nil {
-	//	logger.WithError(err).WithFields(logan.F{"account": address}).Debug("failed to check permissions")
-	//	ape.RenderErr(w, problems.InternalError())
-	//	return
-	//}
-	//if !isMarketplaceManager {
-	//	logger.WithFields(logan.F{"account": address}).Debug("you don't have permission to create book")
-	//	ape.RenderErr(w, problems.Forbidden())
-	//	return
-	//}
+	address := r.Context().Value("address").(string)
+	isMarketplaceManager, err := helpers.CheckMarketplacePerrmision(*helpers.Networker(r), address)
+	if err != nil {
+		logger.WithError(err).WithFields(logan.F{"account": address}).Debug("failed to check permissions")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	if !isMarketplaceManager {
+		logger.WithFields(logan.F{"account": address}).Debug("you don't have permission to create book")
+		ape.RenderErr(w, problems.Forbidden())
+		return
+	}
 	promocodes, err := applyPromocodesQFilters(helpers.DB(r).Promocodes(), request).Select()
 	if err != nil {
 		logger.WithError(err).Error("unable to select promocodes from database")
