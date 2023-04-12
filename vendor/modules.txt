@@ -40,7 +40,7 @@ github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 ## explicit
 github.com/dgrijalva/jwt-go
-# github.com/dl-nft-books/blob-svc v0.0.4-0.20230329152701-87d01e0d57b1
+# github.com/dl-nft-books/blob-svc v0.0.4-0.20230412083832-9441aef1be89
 ## explicit; go 1.18
 github.com/dl-nft-books/blob-svc/connector/api
 github.com/dl-nft-books/blob-svc/connector/config

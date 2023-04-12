@@ -27,22 +27,22 @@ func (c *Connector) UploadDocument(raw []byte, key string) (int, error) {
 
 	part, err := writer.CreatePart(h)
 	if err != nil {
-		return http.StatusBadRequest, errors.Wrap(err, "failed to create part")
+		return http.StatusBadRequest, err
 	}
 
 	_, err = part.Write(raw)
 	if err != nil {
-		return http.StatusBadRequest, errors.Wrap(err, "failed to write to part")
+		return http.StatusBadRequest, err
 	}
 
 	// forming multipart/form-data request : adding `Key` field
 	fw, err := writer.CreateFormField("Key")
 	if err != nil {
-		return http.StatusBadRequest, errors.Wrap(err, "failed to add key")
+		return http.StatusBadRequest, err
 	}
 	_, err = io.Copy(fw, strings.NewReader(key))
 	if err != nil {
-		return http.StatusBadRequest, errors.Wrap(err, "failed to copy key")
+		return http.StatusBadRequest, err
 	}
 
 	writer.Close()
