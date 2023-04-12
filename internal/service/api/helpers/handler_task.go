@@ -77,7 +77,7 @@ func HandleTask(r *http.Request, logger *logan.Entry, task data.Task, banner []b
 	logger.Debug("Calculating metadata IPFS Hash...")
 
 	openseaData := opensea.Metadata{
-		Name:        fmt.Sprintf("%s #%v", task.TokenName, task.Id),
+		Name:        fmt.Sprintf("%s #%d", task.TokenName, task.TokenId),
 		Description: response.Data.Attributes.Description,
 		Image:       ipfser.BaseUri + ipfsBannerHash,
 		FileURL:     fileLink.Data.Attributes.Url,
