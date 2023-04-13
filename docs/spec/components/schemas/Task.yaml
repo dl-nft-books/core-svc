@@ -15,7 +15,6 @@ allOf:
           - banner
           - banner_ipfs_hash
           - metadata_ipfs_hash
-          - uri
           - status
         properties:
           token_id:
@@ -45,10 +44,6 @@ allOf:
             type: string
             description: hash of metadata on IPFS
             example: QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
-          uri:
-            type: string
-            example: >-
-              https://ipfs.io/ipfs/QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
           banner:
             description: Banner info
             type: array

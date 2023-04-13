@@ -16,8 +16,6 @@ type Task struct {
 	BannerIpfsHash   string               `db:"banner_ipfs_hash" structs:"banner_ipfs_hash"`
 	TokenName        string               `db:"token_name" structs:"token_name"`
 	MetadataIpfsHash string               `db:"metadata_ipfs_hash" structs:"metadata_ipfs_hash"`
-	Uri              string               `db:"book_uri" structs:"book_uri"`
-	Banner           []byte               `db:"banner" structs:"banner"`
 	Status           resources.TaskStatus `db:"status" structs:"status"`
 	CreatedAt        time.Time            `db:"created_at" structs:"created_at"`
 }
@@ -47,10 +45,8 @@ type TasksQ interface {
 	Delete(id int64) error
 	Transaction(fn func(q TasksQ) error) error
 
-	UpdateBanner(banner []byte) TasksQ
 	UpdateBannerIpfsHash(newIpfsHash string) TasksQ
 	UpdateMetadataIpfsHash(newIpfsHash string) TasksQ
-	UpdateUri(newUri string) TasksQ
 	UpdateTokenId(newTokenId int64) TasksQ
 	UpdateStatus(newStatus resources.TaskStatus) TasksQ
 	Update(id int64) error
@@ -66,7 +62,6 @@ func (t Task) Resource() resources.Task {
 			TokenName:        t.TokenName,
 			BannerIpfsHash:   t.BannerIpfsHash,
 			MetadataIpfsHash: t.MetadataIpfsHash,
-			Uri:              t.Uri,
 			Status:           t.Status,
 		},
 	}

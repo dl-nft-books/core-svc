@@ -34,11 +34,6 @@ func AddTaskBanner(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
-	if len(task.Banner) > 0 {
-		logger.WithError(err).Error("banner is already uploaded for this task")
-		ape.RenderErr(w, problems.Conflict())
-		return
-	}
 	// Read file contents into buffer
 	var buf bytes.Buffer
 	_, err = io.Copy(&buf, file)

@@ -16,10 +16,9 @@ type (
 	}
 
 	CreateTaskParams struct {
-		Account string          `json:"account"`
-		BookId  int64           `json:"book_id"`
-		ChainId int64           `json:"chain_id"`
-		Banner  resources.Media `json:"banner"`
+		Account string `json:"account"`
+		BookId  int64  `json:"book_id"`
+		ChainId int64  `json:"chain_id"`
 	}
 
 	TaskResponse resources.TaskResponse

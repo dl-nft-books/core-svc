@@ -21,5 +21,4 @@ type TaskAttributes struct {
 	TokenId int64 `json:"token_id"`
 	// name of future token
 	TokenName string `json:"token_name"`
-	Uri       string `json:"uri"`
 }

@@ -91,7 +91,7 @@ func HandleTask(r *http.Request, logger *logan.Entry, task data.Task, banner []b
 
 	logger.Debug(fmt.Sprintf("Precalculated IPFS hash: %s", ipfsMetadataHash))
 
-	if err = db.Tasks().UpdateMetadataIpfsHash(ipfsMetadataHash).UpdateUri(ipfser.BaseUri + ipfsMetadataHash).Update(task.Id); err != nil {
+	if err = db.Tasks().UpdateMetadataIpfsHash(ipfsMetadataHash).Update(task.Id); err != nil {
 		return errors.Wrap(err, "failed to update metadata ipfs hash")
 	}
 
