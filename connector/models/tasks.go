@@ -15,11 +15,5 @@ type (
 		TokenId *int64                `json:"token_id,omitempty"`
 	}
 
-	CreateTaskParams struct {
-		Account string `json:"account"`
-		BookId  int64  `json:"book_id"`
-		ChainId int64  `json:"chain_id"`
-	}
-
 	TaskResponse resources.TaskResponse
 )
