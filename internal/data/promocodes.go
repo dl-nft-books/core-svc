@@ -53,6 +53,7 @@ type PromocodesQ interface {
 	FilterByState(state ...resources.PromocodeState) PromocodesQ
 	FilterById(id ...int64) PromocodesQ
 	FilterUpdateById(id ...int64) PromocodesQ
+	FilterByBookId(bookId ...int64) PromocodesQ
 	FilterByPromocode(promocode ...string) PromocodesQ
 
 	UpdateState(newState resources.PromocodeState) PromocodesQ

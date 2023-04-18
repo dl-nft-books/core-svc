@@ -37,7 +37,6 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
-
 	// Getting task's mintInfo
 	task, err := helpers.DB(r).Tasks().GetById(request.TaskID)
 	if err != nil {

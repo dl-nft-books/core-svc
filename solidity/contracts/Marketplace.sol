@@ -1,16 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.18;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721EnumerableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/math/Math.sol";
 
 import "@dlsl/dev-modules/contracts-registry/AbstractDependant.sol";
 import "@dlsl/dev-modules/utils/Globals.sol";
@@ -24,29 +26,38 @@ import "./interfaces/ITokenFactory.sol";
 import "./interfaces/tokens/IERC721MintableToken.sol";
 
 contract Marketplace is
-    IMarketplace,
-    ERC721HolderUpgradeable,
-    AbstractDependant,
-    EIP712Upgradeable,
-    PausableUpgradeable
+IMarketplace,
+ERC721Holder,
+AbstractDependant,
+EIP712Upgradeable,
+PausableUpgradeable
 {
     using EnumerableSet for EnumerableSet.AddressSet;
     using Paginator for EnumerableSet.AddressSet;
     using DecimalsConverter for uint256;
-    using SafeERC20Upgradeable for IERC20MetadataUpgradeable;
+    using SafeERC20 for IERC20Metadata;
 
     string public baseTokenContractsURI;
 
     bytes32 internal constant _BUY_TYPEHASH =
-        keccak256(
-            "Buy(address tokenContract,uint256 futureTokenId,address paymentTokenAddress,uint256 paymentTokenPrice,uint256 discount,uint256 endTimestamp,bytes32 tokenURI)"
-        );
+    keccak256(
+        "Buy(address tokenContract,uint256 futureTokenId,address paymentTokenAddress,uint256 paymentTokenPrice,uint256 discount,uint256 endTimestamp,bytes32 tokenURI)"
+    );
+    bytes32 internal constant _BUY_WITH_REQUEST_TYPEHASH =
+    keccak256(
+        "BuyWithRequest(uint256 requestId,uint256 futureTokenId,uint256 endTimestamp,bytes32 tokenURI)"
+    );
+    bytes32 internal constant _BUY_WITH_VOUCHER_TYPEHASH =
+    keccak256(
+        "BuyWithVoucher(address requester,address tokenContract,uint256 futureTokenId,address voucherTokenContract,uint256 voucherTokensAmount,uint256 endTimestamp,bytes32 tokenURI)"
+    );
+
+    IRoleManager internal _roleManager;
+    ITokenFactory internal _tokenFactory;
 
     EnumerableSet.AddressSet internal _tokenContracts;
     mapping(address => TokenParams) internal _tokenParams;
-
-    IRoleManager private _roleManager;
-    ITokenFactory private _tokenFactory;
+    NFTRequestInfo[] internal _nftRequests;
 
     modifier onlyMarketplaceManager() {
         _onlyMarketplaceManager();
@@ -64,7 +75,6 @@ contract Marketplace is
         __EIP712_init("Marketplace", "1");
 
         baseTokenContractsURI = baseTokenContractsURI_;
-        // __ReentrancyGuard_init();
     }
 
     function setDependencies(
@@ -85,16 +95,37 @@ contract Marketplace is
         _unpause();
     }
 
+    function setBaseTokenContractsURI(
+        string memory baseTokenContractsURI_
+    ) external override whenNotPaused onlyMarketplaceManager {
+        baseTokenContractsURI = baseTokenContractsURI_;
+
+        emit BaseTokenContractsURIUpdated(baseTokenContractsURI_);
+    }
+
     function addToken(
         string memory name_,
         string memory symbol_,
         TokenParams memory tokenParams_
-    ) external whenNotPaused onlyMarketplaceManager returns (address tokenProxy_) {
+    ) external override whenNotPaused onlyMarketplaceManager returns (address tokenProxy_) {
         _validateTokenParams(name_, symbol_);
 
         require(!tokenParams_.isDisabled, "Marketplace: Token can not be disabled on creation.");
 
         tokenProxy_ = _tokenFactory.deployToken(name_, symbol_);
+
+        if (tokenParams_.isVoucherBuyable && tokenParams_.voucherTokenContract == address(0)) {
+            tokenParams_.voucherTokenContract = _tokenFactory.deployVoucher(
+                string.concat(name_, "_Voucher"),
+                string.concat(symbol_, "_V")
+            );
+        }
+
+        _validateVoucherParams(
+            tokenParams_.isVoucherBuyable,
+            tokenParams_.voucherTokensAmount,
+            tokenParams_.voucherTokenContract
+        );
 
         _tokenParams[tokenProxy_] = tokenParams_;
 
@@ -109,12 +140,14 @@ contract Marketplace is
         string memory symbol_,
         TokenParams memory newTokenParams_
     ) external override whenNotPaused onlyMarketplaceManager {
-        require(
-            _tokenContracts.contains(tokenContract_),
-            "Marketplace: Token contract not found."
-        );
+        _checkTokenContractExists(tokenContract_);
 
         _validateTokenParams(name_, symbol_);
+        _validateVoucherParams(
+            newTokenParams_.isVoucherBuyable,
+            newTokenParams_.voucherTokensAmount,
+            newTokenParams_.voucherTokenContract
+        );
 
         _tokenParams[tokenContract_] = newTokenParams_;
 
@@ -125,20 +158,25 @@ contract Marketplace is
 
     function withdrawCurrency(
         address tokenAddr_,
-        address recipient_
+        address recipient_,
+        uint256 desiredAmount_,
+        bool withdrawAll_
     ) external override onlyWithdrawalManager {
+        IERC20Metadata token_ = IERC20Metadata(tokenAddr_);
         bool isNativeCurrency_ = tokenAddr_ == address(0);
 
-        IERC20MetadataUpgradeable token_ = IERC20MetadataUpgradeable(tokenAddr_);
         uint256 amount_ = isNativeCurrency_
-            ? address(this).balance
-            : token_.balanceOf(address(this));
+        ? address(this).balance
+        : token_.balanceOf(address(this));
+
+        if (!withdrawAll_) {
+            amount_ = Math.min(amount_, desiredAmount_);
+        }
 
         require(amount_ > 0, "Marketplace: Nothing to withdraw.");
 
         if (isNativeCurrency_) {
-            (bool success_, ) = recipient_.call{value: amount_}("");
-            require(success_, "Marketplace: Failed to transfer native currency.");
+            _sendNativeCurrency(recipient_, amount_);
         } else {
             token_.safeTransfer(recipient_, amount_);
 
@@ -148,243 +186,220 @@ contract Marketplace is
         emit PaidTokensWithdrawn(tokenAddr_, recipient_, amount_);
     }
 
-    // TODO: nonReentrant?
-    function buyToken(
-        address tokenContract_,
-        uint256 futureTokenId_,
-        address paymentTokenAddress_,
-        uint256 paymentTokenPrice_,
-        uint256 discount_,
-        uint256 endTimestamp_,
-        string memory tokenURI_,
-        bytes32 r_,
-        bytes32 s_,
-        uint8 v_
-    ) external payable whenNotPaused {
-        _verifySignature(
-            tokenContract_,
-            futureTokenId_,
-            paymentTokenAddress_,
-            paymentTokenPrice_,
-            discount_,
-            endTimestamp_,
-            tokenURI_,
-            r_,
-            s_,
-            v_
+    function buyTokenWithETH(
+        BuyParams memory buyParams_,
+        Sig memory sig_
+    ) external payable override whenNotPaused {
+        _beforeBuyTokenCheck(buyParams_, sig_);
+
+        require(
+            buyParams_.paymentDetails.paymentTokenAddress == address(0),
+            "Marketplace: Invalid payment token address"
         );
 
-        uint256 amountToPay_;
+        TokenParams storage _currentTokenParams = _tokenParams[buyParams_.tokenContract];
 
-        if (paymentTokenPrice_ != 0 || paymentTokenAddress_ != address(0)) {
-            if (paymentTokenAddress_ == address(0)) {
-                amountToPay_ = _payWithETH(tokenContract_, paymentTokenPrice_, discount_);
-            } else {
-                amountToPay_ = _payWithERC20(
-                    tokenContract_,
-                    IERC20MetadataUpgradeable(paymentTokenAddress_),
-                    paymentTokenPrice_,
-                    discount_
-                );
-            }
+        uint256 amountToPay_ = _getAmountToPay(
+            buyParams_.paymentDetails,
+            _currentTokenParams.pricePerOneToken
+        );
+
+        require(msg.value >= amountToPay_, "Marketplace: Invalid currency amount.");
+
+        address fundsRecipient_ = _getFundsRecipient(_currentTokenParams.fundsRecipient);
+
+        if (fundsRecipient_ != address(this)) {
+            _sendNativeCurrency(fundsRecipient_, amountToPay_);
         }
 
-        TokenParams storage _currentTokenParams = _tokenParams[tokenContract_];
+        uint256 extraCurrencyAmount_ = msg.value - amountToPay_;
 
-        _mintToken(tokenContract_, futureTokenId_, tokenURI_);
-        MintedTokenInfo memory mintedTokenInfo = MintedTokenInfo(
-            futureTokenId_,
+        if (extraCurrencyAmount_ > 0) {
+            _sendNativeCurrency(msg.sender, extraCurrencyAmount_);
+        }
+
+        _mintToken(
+            buyParams_,
+            PaymentType.NATIVE,
             _currentTokenParams.pricePerOneToken,
-            tokenURI_
-        );
-
-        emit SuccessfullyMinted(
-            tokenContract_,
-            msg.sender,
-            mintedTokenInfo,
-            paymentTokenAddress_,
-            amountToPay_,
-            paymentTokenPrice_,
-            discount_,
-            _currentTokenParams.fundsRecipient
+            amountToPay_
         );
     }
 
-    function buyTokenByNFT(
-        address tokenContract_,
-        uint256 futureTokenId_,
-        address nftAddress_,
-        uint256 nftFloorPrice_,
-        uint256 tokenId_,
-        uint256 endTimestamp_,
-        string memory tokenURI_,
-        bytes32 r_,
-        bytes32 s_,
-        uint8 v_
+    function buyTokenWithERC20(
+        BuyParams memory buyParams_,
+        Sig memory sig_
     ) external override whenNotPaused {
+        _beforeBuyTokenCheck(buyParams_, sig_);
+
+        TokenParams storage _currentTokenParams = _tokenParams[buyParams_.tokenContract];
+
+        uint256 amountToPay_ = _getAmountToPay(
+            buyParams_.paymentDetails,
+            _currentTokenParams.pricePerOneToken
+        );
+
+        _sendERC20(
+            IERC20Metadata(buyParams_.paymentDetails.paymentTokenAddress),
+            msg.sender,
+            _getFundsRecipient(_currentTokenParams.fundsRecipient),
+            amountToPay_
+        );
+
+        _mintToken(
+            buyParams_,
+            PaymentType.ERC20,
+            _currentTokenParams.pricePerOneToken,
+            amountToPay_
+        );
+    }
+
+    function buyTokenWithVoucher(
+        BuyParams memory buyParams_,
+        Sig memory sig_,
+        Sig memory permitSig_
+    ) external override whenNotPaused {
+        _beforeBuyTokenCheck(buyParams_, sig_);
+
+        TokenParams storage _currentTokenParams = _tokenParams[buyParams_.tokenContract];
+
+        require(
+            _currentTokenParams.isVoucherBuyable,
+            "Marketplace: Unable to buy token with voucher"
+        );
+        require(
+            buyParams_.paymentDetails.paymentTokenAddress ==
+            _currentTokenParams.voucherTokenContract,
+            "Marketplace: Invalid payment token address"
+        );
+
+        IERC20Permit(_currentTokenParams.voucherTokenContract).permit(
+            buyParams_.recipient,
+            address(this),
+            _currentTokenParams.voucherTokensAmount,
+            permitSig_.endTimestamp,
+            permitSig_.v,
+            permitSig_.r,
+            permitSig_.s
+        );
+
+        _sendERC20(
+            IERC20Metadata(_currentTokenParams.voucherTokenContract),
+            buyParams_.recipient,
+            _getFundsRecipient(_currentTokenParams.fundsRecipient),
+            _currentTokenParams.voucherTokensAmount
+        );
+
+        _mintToken(
+            buyParams_,
+            PaymentType.VOUCHER,
+            _currentTokenParams.pricePerOneToken,
+            _currentTokenParams.voucherTokensAmount
+        );
+    }
+
+    function buyTokenWithNFT(
+        BuyParams memory buyParams_,
+        Sig memory sig_
+    ) external override whenNotPaused {
+        _beforeBuyTokenCheck(buyParams_, sig_);
+
+        TokenParams storage _currentTokenParams = _tokenParams[buyParams_.tokenContract];
+
+        require(_currentTokenParams.isNFTBuyable, "Marketplace: Unable to buy token with NFT");
+
+        require(
+            buyParams_.paymentDetails.paymentTokenPrice >= _currentTokenParams.minNFTFloorPrice,
+            "Marketplace: NFT floor price is less than the minimal."
+        );
+
+        _tranferNFT(
+            buyParams_.paymentDetails.paymentTokenAddress,
+            msg.sender,
+            _getFundsRecipient(_currentTokenParams.fundsRecipient),
+            buyParams_.paymentDetails.nftTokenId
+        );
+
+        _mintToken(buyParams_, PaymentType.NFT, _currentTokenParams.minNFTFloorPrice, 1);
+    }
+
+    function buyTokenWithRequest(
+        RequestBuyParams memory requestBuyParams_,
+        Sig memory sig_
+    ) external override {
+        _beforeBuyTokenWithRequestCheck(requestBuyParams_, sig_);
+
+        NFTRequestInfo storage _nftRequest = _nftRequests[requestBuyParams_.requestId];
+
+        TokenParams storage _currentTokenParams = _tokenParams[_nftRequest.tokenContract];
+
+        address fundsRecipient_ = _getFundsRecipient(_currentTokenParams.fundsRecipient);
+        if (fundsRecipient_ != address(this)) {
+            _tranferNFT(
+                _nftRequest.nftContract,
+                address(this),
+                fundsRecipient_,
+                _nftRequest.nftId
+            );
+        }
+
+        _updateRequestStatus(requestBuyParams_.requestId, NFTRequestStatus.MINTED);
+
+        _mint(
+            _nftRequest.tokenContract,
+            msg.sender,
+            requestBuyParams_.futureTokenId,
+            requestBuyParams_.tokenURI
+        );
+
+        emit TokenSuccessfullyExchanged(msg.sender, requestBuyParams_, _nftRequest);
+    }
+
+    function createNFTRequest(
+        address nftContract_,
+        uint256 nftId_,
+        address tokenContract_
+    ) external override returns (uint256 requestId_) {
+        _checkTokenContractExists(tokenContract_);
+
         TokenParams storage _currentTokenParams = _tokenParams[tokenContract_];
+
+        require(!_currentTokenParams.isDisabled, "Marketplace: Token is disabled.");
 
         require(
             _currentTokenParams.isNFTBuyable,
             "Marketplace: This token cannot be purchased with NFT."
         );
 
-        _verifySignature(
-            tokenContract_,
-            futureTokenId_,
-            nftAddress_,
-            nftFloorPrice_,
-            0, // Discount is zero for NFT by NFT option
-            endTimestamp_,
-            tokenURI_,
-            r_,
-            s_,
-            v_
-        );
+        _tranferNFT(nftContract_, msg.sender, address(this), nftId_);
 
-        _payWithNFT(tokenContract_, IERC721Upgradeable(nftAddress_), nftFloorPrice_, tokenId_);
+        requestId_ = _nftRequests.length;
 
-        _mintToken(tokenContract_, futureTokenId_, tokenURI_);
-
-        emit SuccessfullyMintedByNFT(
-            tokenContract_,
-            msg.sender,
-            MintedTokenInfo(futureTokenId_, _currentTokenParams.minNFTFloorPrice, tokenURI_),
-            nftAddress_,
-            tokenId_,
-            nftFloorPrice_,
-            _currentTokenParams.fundsRecipient
-        );
-    }
-
-    function setBaseTokenContractsURI(
-        string memory baseTokenContractsURI_
-    ) external override whenNotPaused onlyMarketplaceManager {
-        baseTokenContractsURI = baseTokenContractsURI_;
-
-        emit BaseTokenContractsURIUpdated(baseTokenContractsURI_);
-    }
-
-    function _payWithERC20(
-        address tokenContract_,
-        IERC20MetadataUpgradeable tokenAddr_,
-        uint256 tokenPrice_,
-        uint256 discount_
-    ) internal returns (uint256) {
-        require(msg.value == 0, "Marketplace: Currency amount must be a zero.");
-
-        TokenParams storage _currentTokenParams = _tokenParams[tokenContract_];
-
-        uint256 amountToPay_ = tokenPrice_ != 0
-            ? _getAmountAfterDiscount(
-                (_currentTokenParams.pricePerOneToken * DECIMAL) / tokenPrice_,
-                discount_
+        _nftRequests.push(
+            NFTRequestInfo(
+                tokenContract_,
+                nftContract_,
+                nftId_,
+                msg.sender,
+                NFTRequestStatus.PENDING
             )
-            : _currentTokenParams.voucherTokensAmount;
-
-        tokenAddr_.safeTransferFrom(
-            msg.sender,
-            _currentTokenParams.fundsRecipient == address(0)
-                ? address(this)
-                : _currentTokenParams.fundsRecipient,
-            amountToPay_.from18(tokenAddr_.decimals())
         );
 
-        return amountToPay_;
+        emit NFTRequestCreated(requestId_, msg.sender, nftContract_, nftId_, tokenContract_);
     }
 
-    function _payWithETH(
-        address tokenContract_,
-        uint256 ethPrice_,
-        uint256 discount_
-    ) internal returns (uint256) {
-        TokenParams storage _currentTokenParams = _tokenParams[tokenContract_];
+    function cancelNFTRequest(uint256 requestId_) external override {
+        require(requestId_ < _nftRequests.length, "Marketplace: Request ID is not valid.");
 
-        uint256 amountToPay_ = _getAmountAfterDiscount(
-            (_currentTokenParams.pricePerOneToken * DECIMAL) / ethPrice_,
-            discount_
-        );
+        NFTRequestInfo storage _nftRequest = _nftRequests[requestId_];
 
-        require(msg.value >= amountToPay_, "Marketplace: Invalid currency amount.");
+        require(_nftRequest.requester == msg.sender, "Marketplace: Sender is not the requester.");
 
-        if (
-            _currentTokenParams.fundsRecipient != address(0) &&
-            _currentTokenParams.fundsRecipient != address(this)
-        ) {
-            (bool success_, ) = _currentTokenParams.fundsRecipient.call{value: amountToPay_}("");
-            require(success_, "Marketplace: Failed to send currency to recipient.");
-        }
+        _updateRequestStatus(requestId_, NFTRequestStatus.CANCELED);
 
-        uint256 extraCurrencyAmount_ = msg.value - amountToPay_;
+        _tranferNFT(_nftRequest.nftContract, address(this), msg.sender, _nftRequest.nftId);
 
-        if (extraCurrencyAmount_ > 0) {
-            (bool success_, ) = msg.sender.call{value: extraCurrencyAmount_}("");
-            require(success_, "Marketplace: Failed to return currency.");
-        }
-
-        return amountToPay_;
-    }
-
-    function _payWithNFT(
-        address tokenContract_,
-        IERC721Upgradeable nft_,
-        uint256 nftFloorPrice_,
-        uint256 tokenId_
-    ) internal {
-        TokenParams storage _currentTokenParams = _tokenParams[tokenContract_];
-
-        require(
-            nftFloorPrice_ >= _currentTokenParams.minNFTFloorPrice,
-            "Marketplace: NFT floor price is less than the minimal."
-        );
-        require(
-            IERC721Upgradeable(nft_).ownerOf(tokenId_) == msg.sender,
-            "Marketplace: Sender is not the owner."
-        );
-
-        nft_.safeTransferFrom(
-            msg.sender,
-            _currentTokenParams.fundsRecipient == address(0)
-                ? address(this)
-                : _currentTokenParams.fundsRecipient,
-            tokenId_
-        );
-    }
-
-    function _mintToken(
-        address tokenContract_,
-        uint256 mintTokenId_,
-        string memory tokenURI_
-    ) internal {
-        IERC721MintableToken(tokenContract_).mint(msg.sender, mintTokenId_, tokenURI_);
-    }
-
-    function getUserTokenIDs(
-        address tokenContract_,
-        address userAddr_
-    ) external view override returns (uint256[] memory tokenIDs_) {
-        uint256 _tokensCount = IERC721Upgradeable(tokenContract_).balanceOf(userAddr_);
-
-        tokenIDs_ = new uint256[](_tokensCount);
-
-        for (uint256 i; i < _tokensCount; i++) {
-            tokenIDs_[i] = IERC721EnumerableUpgradeable(tokenContract_).tokenOfOwnerByIndex(
-                userAddr_,
-                i
-            );
-        }
-    }
-
-    function getTokenContractsCount() external view override returns (uint256) {
-        return _tokenContracts.length();
-    }
-
-    function getActiveTokenContractsCount() external view override returns (uint256 count_) {
-        for (uint256 i = 0; i < _tokenContracts.length(); i++) {
-            if (!_tokenParams[_tokenContracts.at(i)].isDisabled) {
-                count_++;
-            }
-        }
+        emit NFTRequestCanceled(requestId_);
     }
 
     function getTokenContractsPart(
@@ -404,8 +419,52 @@ contract Marketplace is
                 tokenContract_[i],
                 _currentTokenParams.isDisabled,
                 _currentTokenParams.pricePerOneToken,
-                ERC721Upgradeable(tokenContract_[i]).name()
+                IERC721Metadata(tokenContract_[i]).name()
             );
+        }
+    }
+
+    function getDetailedTokenParams(
+        address[] memory tokenContracts_
+    ) public view override returns (DetailedTokenParams[] memory detailedTokenParams_) {
+        detailedTokenParams_ = new DetailedTokenParams[](tokenContracts_.length);
+
+        for (uint256 i; i < tokenContracts_.length; i++) {
+            detailedTokenParams_[i] = DetailedTokenParams(
+                tokenContracts_[i],
+                _tokenParams[tokenContracts_[i]],
+                IERC721Metadata(tokenContracts_[i]).name(),
+                IERC721Metadata(tokenContracts_[i]).symbol()
+            );
+        }
+    }
+
+    function getUserTokensPart(
+        address userAddr_,
+        uint256 offset_,
+        uint256 limit_
+    ) external view override returns (UserTokens[] memory userTokens_) {
+        address[] memory _tokenContractsPart = _tokenContracts.part(offset_, limit_);
+
+        userTokens_ = new UserTokens[](_tokenContractsPart.length);
+
+        for (uint256 i = 0; i < _tokenContractsPart.length; i++) {
+            userTokens_[i] = UserTokens(
+                _tokenContractsPart[i],
+                IERC721MintableToken(_tokenContractsPart[i]).getUserTokenIDs(userAddr_)
+            );
+        }
+    }
+
+    function getTokenContractsCount() external view override returns (uint256) {
+        return _tokenContracts.length();
+    }
+
+    function getActiveTokenContractsCount() external view override returns (uint256 count_) {
+        for (uint256 i = 0; i < _tokenContracts.length(); i++) {
+            if (!_tokenParams[_tokenContracts.at(i)].isDisabled) {
+                count_++;
+            }
         }
     }
 
@@ -416,30 +475,6 @@ contract Marketplace is
         return getBaseTokenParams(getTokenContractsPart(offset_, limit_));
     }
 
-    function getDetailedTokenParams(
-        address[] memory tokenContracts_
-    ) public view override returns (DetailedTokenParams[] memory detailedTokenParams_) {
-        detailedTokenParams_ = new DetailedTokenParams[](tokenContracts_.length);
-
-        for (uint256 i; i < tokenContracts_.length; i++) {
-            TokenParams memory _currentTokenParams = _tokenParams[tokenContracts_[i]];
-            detailedTokenParams_[i] = DetailedTokenParams(
-                tokenContracts_[i],
-                TokenParams(
-                    _currentTokenParams.pricePerOneToken,
-                    _currentTokenParams.minNFTFloorPrice,
-                    _currentTokenParams.voucherTokensAmount,
-                    _currentTokenParams.voucherTokenContract,
-                    _currentTokenParams.fundsRecipient,
-                    _currentTokenParams.isNFTBuyable,
-                    _currentTokenParams.isDisabled
-                ),
-                ERC721Upgradeable(tokenContracts_[i]).name(),
-                ERC721Upgradeable(tokenContracts_[i]).symbol()
-            );
-        }
-    }
-
     function getDetailedTokenParamsPart(
         uint256 offset_,
         uint256 limit_
@@ -447,41 +482,170 @@ contract Marketplace is
         return getDetailedTokenParams(getTokenContractsPart(offset_, limit_));
     }
 
-    function _verifySignature(
+    function getNFTRequestsCount() external view override returns (uint256) {
+        return _nftRequests.length;
+    }
+
+    function getNFTRequestsPart(
+        uint256 offset_,
+        uint256 limit_
+    ) external view override returns (NFTRequestInfo[] memory nftRequests_) {
+        uint256 to_ = _handleIncomingParametersForPart(_nftRequests.length, offset_, limit_);
+        nftRequests_ = new NFTRequestInfo[](to_ - offset_);
+
+        for (uint256 i = offset_; i < to_; i++) {
+            nftRequests_[i - offset_] = _nftRequests[i];
+        }
+    }
+
+    function _sendNativeCurrency(address recipient_, uint256 amountToSend_) internal {
+        (bool success_, ) = recipient_.call{value: amountToSend_}("");
+
+        require(success_, "Marketplace: Failed to send currency to the recipient.");
+    }
+
+    function _sendERC20(
+        IERC20Metadata token_,
+        address sender_,
+        address recipient_,
+        uint256 amountToSend_
+    ) internal {
+        token_.safeTransferFrom(sender_, recipient_, amountToSend_.from18(token_.decimals()));
+    }
+
+    function _mintToken(
+        BuyParams memory buyParams_,
+        PaymentType paymentType_,
+        uint256 pricePerOneToken_,
+        uint256 paidTokensAmount_
+    ) internal {
+        _mint(buyParams_.tokenContract, msg.sender, buyParams_.futureTokenId, buyParams_.tokenURI);
+
+        emit TokenSuccessfullyPurchased(
+            msg.sender,
+            pricePerOneToken_,
+            paidTokensAmount_,
+            buyParams_,
+            paymentType_
+        );
+    }
+
+    function _mint(
         address tokenContract_,
-        uint256 futureTokenId_,
-        address paymentTokenAddress_,
-        uint256 paymentTokenPrice_,
-        uint256 discount_,
-        uint256 endTimestamp_,
-        string memory tokenURI_,
-        bytes32 r_,
-        bytes32 s_,
-        uint8 v_
+        address recipient_,
+        uint256 tokenId_,
+        string memory tokenURI_
+    ) internal {
+        IERC721MintableToken(tokenContract_).mint(recipient_, tokenId_, tokenURI_);
+    }
+
+    function _tranferNFT(
+        address nftContract_,
+        address from_,
+        address to_,
+        uint256 nftId_
+    ) internal {
+        IERC721 nft_ = IERC721(nftContract_);
+        require(nft_.ownerOf(nftId_) == from_, "Marketplace: Sender is not the owner.");
+        nft_.safeTransferFrom(from_, to_, nftId_);
+    }
+
+    function _updateRequestStatus(uint256 requestId_, NFTRequestStatus status_) internal {
+        NFTRequestInfo storage _nftRequest = _nftRequests[requestId_];
+        require(
+            _nftRequest.status == NFTRequestStatus.PENDING,
+            "Marketplace: Request status is not valid."
+        );
+
+        _nftRequest.status = status_;
+    }
+
+    function _beforeBuyTokenCheck(BuyParams memory buyParams_, Sig memory sig_) internal view {
+        _checkTokenContractExists(buyParams_.tokenContract);
+
+        TokenParams storage _currentTokenParams = _tokenParams[buyParams_.tokenContract];
+
+        require(!_currentTokenParams.isDisabled, "Marketplace: Unable to buy disabled token");
+
+        _verifySignature(
+            sig_.endTimestamp,
+            sig_,
+            keccak256(
+                abi.encode(
+                    _BUY_TYPEHASH,
+                    buyParams_.tokenContract,
+                    buyParams_.futureTokenId,
+                    buyParams_.paymentDetails.paymentTokenAddress,
+                    buyParams_.paymentDetails.paymentTokenPrice,
+                    buyParams_.paymentDetails.discount,
+                    sig_.endTimestamp,
+                    keccak256(abi.encodePacked(buyParams_.tokenURI))
+                )
+            )
+        );
+    }
+
+    function _beforeBuyTokenWithRequestCheck(
+        RequestBuyParams memory requestBuyParams_,
+        Sig memory sig_
     ) internal view {
-        bytes32 structHash_ = keccak256(
-            abi.encode(
-                _BUY_TYPEHASH,
-                tokenContract_,
-                futureTokenId_,
-                paymentTokenAddress_,
-                paymentTokenPrice_,
-                discount_,
-                endTimestamp_,
-                keccak256(abi.encodePacked(tokenURI_))
+        require(
+            requestBuyParams_.requestId < _nftRequests.length,
+            "Marketplace: Request ID is not valid."
+        );
+
+        _verifySignature(
+            sig_.endTimestamp,
+            sig_,
+            keccak256(
+                abi.encode(
+                    _BUY_WITH_REQUEST_TYPEHASH,
+                    requestBuyParams_.requestId,
+                    requestBuyParams_.futureTokenId,
+                    sig_.endTimestamp,
+                    keccak256(abi.encodePacked(requestBuyParams_.tokenURI))
+                )
             )
         );
 
-        address signer_ = ECDSAUpgradeable.recover(_hashTypedDataV4(structHash_), v_, r_, s_);
+        NFTRequestInfo storage _nftRequest = _nftRequests[requestBuyParams_.requestId];
+
+        require(_nftRequest.requester == msg.sender, "Marketplace: Sender is not the requester.");
+
+        TokenParams storage _currentTokenParams = _tokenParams[_nftRequest.tokenContract];
+
+        require(!_currentTokenParams.isDisabled, "Marketplace: Token is disabled.");
+
+        require(
+            _currentTokenParams.isNFTBuyable,
+            "Marketplace: This token cannot be purchased with NFT."
+        );
+    }
+
+    function _verifySignature(
+        uint256 endTimestamp_,
+        Sig memory sig_,
+        bytes32 structHash_
+    ) internal view {
+        address signer_ = ECDSAUpgradeable.recover(
+            _hashTypedDataV4(structHash_),
+            sig_.v,
+            sig_.r,
+            sig_.s
+        );
 
         require(_roleManager.isSignatureManager(signer_), "Marketplace: Invalid signature.");
         require(block.timestamp <= endTimestamp_, "Marketplace: Signature expired.");
     }
 
-    function _validateTokenParams(string memory name_, string memory symbol_) internal pure {
+    function _getFundsRecipient(address fundsRecipient_) internal view returns (address) {
+        return fundsRecipient_ == address(0) ? address(this) : fundsRecipient_;
+    }
+
+    function _checkTokenContractExists(address tokenContract_) internal view {
         require(
-            bytes(name_).length > 0 && bytes(symbol_).length > 0,
-            "Marketplace: Token name or symbol is empty."
+            _tokenContracts.contains(tokenContract_),
+            "Marketplace: Token contract not found."
         );
     }
 
@@ -499,10 +663,49 @@ contract Marketplace is
         );
     }
 
-    function _getAmountAfterDiscount(
-        uint256 amount_,
-        uint256 discount_
+    function _validateTokenParams(string memory name_, string memory symbol_) internal pure {
+        require(
+            bytes(name_).length > 0 && bytes(symbol_).length > 0,
+            "Marketplace: Token name or symbol is empty."
+        );
+    }
+
+    function _validateVoucherParams(
+        bool isVoucherBuyable,
+        uint256 voucherTokensAmount,
+        address voucherAddress
+    ) internal pure {
+        require(
+            !isVoucherBuyable || (voucherTokensAmount > 0 && voucherAddress != address(0)),
+            "Marketplace: Invalid voucher params."
+        );
+    }
+
+    function _getAmountToPay(
+        PaymentDetails memory paymentDetails_,
+        uint256 pricePerOneToken_
     ) internal pure returns (uint256) {
-        return (amount_ * (PERCENTAGE_100 - discount_)) / PERCENTAGE_100;
+        uint256 amountWithoutDiscount_ = (pricePerOneToken_ * DECIMAL) /
+        paymentDetails_.paymentTokenPrice;
+
+        return
+        (amountWithoutDiscount_ * (PERCENTAGE_100 - paymentDetails_.discount)) /
+        PERCENTAGE_100;
+    }
+
+    function _handleIncomingParametersForPart(
+        uint256 length_,
+        uint256 offset_,
+        uint256 limit_
+    ) private pure returns (uint256 to_) {
+        to_ = offset_ + limit_;
+
+        if (to_ > length_) {
+            to_ = length_;
+        }
+
+        if (offset_ > to_) {
+            to_ = offset_;
+        }
     }
 }

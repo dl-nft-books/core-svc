@@ -17,6 +17,56 @@
       "inputs": [
         {
           "indexed": true,
+          "internalType": "uint256",
+          "name": "requestId",
+          "type": "uint256"
+        }
+      ],
+      "name": "NFTRequestCanceled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "requestId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "requester",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "nftContract",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "tokenContract",
+          "type": "address"
+        }
+      ],
+      "name": "NFTRequestCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
           "internalType": "address",
           "name": "tokenAddr",
           "type": "address"
@@ -48,144 +98,6 @@
         }
       ],
       "name": "Paused",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "tokenContract",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "mintedTokenPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "string",
-              "name": "tokenURI",
-              "type": "string"
-            }
-          ],
-          "indexed": false,
-          "internalType": "struct IMarketplace.MintedTokenInfo",
-          "name": "mintedTokenInfo",
-          "type": "tuple"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "paymentTokenAddress",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "paidTokensAmount",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "paymentTokenPrice",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "discount",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "fundsRecipient",
-          "type": "address"
-        }
-      ],
-      "name": "SuccessfullyMinted",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "tokenContract",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "tokenId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "mintedTokenPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "string",
-              "name": "tokenURI",
-              "type": "string"
-            }
-          ],
-          "indexed": false,
-          "internalType": "struct IMarketplace.MintedTokenInfo",
-          "name": "mintedTokenInfo",
-          "type": "tuple"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "nftAddress",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "nftFloorPrice",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "fundsRecipient",
-          "type": "address"
-        }
-      ],
-      "name": "SuccessfullyMintedByNFT",
       "type": "event"
     },
     {
@@ -244,6 +156,11 @@
             {
               "internalType": "bool",
               "name": "isDisabled",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "isVoucherBuyable",
               "type": "bool"
             }
           ],
@@ -313,6 +230,11 @@
               "internalType": "bool",
               "name": "isDisabled",
               "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "isVoucherBuyable",
+              "type": "bool"
             }
           ],
           "indexed": false,
@@ -322,6 +244,161 @@
         }
       ],
       "name": "TokenContractParamsUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "requestId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "futureTokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "tokenURI",
+              "type": "string"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IMarketplace.RequestBuyParams",
+          "name": "buyParams",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenContract",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "nftContract",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nftId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "requester",
+              "type": "address"
+            },
+            {
+              "internalType": "enum IMarketplace.NFTRequestStatus",
+              "name": "status",
+              "type": "uint8"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IMarketplace.NFTRequestInfo",
+          "name": "nftRequestInfo",
+          "type": "tuple"
+        }
+      ],
+      "name": "TokenSuccessfullyExchanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "mintedTokenPrice",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "paidTokensAmount",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "paymentTokenAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "paymentTokenPrice",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "discount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nftTokenId",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct IMarketplace.PaymentDetails",
+              "name": "paymentDetails",
+              "type": "tuple"
+            },
+            {
+              "internalType": "address",
+              "name": "tokenContract",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "futureTokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "tokenURI",
+              "type": "string"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IMarketplace.BuyParams",
+          "name": "buyParams",
+          "type": "tuple"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum IMarketplace.PaymentType",
+          "name": "paymentType",
+          "type": "uint8"
+        }
+      ],
+      "name": "TokenSuccessfullyPurchased",
       "type": "event"
     },
     {
@@ -398,6 +475,11 @@
               "internalType": "bool",
               "name": "isDisabled",
               "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "isVoucherBuyable",
+              "type": "bool"
             }
           ],
           "internalType": "struct IMarketplace.TokenParams",
@@ -432,57 +514,177 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "tokenContract_",
-          "type": "address"
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "paymentTokenAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "paymentTokenPrice",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "discount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nftTokenId",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct IMarketplace.PaymentDetails",
+              "name": "paymentDetails",
+              "type": "tuple"
+            },
+            {
+              "internalType": "address",
+              "name": "tokenContract",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "futureTokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "tokenURI",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct IMarketplace.BuyParams",
+          "name": "buyParams_",
+          "type": "tuple"
         },
         {
-          "internalType": "uint256",
-          "name": "futureTokenId_",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "paymentTokenAddress_",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "paymentTokenPrice_",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "discount_",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "endTimestamp_",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "tokenURI_",
-          "type": "string"
-        },
-        {
-          "internalType": "bytes32",
-          "name": "r_",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "bytes32",
-          "name": "s_",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "uint8",
-          "name": "v_",
-          "type": "uint8"
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "endTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "r",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "s",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint8",
+              "name": "v",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct IMarketplace.Sig",
+          "name": "sig_",
+          "type": "tuple"
         }
       ],
-      "name": "buyToken",
+      "name": "buyTokenWithERC20",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "paymentTokenAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "paymentTokenPrice",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "discount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nftTokenId",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct IMarketplace.PaymentDetails",
+              "name": "paymentDetails",
+              "type": "tuple"
+            },
+            {
+              "internalType": "address",
+              "name": "tokenContract",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "futureTokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "tokenURI",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct IMarketplace.BuyParams",
+          "name": "buyParams_",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "endTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "r",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "s",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint8",
+              "name": "v",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct IMarketplace.Sig",
+          "name": "sig_",
+          "type": "tuple"
+        }
+      ],
+      "name": "buyTokenWithETH",
       "outputs": [],
       "stateMutability": "payable",
       "type": "function"
@@ -490,58 +692,304 @@
     {
       "inputs": [
         {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "paymentTokenAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "paymentTokenPrice",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "discount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nftTokenId",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct IMarketplace.PaymentDetails",
+              "name": "paymentDetails",
+              "type": "tuple"
+            },
+            {
+              "internalType": "address",
+              "name": "tokenContract",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "futureTokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "tokenURI",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct IMarketplace.BuyParams",
+          "name": "buyParams_",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "endTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "r",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "s",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint8",
+              "name": "v",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct IMarketplace.Sig",
+          "name": "sig_",
+          "type": "tuple"
+        }
+      ],
+      "name": "buyTokenWithNFT",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "requestId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "futureTokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "tokenURI",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct IMarketplace.RequestBuyParams",
+          "name": "requestBuyParams_",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "endTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "r",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "s",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint8",
+              "name": "v",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct IMarketplace.Sig",
+          "name": "sig_",
+          "type": "tuple"
+        }
+      ],
+      "name": "buyTokenWithRequest",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "paymentTokenAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "paymentTokenPrice",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "discount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nftTokenId",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct IMarketplace.PaymentDetails",
+              "name": "paymentDetails",
+              "type": "tuple"
+            },
+            {
+              "internalType": "address",
+              "name": "tokenContract",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "futureTokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "tokenURI",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct IMarketplace.BuyParams",
+          "name": "buyParams_",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "endTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "r",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "s",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint8",
+              "name": "v",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct IMarketplace.Sig",
+          "name": "sig_",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "endTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "r",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "s",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint8",
+              "name": "v",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct IMarketplace.Sig",
+          "name": "permitSig_",
+          "type": "tuple"
+        }
+      ],
+      "name": "buyTokenWithVoucher",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "requestId_",
+          "type": "uint256"
+        }
+      ],
+      "name": "cancelNFTRequest",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "nftContract_",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "nftId_",
+          "type": "uint256"
+        },
+        {
           "internalType": "address",
           "name": "tokenContract_",
           "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "futureTokenId_",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "nftAddress_",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "nftFloorPrice_",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId_",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "endTimestamp_",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "tokenURI_",
-          "type": "string"
-        },
-        {
-          "internalType": "bytes32",
-          "name": "r_",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "bytes32",
-          "name": "s_",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "uint8",
-          "name": "v_",
-          "type": "uint8"
         }
       ],
-      "name": "buyTokenByNFT",
-      "outputs": [],
+      "name": "createNFTRequest",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "requestId_",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "nonpayable",
       "type": "function"
     },
@@ -698,6 +1146,11 @@
                   "internalType": "bool",
                   "name": "isDisabled",
                   "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isVoucherBuyable",
+                  "type": "bool"
                 }
               ],
               "internalType": "struct IMarketplace.TokenParams",
@@ -781,6 +1234,11 @@
                   "internalType": "bool",
                   "name": "isDisabled",
                   "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isVoucherBuyable",
+                  "type": "bool"
                 }
               ],
               "internalType": "struct IMarketplace.TokenParams",
@@ -814,6 +1272,70 @@
           "internalType": "address",
           "name": "injector_",
           "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getNFTRequestsCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offset_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "limit_",
+          "type": "uint256"
+        }
+      ],
+      "name": "getNFTRequestsPart",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenContract",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "nftContract",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nftId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "requester",
+              "type": "address"
+            },
+            {
+              "internalType": "enum IMarketplace.NFTRequestStatus",
+              "name": "status",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct IMarketplace.NFTRequestInfo[]",
+          "name": "nftRequests_",
+          "type": "tuple[]"
         }
       ],
       "stateMutability": "view",
@@ -860,21 +1382,38 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "tokenContract_",
+          "name": "userAddr_",
           "type": "address"
         },
         {
-          "internalType": "address",
-          "name": "userAddr_",
-          "type": "address"
+          "internalType": "uint256",
+          "name": "offset_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "limit_",
+          "type": "uint256"
         }
       ],
-      "name": "getUserTokenIDs",
+      "name": "getUserTokensPart",
       "outputs": [
         {
-          "internalType": "uint256[]",
-          "name": "tokenIDs_",
-          "type": "uint256[]"
+          "components": [
+            {
+              "internalType": "address",
+              "name": "tokenContract",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "tokenIds",
+              "type": "uint256[]"
+            }
+          ],
+          "internalType": "struct IMarketplace.UserTokens[]",
+          "name": "userTokens_",
+          "type": "tuple[]"
         }
       ],
       "stateMutability": "view",
@@ -1038,6 +1577,11 @@
               "internalType": "bool",
               "name": "isDisabled",
               "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "isVoucherBuyable",
+              "type": "bool"
             }
           ],
           "internalType": "struct IMarketplace.TokenParams",
@@ -1061,6 +1605,16 @@
           "internalType": "address",
           "name": "recipient_",
           "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "desiredAmount_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "withdrawAll_",
+          "type": "bool"
         }
       ],
       "name": "withdrawCurrency",

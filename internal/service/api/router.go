@@ -49,7 +49,7 @@ func (s *service) router() chi.Router {
 
 		r.Route("/promocodes", func(r chi.Router) {
 			r.With(middlewares.CheckAccessToken).Get("/", handlers.ListPromocodes)
-			r.With(middlewares.CheckAccessToken).Post("/", handlers.CreatePromocode)
+			r.Post("/", handlers.CreatePromocode)
 
 			r.Get("/validate/{promocode}", handlers.ValidatePromocodeById)
 

@@ -81,6 +81,12 @@ func (q *promocodesQ) FilterByState(state ...resources.PromocodeState) data.Prom
 	return q
 }
 
+func (q *promocodesQ) FilterByBookId(bookId ...int64) data.PromocodesQ {
+	q.selector = q.selector.Where(squirrel.Eq{promocodesBooksBookId: bookId})
+
+	return q
+}
+
 func (q *promocodesQ) Select() (promocodes []data.Promocode, err error) {
 	err = q.database.Select(&promocodes, q.selector)
 	return
