@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/cast"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
+	"gitlab.com/distributed_lab/logan/v3"
 	"net/http"
 )
 
@@ -22,18 +23,18 @@ func CreatePromocode(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
-	//address := r.Context().Value("address").(string)
-	//isMarketplaceManager, err := helpers.CheckMarketplacePerrmision(*helpers.Networker(r), address)
-	//if err != nil {
-	//	helpers.Log(r).WithError(err).WithFields(logan.F{"account": address}).Debug("failed to check permissions")
-	//	ape.RenderErr(w, problems.InternalError())
-	//	return
-	//}
-	//if !isMarketplaceManager {
-	//	helpers.Log(r).WithFields(logan.F{"account": address}).Debug("you don't have permission to create book")
-	//	ape.RenderErr(w, problems.Forbidden())
-	//	return
-	//}
+	address := r.Context().Value("address").(string)
+	isMarketplaceManager, err := helpers.CheckMarketplacePerrmision(*helpers.Networker(r), address)
+	if err != nil {
+		helpers.Log(r).WithError(err).WithFields(logan.F{"account": address}).Debug("failed to check permissions")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	if !isMarketplaceManager {
+		helpers.Log(r).WithFields(logan.F{"account": address}).Debug("you don't have permission to create book")
+		ape.RenderErr(w, problems.Forbidden())
+		return
+	}
 	prString := uuid.NewString()
 	if request.Data.Attributes.Promocode != nil && *request.Data.Attributes.Promocode != "" {
 		pr, err := helpers.DB(r).Promocodes().FilterByPromocode(*request.Data.Attributes.Promocode).Get()
