@@ -3,6 +3,7 @@ package cleaner
 import (
 	"context"
 	"fmt"
+	documenter "github.com/dl-nft-books/blob-svc/connector/api"
 	"github.com/dl-nft-books/core-svc/internal/config"
 	"github.com/dl-nft-books/core-svc/internal/data"
 	"github.com/dl-nft-books/core-svc/internal/data/postgres"
@@ -10,7 +11,6 @@ import (
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/running"
-	documenter "github.com/dl-nft-books/blob-svc/connector/api"
 	"net/http"
 )
 
@@ -72,7 +72,7 @@ func (p *TaskCleaner) run(ctx context.Context) error {
 			"task_status": task.Status,
 		}
 
-		bannerName := fmt.Sprintf("%s.pdf", task.BannerIpfsHash)
+		bannerName := fmt.Sprintf("%s.png", task.BannerIpfsHash)
 
 		statusCode, err := p.documenter.DeleteDocument(bannerName)
 
