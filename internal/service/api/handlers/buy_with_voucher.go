@@ -13,7 +13,6 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 	"math/big"
@@ -106,17 +105,6 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	var R, S [32]byte
-	copy(R[:], mintSignature.R)
-	copy(S[:], mintSignature.S)
-
-	// Connect to an Ethereum client
-	client, err := ethclient.Dial(helpers.Transacter(r).EthClient)
-	if err != nil {
-		logger.WithError(err).Error("failed to connect to client")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
 
 	publicKeyECDSA, ok := helpers.Transacter(r).PrivateKey.Public().(*ecdsa.PublicKey)
 	if !ok {
@@ -126,14 +114,14 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
-	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+	nonce, err := network.RpcUrl.PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
 		logger.WithError(err).Error("failed to get nonce")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	gasPrice, err := client.SuggestGasPrice(context.Background())
+	gasPrice, err := network.RpcUrl.SuggestGasPrice(context.Background())
 	if err != nil {
 		logger.WithError(err).Error("failed to get gas price")
 		ape.RenderErr(w, problems.InternalError())

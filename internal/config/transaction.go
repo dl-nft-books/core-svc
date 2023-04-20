@@ -13,7 +13,6 @@ type TransactionConfigurator interface {
 
 type TransactionConfig struct {
 	PrivateKey *ecdsa.PrivateKey `fig:"private_key,required"`
-	EthClient  string            `fig:"eth_client,required"`
 	GasLimit   uint64            `fig:"gas_limit,required"`
 }
 
