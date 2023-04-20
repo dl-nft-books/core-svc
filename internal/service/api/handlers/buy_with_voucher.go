@@ -7,6 +7,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
+	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
 	"github.com/dl-nft-books/core-svc/internal/signature"
 	"github.com/dl-nft-books/core-svc/solidity/generated/contractsregistry"
 	"github.com/dl-nft-books/core-svc/solidity/generated/marketplace"
@@ -206,5 +207,11 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	w.WriteHeader(http.StatusNoContent)
+	ape.Render(w, responses.NewSignMintResponse(
+		mintInfo.PricePerOneToken.String(),
+		mintInfo.Discount.String(),
+		mintSignature,
+		mintInfo.EndTimestamp,
+		mintInfo.TokenId,
+	))
 }
