@@ -179,7 +179,9 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	fmt.Printf("sent transaction: %s", tx.Hash().Hex())
+
+	receipt, err := bind.WaitMined(context.Background(), network.RpcUrl, tx)
+	fmt.Printf("transaction mined in block %d\n", receipt.BlockNumber.Uint64())
 
 	ape.Render(w, responses.NewSignMintResponse(
 		mintInfo.PricePerOneToken.String(),
