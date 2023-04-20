@@ -102,13 +102,13 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		EndTimestamp:   time.Now().Add(mintConfig.Expiration).Unix(),
 	}
 
-	mintInfo.PricePerOneToken, err = getPricePerOneToken(w, r, request, *book, mintConfig.Precision)
-	if err != nil {
-		logger.WithError(err).Error("failed to get price")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
-
+	//mintInfo.PricePerOneToken, err = getPricePerOneToken(w, r, request, *book, mintConfig.Precision)
+	//if err != nil {
+	//	logger.WithError(err).Error("failed to get price")
+	//	ape.RenderErr(w, problems.InternalError())
+	//	return
+	//}
+	mintInfo.PricePerOneToken = big.NewInt(0)
 	// Getting promocode info
 	promocode, err := helpers.DB(r).Promocodes().FilterById(request.PromocodeID).Get()
 	if err != nil {
