@@ -12,6 +12,7 @@ import (
 	"github.com/dl-nft-books/core-svc/solidity/generated/marketplace"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
@@ -141,8 +142,10 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		EndSigTimestamp: request.Data.Attributes.EndSigTimestamp,
 		V:               uint8(request.Data.Attributes.PermitSig.Attributes.V),
 	}
-	copy(permitSig.R[:], request.Data.Attributes.PermitSig.Attributes.R)
-	copy(permitSig.S[:], request.Data.Attributes.PermitSig.Attributes.S)
+	decodeR, err := hexutil.Decode(request.Data.Attributes.PermitSig.Attributes.R)
+	decodeS, err := hexutil.Decode(request.Data.Attributes.PermitSig.Attributes.S)
+	copy(permitSig.R[:], decodeR)
+	copy(permitSig.S[:], decodeS)
 
 	sig := marketplace.IMarketplaceSigData{
 		EndSigTimestamp: big.NewInt(mintInfo.EndTimestamp),
