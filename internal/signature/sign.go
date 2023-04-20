@@ -25,7 +25,7 @@ func SignMintInfo(
 	domainData *EIP712DomainData,
 	config *config.MintConfig,
 ) (
-	*Parameters,
+	[]byte,
 	error,
 ) {
 	privateKey := config.PrivateKey
@@ -43,7 +43,7 @@ func SignMintInfo(
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to sign EIP712 hash")
 	}
-	return parseSignatureParameters(signature)
+	return signature, nil
 }
 
 func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
@@ -94,7 +94,7 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 	return signer.NewDefaultSigner(privateKey).SignTypedData(data)
 }
 
-func parseSignatureParameters(signature []byte) (*Parameters, error) {
+func ParseSignatureParameters(signature []byte) (*Parameters, error) {
 	if len(signature) != 65 {
 		return nil, errors.From(wrongSignatureLengthErr, logan.F{
 			"signature": string(signature),
