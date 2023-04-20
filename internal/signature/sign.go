@@ -2,7 +2,6 @@ package signature
 
 import (
 	"crypto/ecdsa"
-	"fmt"
 	"github.com/ethereum/go-ethereum/common"
 	"gitlab.com/distributed_lab/logan/v3"
 
@@ -44,7 +43,6 @@ func SignMintInfo(
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to sign EIP712 hash")
 	}
-	fmt.Println("SIGNATURE", signature)
 	return signature, nil
 }
 

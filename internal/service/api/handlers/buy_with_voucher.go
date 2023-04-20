@@ -3,8 +3,6 @@ package handlers
 import (
 	"context"
 	"crypto/ecdsa"
-	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 	"github.com/dl-nft-books/core-svc/internal/signature"
@@ -20,6 +18,8 @@ import (
 	"net/http"
 	"time"
 )
+
+const receiptStatusOk = 1
 
 func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 	logger := helpers.Log(r)
@@ -176,19 +176,6 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("domainData")
-	spew.Dump(domainData)
-	fmt.Println("mintInfo")
-	spew.Dump(mintInfo)
-	fmt.Println("mintSignature")
-	spew.Dump(mintSignature)
-	fmt.Println("sig")
-	spew.Dump(sig)
-	fmt.Println("permitSig")
-	spew.Dump(permitSig)
-	fmt.Println("buyParams")
-	spew.Dump(buyParams)
-
 	tx, err := transactor.BuyTokenWithVoucher(auth, buyParams, sig, permitSig)
 
 	if err != nil {
@@ -198,10 +185,7 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 	}
 
 	receipt, err := bind.WaitMined(context.Background(), network.RpcUrl, tx)
-	fmt.Printf("transaction mined in block %d\n", receipt.BlockNumber.Uint64())
-	fmt.Printf("transaction mined with hash %v\n", receipt.TxHash)
-	fmt.Printf("transaction mined with status %v\n", receipt.Status)
-	if err != nil {
+	if err != nil || receipt.Status != receiptStatusOk {
 		logger.WithError(err).Error("failed to submit transaction")
 		ape.RenderErr(w, problems.InternalError())
 		return

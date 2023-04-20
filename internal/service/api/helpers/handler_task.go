@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/dl-nft-books/core-svc/internal/data/opensea"
 	"gitlab.com/distributed_lab/logan/v3"
 	"net/http"
@@ -83,7 +82,6 @@ func HandleTask(r *http.Request, logger *logan.Entry, task data.Task, banner []b
 		Image:       ipfser.BaseUri + ipfsBannerHash,
 		FileURL:     fileLink.Data.Attributes.Url,
 	}
-	spew.Dump(openseaData)
 	ipfsMetadataHash, err := runnerHelpers.PrecalculateMetadataIPFSHash(openseaData)
 	if err != nil {
 		return errors.Wrap(err, "failed to precalculate ipfs hash for a metadata file")
