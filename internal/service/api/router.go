@@ -22,6 +22,7 @@ func (s *service) router() chi.Router {
 
 			// Custom configs
 			helpers.CtxMinter(*s.ethMinterConfig),
+			helpers.CtxTransacter(*s.ethTransacterConfig),
 			helpers.CtxApiRestrictions(s.apiRestrictions),
 			helpers.CtxPromocoder(s.promocoder),
 			helpers.CtxIpfser(s.ipfser),
@@ -69,6 +70,8 @@ func (s *service) router() chi.Router {
 				r.Patch("/cancel", handlers.CancelNftRequestById)
 			})
 		})
+		r.Post("/buy/voucher", handlers.BuyWithVoucher)
+
 		r.Route("/signature", func(r chi.Router) {
 			r.Get("/mint", handlers.SignMint)
 			r.Get("/mint/nft", handlers.SignMintByNft)

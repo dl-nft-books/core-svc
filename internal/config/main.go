@@ -30,6 +30,7 @@ type Config interface {
 
 	// Internal service configuration
 	MintConfigurator
+	TransactionConfigurator
 	Promocoder
 	TaskProcessor
 	TaskCleaner
@@ -53,6 +54,7 @@ type config struct {
 
 	// Internal service configuration
 	MintConfigurator
+	TransactionConfigurator
 	TaskProcessor
 	Promocoder
 	TaskCleaner
@@ -81,10 +83,11 @@ func New(getter kv.Getter) Config {
 		DoormanConfiger:     doormanCfg.NewDoormanConfiger(getter),
 
 		// Internal service configuration
-		MintConfigurator: NewEthMinterConfigurator(getter),
-		TaskProcessor:    NewTaskProcessor(getter),
-		Promocoder:       NewPromocoder(getter),
-		TaskCleaner:      NewTaskCleaner(getter),
-		Ipfser:           NewIpfser(getter),
+		MintConfigurator:        NewEthMinterConfigurator(getter),
+		TransactionConfigurator: NewEthTransactionerConfigurator(getter),
+		TaskProcessor:           NewTaskProcessor(getter),
+		Promocoder:              NewPromocoder(getter),
+		TaskCleaner:             NewTaskCleaner(getter),
+		Ipfser:                  NewIpfser(getter),
 	}
 }

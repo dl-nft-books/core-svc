@@ -52,6 +52,11 @@ mint: # Parameters for mint signature generation
   expiration: 5m
   chain_id: 137
 
+transaction:
+  eth_client: https://mainnet.infura.io/v3/your-project
+  private_key: private_key
+  gas_limit: 300000
+
 connector: # Connector to other APIs
   url:
   token:

@@ -94,11 +94,12 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		ChainID:          task.ChainId,
 	}
 	mintInfo := signature.MintInfo{
-		TokenContract: book.Data.Attributes.Networks[0].Attributes.ContractAddress,
-		TokenId:       task.TokenId,
-		TokenAddress:  request.TokenAddress,
-		TokenURI:      task.MetadataIpfsHash,
-		EndTimestamp:  time.Now().Add(mintConfig.Expiration).Unix(),
+		TokenContract:  book.Data.Attributes.Networks[0].Attributes.ContractAddress,
+		TokenId:        task.TokenId,
+		TokenAddress:   request.TokenAddress,
+		TokenURI:       task.MetadataIpfsHash,
+		TokenRecipient: task.Account,
+		EndTimestamp:   time.Now().Add(mintConfig.Expiration).Unix(),
 	}
 
 	mintInfo.PricePerOneToken, err = getPricePerOneToken(w, r, request, *book, mintConfig.Precision)

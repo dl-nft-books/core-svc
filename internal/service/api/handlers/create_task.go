@@ -77,7 +77,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	books, err := marketplaceContract.GetBaseTokenParams(nil, []common.Address{common.HexToAddress(getBookResponse.Data.Attributes.Networks[0].Attributes.ContractAddress)})
+	books, err := marketplaceContract.GetBriefTokenInfo(nil, []common.Address{common.HexToAddress(getBookResponse.Data.Attributes.Networks[0].Attributes.ContractAddress)})
 	if err != nil {
 		helpers.Log(r).WithError(err).Error("failed to get book from contract")
 		ape.RenderErr(w, problems.InternalError())
@@ -88,7 +88,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
-	erc721Contract, err := erc721mintabletoken.NewErc721mintabletoken(books[0].TokenContract, network.RpcUrl)
+	erc721Contract, err := erc721mintabletoken.NewErc721mintabletoken(books[0].BaseTokenData.TokenContract, network.RpcUrl)
 	if err != nil {
 		helpers.Log(r).WithError(err).Error("failed to create new erc721 mintable token")
 		ape.RenderErr(w, problems.InternalError())
@@ -106,7 +106,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		ChainId:   network.ChainId,
 		TokenId:   tokenId.Int64(),
 		Account:   request.Data.Attributes.Account,
-		TokenName: books[0].TokenName,
+		TokenName: books[0].BaseTokenData.TokenName,
 		Status:    resources.TaskPending,
 		CreatedAt: time.Now(),
 	})

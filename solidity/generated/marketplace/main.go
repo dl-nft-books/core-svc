@@ -28,37 +28,53 @@ var (
 	_ = event.NewSubscription
 )
 
-// IMarketplaceBaseTokenParams is an auto generated low-level Go binding around an user-defined struct.
-type IMarketplaceBaseTokenParams struct {
-	TokenContract    common.Address
-	IsDisabled       bool
-	PricePerOneToken *big.Int
-	TokenName        string
+// IERC721MintableTokenTokenMintData is an auto generated low-level Go binding around an user-defined struct.
+type IERC721MintableTokenTokenMintData struct {
+	TokenId  *big.Int
+	TokenURI string
 }
 
-// IMarketplaceBuyParams is an auto generated low-level Go binding around an user-defined struct.
-type IMarketplaceBuyParams struct {
-	PaymentDetails IMarketplacePaymentDetails
-	TokenContract  common.Address
-	Recipient      common.Address
-	FutureTokenId  *big.Int
-	TokenURI       string
+// IMarketplaceAcceptRequestParams is an auto generated low-level Go binding around an user-defined struct.
+type IMarketplaceAcceptRequestParams struct {
+	RequestId *big.Int
+	Recipient common.Address
+	TokenData IERC721MintableTokenTokenMintData
 }
 
-// IMarketplaceDetailedTokenParams is an auto generated low-level Go binding around an user-defined struct.
-type IMarketplaceDetailedTokenParams struct {
+// IMarketplaceBaseTokenData is an auto generated low-level Go binding around an user-defined struct.
+type IMarketplaceBaseTokenData struct {
 	TokenContract common.Address
-	TokenParams   IMarketplaceTokenParams
 	TokenName     string
 	TokenSymbol   string
 }
 
+// IMarketplaceBriefTokenInfo is an auto generated low-level Go binding around an user-defined struct.
+type IMarketplaceBriefTokenInfo struct {
+	BaseTokenData    IMarketplaceBaseTokenData
+	PricePerOneToken *big.Int
+	IsDisabled       bool
+}
+
+// IMarketplaceBuyParams is an auto generated low-level Go binding around an user-defined struct.
+type IMarketplaceBuyParams struct {
+	TokenContract  common.Address
+	Recipient      common.Address
+	PaymentDetails IMarketplacePaymentDetails
+	TokenData      IERC721MintableTokenTokenMintData
+}
+
+// IMarketplaceDetailedTokenInfo is an auto generated low-level Go binding around an user-defined struct.
+type IMarketplaceDetailedTokenInfo struct {
+	BaseTokenData IMarketplaceBaseTokenData
+	TokenParams   IMarketplaceTokenParams
+}
+
 // IMarketplaceNFTRequestInfo is an auto generated low-level Go binding around an user-defined struct.
 type IMarketplaceNFTRequestInfo struct {
+	Requester     common.Address
 	TokenContract common.Address
 	NftContract   common.Address
 	NftId         *big.Int
-	Requester     common.Address
 	Status        uint8
 }
 
@@ -70,19 +86,12 @@ type IMarketplacePaymentDetails struct {
 	NftTokenId          *big.Int
 }
 
-// IMarketplaceRequestBuyParams is an auto generated low-level Go binding around an user-defined struct.
-type IMarketplaceRequestBuyParams struct {
-	RequestId     *big.Int
-	FutureTokenId *big.Int
-	TokenURI      string
-}
-
-// IMarketplaceSig is an auto generated low-level Go binding around an user-defined struct.
-type IMarketplaceSig struct {
-	EndTimestamp *big.Int
-	R            [32]byte
-	S            [32]byte
-	V            uint8
+// IMarketplaceSigData is an auto generated low-level Go binding around an user-defined struct.
+type IMarketplaceSigData struct {
+	EndSigTimestamp *big.Int
+	R               [32]byte
+	S               [32]byte
+	V               uint8
 }
 
 // IMarketplaceTokenParams is an auto generated low-level Go binding around an user-defined struct.
@@ -105,7 +114,7 @@ type IMarketplaceUserTokens struct {
 
 // MarketplaceMetaData contains all meta data concerning the Marketplace contract.
 var MarketplaceMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"newBaseTokenContractsURI\",\"type\":\"string\"}],\"name\":\"BaseTokenContractsURIUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"}],\"name\":\"NFTRequestCanceled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"requester\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"nftContract\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"nftId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"}],\"name\":\"NFTRequestCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"PaidTokensWithdrawn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Paused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minNFTFloorPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"voucherTokensAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voucherTokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"fundsRecipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isNFTBuyable\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isVoucherBuyable\",\"type\":\"bool\"}],\"indexed\":false,\"internalType\":\"structIMarketplace.TokenParams\",\"name\":\"tokenParams\",\"type\":\"tuple\"}],\"name\":\"TokenContractDeployed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minNFTFloorPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"voucherTokensAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voucherTokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"fundsRecipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isNFTBuyable\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isVoucherBuyable\",\"type\":\"bool\"}],\"indexed\":false,\"internalType\":\"structIMarketplace.TokenParams\",\"name\":\"tokenParams\",\"type\":\"tuple\"}],\"name\":\"TokenContractParamsUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"futureTokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"indexed\":false,\"internalType\":\"structIMarketplace.RequestBuyParams\",\"name\":\"buyParams\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"nftContract\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nftId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"requester\",\"type\":\"address\"},{\"internalType\":\"enumIMarketplace.NFTRequestStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"indexed\":false,\"internalType\":\"structIMarketplace.NFTRequestInfo\",\"name\":\"nftRequestInfo\",\"type\":\"tuple\"}],\"name\":\"TokenSuccessfullyExchanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"mintedTokenPrice\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"paidTokensAmount\",\"type\":\"uint256\"},{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"paymentTokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"paymentTokenPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"discount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nftTokenId\",\"type\":\"uint256\"}],\"internalType\":\"structIMarketplace.PaymentDetails\",\"name\":\"paymentDetails\",\"type\":\"tuple\"},{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"futureTokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"indexed\":false,\"internalType\":\"structIMarketplace.BuyParams\",\"name\":\"buyParams\",\"type\":\"tuple\"},{\"indexed\":false,\"internalType\":\"enumIMarketplace.PaymentType\",\"name\":\"paymentType\",\"type\":\"uint8\"}],\"name\":\"TokenSuccessfullyPurchased\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Unpaused\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"baseTokenContractsURI_\",\"type\":\"string\"}],\"name\":\"__Marketplace_init\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name_\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"symbol_\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minNFTFloorPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"voucherTokensAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voucherTokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"fundsRecipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isNFTBuyable\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isVoucherBuyable\",\"type\":\"bool\"}],\"internalType\":\"structIMarketplace.TokenParams\",\"name\":\"tokenParams_\",\"type\":\"tuple\"}],\"name\":\"addToken\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"tokenProxy_\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"baseTokenContractsURI\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"paymentTokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"paymentTokenPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"discount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nftTokenId\",\"type\":\"uint256\"}],\"internalType\":\"structIMarketplace.PaymentDetails\",\"name\":\"paymentDetails\",\"type\":\"tuple\"},{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"futureTokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.BuyParams\",\"name\":\"buyParams_\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"endTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.Sig\",\"name\":\"sig_\",\"type\":\"tuple\"}],\"name\":\"buyTokenWithERC20\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"paymentTokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"paymentTokenPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"discount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nftTokenId\",\"type\":\"uint256\"}],\"internalType\":\"structIMarketplace.PaymentDetails\",\"name\":\"paymentDetails\",\"type\":\"tuple\"},{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"futureTokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.BuyParams\",\"name\":\"buyParams_\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"endTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.Sig\",\"name\":\"sig_\",\"type\":\"tuple\"}],\"name\":\"buyTokenWithETH\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"paymentTokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"paymentTokenPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"discount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nftTokenId\",\"type\":\"uint256\"}],\"internalType\":\"structIMarketplace.PaymentDetails\",\"name\":\"paymentDetails\",\"type\":\"tuple\"},{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"futureTokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.BuyParams\",\"name\":\"buyParams_\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"endTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.Sig\",\"name\":\"sig_\",\"type\":\"tuple\"}],\"name\":\"buyTokenWithNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"futureTokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.RequestBuyParams\",\"name\":\"requestBuyParams_\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"endTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.Sig\",\"name\":\"sig_\",\"type\":\"tuple\"}],\"name\":\"buyTokenWithRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"paymentTokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"paymentTokenPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"discount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nftTokenId\",\"type\":\"uint256\"}],\"internalType\":\"structIMarketplace.PaymentDetails\",\"name\":\"paymentDetails\",\"type\":\"tuple\"},{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"futureTokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.BuyParams\",\"name\":\"buyParams_\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"endTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.Sig\",\"name\":\"sig_\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"endTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.Sig\",\"name\":\"permitSig_\",\"type\":\"tuple\"}],\"name\":\"buyTokenWithVoucher\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"requestId_\",\"type\":\"uint256\"}],\"name\":\"cancelNFTRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"nftContract_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nftId_\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"tokenContract_\",\"type\":\"address\"}],\"name\":\"createNFTRequest\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"requestId_\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getActiveTokenContractsCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"count_\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"tokenContract_\",\"type\":\"address[]\"}],\"name\":\"getBaseTokenParams\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.BaseTokenParams[]\",\"name\":\"baseTokenParams_\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"offset_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"limit_\",\"type\":\"uint256\"}],\"name\":\"getBaseTokenParamsPart\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.BaseTokenParams[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"tokenContracts_\",\"type\":\"address[]\"}],\"name\":\"getDetailedTokenParams\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minNFTFloorPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"voucherTokensAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voucherTokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"fundsRecipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isNFTBuyable\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isVoucherBuyable\",\"type\":\"bool\"}],\"internalType\":\"structIMarketplace.TokenParams\",\"name\":\"tokenParams\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.DetailedTokenParams[]\",\"name\":\"detailedTokenParams_\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"offset_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"limit_\",\"type\":\"uint256\"}],\"name\":\"getDetailedTokenParamsPart\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minNFTFloorPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"voucherTokensAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voucherTokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"fundsRecipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isNFTBuyable\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isVoucherBuyable\",\"type\":\"bool\"}],\"internalType\":\"structIMarketplace.TokenParams\",\"name\":\"tokenParams\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.DetailedTokenParams[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getInjector\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"injector_\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getNFTRequestsCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"offset_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"limit_\",\"type\":\"uint256\"}],\"name\":\"getNFTRequestsPart\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"nftContract\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nftId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"requester\",\"type\":\"address\"},{\"internalType\":\"enumIMarketplace.NFTRequestStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.NFTRequestInfo[]\",\"name\":\"nftRequests_\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getTokenContractsCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"offset_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"limit_\",\"type\":\"uint256\"}],\"name\":\"getTokenContractsPart\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"userAddr_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"offset_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"limit_\",\"type\":\"uint256\"}],\"name\":\"getUserTokensPart\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"uint256[]\",\"name\":\"tokenIds\",\"type\":\"uint256[]\"}],\"internalType\":\"structIMarketplace.UserTokens[]\",\"name\":\"userTokens_\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"onERC721Received\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"baseTokenContractsURI_\",\"type\":\"string\"}],\"name\":\"setBaseTokenContractsURI\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"contractsRegistry_\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"setDependencies\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"injector_\",\"type\":\"address\"}],\"name\":\"setInjector\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"unpause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenContract_\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"name_\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"symbol_\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minNFTFloorPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"voucherTokensAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voucherTokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"fundsRecipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isNFTBuyable\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isVoucherBuyable\",\"type\":\"bool\"}],\"internalType\":\"structIMarketplace.TokenParams\",\"name\":\"newTokenParams_\",\"type\":\"tuple\"}],\"name\":\"updateAllParams\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddr_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"desiredAmount_\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"withdrawAll_\",\"type\":\"bool\"}],\"name\":\"withdrawCurrency\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"newBaseTokenContractsURI\",\"type\":\"string\"}],\"name\":\"BaseTokenContractsURIUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"}],\"name\":\"NFTRequestCanceled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"requester\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"nftContract\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"nftId\",\"type\":\"uint256\"}],\"name\":\"NFTRequestCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"nftAddr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256[]\",\"name\":\"tokenIDs\",\"type\":\"uint256[]\"}],\"name\":\"NFTTokensWithdrawn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"PaidTokensWithdrawn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Paused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minNFTFloorPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"voucherTokensAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voucherTokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"fundsRecipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isNFTBuyable\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isVoucherBuyable\",\"type\":\"bool\"}],\"indexed\":false,\"internalType\":\"structIMarketplace.TokenParams\",\"name\":\"tokenParams\",\"type\":\"tuple\"}],\"name\":\"TokenContractDeployed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minNFTFloorPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"voucherTokensAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voucherTokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"fundsRecipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isNFTBuyable\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isVoucherBuyable\",\"type\":\"bool\"}],\"indexed\":false,\"internalType\":\"structIMarketplace.TokenParams\",\"name\":\"tokenParams\",\"type\":\"tuple\"}],\"name\":\"TokenParamsUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"internalType\":\"structIERC721MintableToken.TokenMintData\",\"name\":\"tokenData\",\"type\":\"tuple\"}],\"indexed\":false,\"internalType\":\"structIMarketplace.AcceptRequestParams\",\"name\":\"acceptRequestParams\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"requester\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"nftContract\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nftId\",\"type\":\"uint256\"},{\"internalType\":\"enumIMarketplace.NFTRequestStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"indexed\":false,\"internalType\":\"structIMarketplace.NFTRequestInfo\",\"name\":\"nftRequestInfo\",\"type\":\"tuple\"}],\"name\":\"TokenSuccessfullyExchanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"mintedTokenPrice\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"paidTokensAmount\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"paymentTokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"paymentTokenPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"discount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nftTokenId\",\"type\":\"uint256\"}],\"internalType\":\"structIMarketplace.PaymentDetails\",\"name\":\"paymentDetails\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"internalType\":\"structIERC721MintableToken.TokenMintData\",\"name\":\"tokenData\",\"type\":\"tuple\"}],\"indexed\":false,\"internalType\":\"structIMarketplace.BuyParams\",\"name\":\"buyParams\",\"type\":\"tuple\"},{\"indexed\":false,\"internalType\":\"enumIMarketplace.PaymentType\",\"name\":\"paymentType\",\"type\":\"uint8\"}],\"name\":\"TokenSuccessfullyPurchased\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Unpaused\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"baseTokenContractsURI_\",\"type\":\"string\"}],\"name\":\"__Marketplace_init\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"internalType\":\"structIERC721MintableToken.TokenMintData\",\"name\":\"tokenData\",\"type\":\"tuple\"}],\"internalType\":\"structIMarketplace.AcceptRequestParams\",\"name\":\"requestParams_\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"endSigTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.SigData\",\"name\":\"sig_\",\"type\":\"tuple\"}],\"name\":\"acceptRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name_\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"symbol_\",\"type\":\"string\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minNFTFloorPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"voucherTokensAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voucherTokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"fundsRecipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isNFTBuyable\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isVoucherBuyable\",\"type\":\"bool\"}],\"internalType\":\"structIMarketplace.TokenParams\",\"name\":\"tokenParams_\",\"type\":\"tuple\"}],\"name\":\"addToken\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"tokenProxy_\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"baseTokenContractsURI\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"paymentTokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"paymentTokenPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"discount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nftTokenId\",\"type\":\"uint256\"}],\"internalType\":\"structIMarketplace.PaymentDetails\",\"name\":\"paymentDetails\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"internalType\":\"structIERC721MintableToken.TokenMintData\",\"name\":\"tokenData\",\"type\":\"tuple\"}],\"internalType\":\"structIMarketplace.BuyParams\",\"name\":\"buyParams_\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"endSigTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.SigData\",\"name\":\"sig_\",\"type\":\"tuple\"}],\"name\":\"buyTokenWithERC20\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"paymentTokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"paymentTokenPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"discount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nftTokenId\",\"type\":\"uint256\"}],\"internalType\":\"structIMarketplace.PaymentDetails\",\"name\":\"paymentDetails\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"internalType\":\"structIERC721MintableToken.TokenMintData\",\"name\":\"tokenData\",\"type\":\"tuple\"}],\"internalType\":\"structIMarketplace.BuyParams\",\"name\":\"buyParams_\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"endSigTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.SigData\",\"name\":\"sig_\",\"type\":\"tuple\"}],\"name\":\"buyTokenWithETH\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"paymentTokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"paymentTokenPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"discount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nftTokenId\",\"type\":\"uint256\"}],\"internalType\":\"structIMarketplace.PaymentDetails\",\"name\":\"paymentDetails\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"internalType\":\"structIERC721MintableToken.TokenMintData\",\"name\":\"tokenData\",\"type\":\"tuple\"}],\"internalType\":\"structIMarketplace.BuyParams\",\"name\":\"buyParams_\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"endSigTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.SigData\",\"name\":\"sig_\",\"type\":\"tuple\"}],\"name\":\"buyTokenWithNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"paymentTokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"paymentTokenPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"discount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nftTokenId\",\"type\":\"uint256\"}],\"internalType\":\"structIMarketplace.PaymentDetails\",\"name\":\"paymentDetails\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"internalType\":\"structIERC721MintableToken.TokenMintData\",\"name\":\"tokenData\",\"type\":\"tuple\"}],\"internalType\":\"structIMarketplace.BuyParams\",\"name\":\"buyParams_\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"endSigTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.SigData\",\"name\":\"sig_\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"endSigTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.SigData\",\"name\":\"permitSig_\",\"type\":\"tuple\"}],\"name\":\"buyTokenWithVoucher\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"requestId_\",\"type\":\"uint256\"}],\"name\":\"cancelNFTRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenContract_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"nftContract_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nftId_\",\"type\":\"uint256\"}],\"name\":\"createNFTRequest\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"requestId_\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getActiveTokenContractsCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"count_\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAllPendingRequestsCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"tokenContracts_\",\"type\":\"address[]\"}],\"name\":\"getBriefTokenInfo\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.BaseTokenData\",\"name\":\"baseTokenData\",\"type\":\"tuple\"},{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"}],\"internalType\":\"structIMarketplace.BriefTokenInfo[]\",\"name\":\"baseTokenParams_\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"offset_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"limit_\",\"type\":\"uint256\"}],\"name\":\"getBriefTokenInfoPart\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.BaseTokenData\",\"name\":\"baseTokenData\",\"type\":\"tuple\"},{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"}],\"internalType\":\"structIMarketplace.BriefTokenInfo[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address[]\",\"name\":\"tokenContracts_\",\"type\":\"address[]\"}],\"name\":\"getDetailedTokenInfo\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.BaseTokenData\",\"name\":\"baseTokenData\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minNFTFloorPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"voucherTokensAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voucherTokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"fundsRecipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isNFTBuyable\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isVoucherBuyable\",\"type\":\"bool\"}],\"internalType\":\"structIMarketplace.TokenParams\",\"name\":\"tokenParams\",\"type\":\"tuple\"}],\"internalType\":\"structIMarketplace.DetailedTokenInfo[]\",\"name\":\"detailedTokenParams_\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"offset_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"limit_\",\"type\":\"uint256\"}],\"name\":\"getDetailedTokenInfoPart\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"}],\"internalType\":\"structIMarketplace.BaseTokenData\",\"name\":\"baseTokenData\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minNFTFloorPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"voucherTokensAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voucherTokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"fundsRecipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isNFTBuyable\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isVoucherBuyable\",\"type\":\"bool\"}],\"internalType\":\"structIMarketplace.TokenParams\",\"name\":\"tokenParams\",\"type\":\"tuple\"}],\"internalType\":\"structIMarketplace.DetailedTokenInfo[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getInjector\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"injector_\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256[]\",\"name\":\"requestsId_\",\"type\":\"uint256[]\"}],\"name\":\"getNFTRequestsInfo\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"requester\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"nftContract\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nftId\",\"type\":\"uint256\"},{\"internalType\":\"enumIMarketplace.NFTRequestStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"internalType\":\"structIMarketplace.NFTRequestInfo[]\",\"name\":\"nftRequestsInfo_\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"offset_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"limit_\",\"type\":\"uint256\"}],\"name\":\"getPendingRequestsPart\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getTokenContractsCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"offset_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"limit_\",\"type\":\"uint256\"}],\"name\":\"getTokenContractsPart\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"userAddr_\",\"type\":\"address\"}],\"name\":\"getUserPendingRequestsCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"userAddr_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"offset_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"limit_\",\"type\":\"uint256\"}],\"name\":\"getUserPendingRequestsPart\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"userAddr_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"offset_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"limit_\",\"type\":\"uint256\"}],\"name\":\"getUserTokensPart\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"tokenContract\",\"type\":\"address\"},{\"internalType\":\"uint256[]\",\"name\":\"tokenIds\",\"type\":\"uint256[]\"}],\"internalType\":\"structIMarketplace.UserTokens[]\",\"name\":\"userTokens_\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nextRequestId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"onERC721Received\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"baseTokenContractsURI_\",\"type\":\"string\"}],\"name\":\"setBaseTokenContractsURI\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"contractsRegistry_\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"setDependencies\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"injector_\",\"type\":\"address\"}],\"name\":\"setInjector\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"unpause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenContract_\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"pricePerOneToken\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minNFTFloorPrice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"voucherTokensAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"voucherTokenContract\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"fundsRecipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isNFTBuyable\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isDisabled\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"isVoucherBuyable\",\"type\":\"bool\"}],\"internalType\":\"structIMarketplace.TokenParams\",\"name\":\"newTokenParams_\",\"type\":\"tuple\"}],\"name\":\"updateTokenParams\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddr_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"desiredAmount_\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"withdrawAll_\",\"type\":\"bool\"}],\"name\":\"withdrawCurrency\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractIERC721\",\"name\":\"nft_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient_\",\"type\":\"address\"},{\"internalType\":\"uint256[]\",\"name\":\"tokenIds_\",\"type\":\"uint256[]\"}],\"name\":\"withdrawNFTs\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // MarketplaceABI is the input ABI used to generate the binding from.
@@ -316,128 +325,159 @@ func (_Marketplace *MarketplaceCallerSession) GetActiveTokenContractsCount() (*b
 	return _Marketplace.Contract.GetActiveTokenContractsCount(&_Marketplace.CallOpts)
 }
 
-// GetBaseTokenParams is a free data retrieval call binding the contract method 0x20acff14.
+// GetAllPendingRequestsCount is a free data retrieval call binding the contract method 0x41a0bc19.
 //
-// Solidity: function getBaseTokenParams(address[] tokenContract_) view returns((address,bool,uint256,string)[] baseTokenParams_)
-func (_Marketplace *MarketplaceCaller) GetBaseTokenParams(opts *bind.CallOpts, tokenContract_ []common.Address) ([]IMarketplaceBaseTokenParams, error) {
+// Solidity: function getAllPendingRequestsCount() view returns(uint256)
+func (_Marketplace *MarketplaceCaller) GetAllPendingRequestsCount(opts *bind.CallOpts) (*big.Int, error) {
 	var out []interface{}
-	err := _Marketplace.contract.Call(opts, &out, "getBaseTokenParams", tokenContract_)
+	err := _Marketplace.contract.Call(opts, &out, "getAllPendingRequestsCount")
 
 	if err != nil {
-		return *new([]IMarketplaceBaseTokenParams), err
+		return *new(*big.Int), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new([]IMarketplaceBaseTokenParams)).(*[]IMarketplaceBaseTokenParams)
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
 
 	return out0, err
 
 }
 
-// GetBaseTokenParams is a free data retrieval call binding the contract method 0x20acff14.
+// GetAllPendingRequestsCount is a free data retrieval call binding the contract method 0x41a0bc19.
 //
-// Solidity: function getBaseTokenParams(address[] tokenContract_) view returns((address,bool,uint256,string)[] baseTokenParams_)
-func (_Marketplace *MarketplaceSession) GetBaseTokenParams(tokenContract_ []common.Address) ([]IMarketplaceBaseTokenParams, error) {
-	return _Marketplace.Contract.GetBaseTokenParams(&_Marketplace.CallOpts, tokenContract_)
+// Solidity: function getAllPendingRequestsCount() view returns(uint256)
+func (_Marketplace *MarketplaceSession) GetAllPendingRequestsCount() (*big.Int, error) {
+	return _Marketplace.Contract.GetAllPendingRequestsCount(&_Marketplace.CallOpts)
 }
 
-// GetBaseTokenParams is a free data retrieval call binding the contract method 0x20acff14.
+// GetAllPendingRequestsCount is a free data retrieval call binding the contract method 0x41a0bc19.
 //
-// Solidity: function getBaseTokenParams(address[] tokenContract_) view returns((address,bool,uint256,string)[] baseTokenParams_)
-func (_Marketplace *MarketplaceCallerSession) GetBaseTokenParams(tokenContract_ []common.Address) ([]IMarketplaceBaseTokenParams, error) {
-	return _Marketplace.Contract.GetBaseTokenParams(&_Marketplace.CallOpts, tokenContract_)
+// Solidity: function getAllPendingRequestsCount() view returns(uint256)
+func (_Marketplace *MarketplaceCallerSession) GetAllPendingRequestsCount() (*big.Int, error) {
+	return _Marketplace.Contract.GetAllPendingRequestsCount(&_Marketplace.CallOpts)
 }
 
-// GetBaseTokenParamsPart is a free data retrieval call binding the contract method 0x27a99cf7.
+// GetBriefTokenInfo is a free data retrieval call binding the contract method 0x6bb299e3.
 //
-// Solidity: function getBaseTokenParamsPart(uint256 offset_, uint256 limit_) view returns((address,bool,uint256,string)[])
-func (_Marketplace *MarketplaceCaller) GetBaseTokenParamsPart(opts *bind.CallOpts, offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceBaseTokenParams, error) {
+// Solidity: function getBriefTokenInfo(address[] tokenContracts_) view returns(((address,string,string),uint256,bool)[] baseTokenParams_)
+func (_Marketplace *MarketplaceCaller) GetBriefTokenInfo(opts *bind.CallOpts, tokenContracts_ []common.Address) ([]IMarketplaceBriefTokenInfo, error) {
 	var out []interface{}
-	err := _Marketplace.contract.Call(opts, &out, "getBaseTokenParamsPart", offset_, limit_)
+	err := _Marketplace.contract.Call(opts, &out, "getBriefTokenInfo", tokenContracts_)
 
 	if err != nil {
-		return *new([]IMarketplaceBaseTokenParams), err
+		return *new([]IMarketplaceBriefTokenInfo), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new([]IMarketplaceBaseTokenParams)).(*[]IMarketplaceBaseTokenParams)
+	out0 := *abi.ConvertType(out[0], new([]IMarketplaceBriefTokenInfo)).(*[]IMarketplaceBriefTokenInfo)
 
 	return out0, err
 
 }
 
-// GetBaseTokenParamsPart is a free data retrieval call binding the contract method 0x27a99cf7.
+// GetBriefTokenInfo is a free data retrieval call binding the contract method 0x6bb299e3.
 //
-// Solidity: function getBaseTokenParamsPart(uint256 offset_, uint256 limit_) view returns((address,bool,uint256,string)[])
-func (_Marketplace *MarketplaceSession) GetBaseTokenParamsPart(offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceBaseTokenParams, error) {
-	return _Marketplace.Contract.GetBaseTokenParamsPart(&_Marketplace.CallOpts, offset_, limit_)
+// Solidity: function getBriefTokenInfo(address[] tokenContracts_) view returns(((address,string,string),uint256,bool)[] baseTokenParams_)
+func (_Marketplace *MarketplaceSession) GetBriefTokenInfo(tokenContracts_ []common.Address) ([]IMarketplaceBriefTokenInfo, error) {
+	return _Marketplace.Contract.GetBriefTokenInfo(&_Marketplace.CallOpts, tokenContracts_)
 }
 
-// GetBaseTokenParamsPart is a free data retrieval call binding the contract method 0x27a99cf7.
+// GetBriefTokenInfo is a free data retrieval call binding the contract method 0x6bb299e3.
 //
-// Solidity: function getBaseTokenParamsPart(uint256 offset_, uint256 limit_) view returns((address,bool,uint256,string)[])
-func (_Marketplace *MarketplaceCallerSession) GetBaseTokenParamsPart(offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceBaseTokenParams, error) {
-	return _Marketplace.Contract.GetBaseTokenParamsPart(&_Marketplace.CallOpts, offset_, limit_)
+// Solidity: function getBriefTokenInfo(address[] tokenContracts_) view returns(((address,string,string),uint256,bool)[] baseTokenParams_)
+func (_Marketplace *MarketplaceCallerSession) GetBriefTokenInfo(tokenContracts_ []common.Address) ([]IMarketplaceBriefTokenInfo, error) {
+	return _Marketplace.Contract.GetBriefTokenInfo(&_Marketplace.CallOpts, tokenContracts_)
 }
 
-// GetDetailedTokenParams is a free data retrieval call binding the contract method 0xcc1270cb.
+// GetBriefTokenInfoPart is a free data retrieval call binding the contract method 0x6b7ac758.
 //
-// Solidity: function getDetailedTokenParams(address[] tokenContracts_) view returns((address,(uint256,uint256,uint256,address,address,bool,bool,bool),string,string)[] detailedTokenParams_)
-func (_Marketplace *MarketplaceCaller) GetDetailedTokenParams(opts *bind.CallOpts, tokenContracts_ []common.Address) ([]IMarketplaceDetailedTokenParams, error) {
+// Solidity: function getBriefTokenInfoPart(uint256 offset_, uint256 limit_) view returns(((address,string,string),uint256,bool)[])
+func (_Marketplace *MarketplaceCaller) GetBriefTokenInfoPart(opts *bind.CallOpts, offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceBriefTokenInfo, error) {
 	var out []interface{}
-	err := _Marketplace.contract.Call(opts, &out, "getDetailedTokenParams", tokenContracts_)
+	err := _Marketplace.contract.Call(opts, &out, "getBriefTokenInfoPart", offset_, limit_)
 
 	if err != nil {
-		return *new([]IMarketplaceDetailedTokenParams), err
+		return *new([]IMarketplaceBriefTokenInfo), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new([]IMarketplaceDetailedTokenParams)).(*[]IMarketplaceDetailedTokenParams)
+	out0 := *abi.ConvertType(out[0], new([]IMarketplaceBriefTokenInfo)).(*[]IMarketplaceBriefTokenInfo)
 
 	return out0, err
 
 }
 
-// GetDetailedTokenParams is a free data retrieval call binding the contract method 0xcc1270cb.
+// GetBriefTokenInfoPart is a free data retrieval call binding the contract method 0x6b7ac758.
 //
-// Solidity: function getDetailedTokenParams(address[] tokenContracts_) view returns((address,(uint256,uint256,uint256,address,address,bool,bool,bool),string,string)[] detailedTokenParams_)
-func (_Marketplace *MarketplaceSession) GetDetailedTokenParams(tokenContracts_ []common.Address) ([]IMarketplaceDetailedTokenParams, error) {
-	return _Marketplace.Contract.GetDetailedTokenParams(&_Marketplace.CallOpts, tokenContracts_)
+// Solidity: function getBriefTokenInfoPart(uint256 offset_, uint256 limit_) view returns(((address,string,string),uint256,bool)[])
+func (_Marketplace *MarketplaceSession) GetBriefTokenInfoPart(offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceBriefTokenInfo, error) {
+	return _Marketplace.Contract.GetBriefTokenInfoPart(&_Marketplace.CallOpts, offset_, limit_)
 }
 
-// GetDetailedTokenParams is a free data retrieval call binding the contract method 0xcc1270cb.
+// GetBriefTokenInfoPart is a free data retrieval call binding the contract method 0x6b7ac758.
 //
-// Solidity: function getDetailedTokenParams(address[] tokenContracts_) view returns((address,(uint256,uint256,uint256,address,address,bool,bool,bool),string,string)[] detailedTokenParams_)
-func (_Marketplace *MarketplaceCallerSession) GetDetailedTokenParams(tokenContracts_ []common.Address) ([]IMarketplaceDetailedTokenParams, error) {
-	return _Marketplace.Contract.GetDetailedTokenParams(&_Marketplace.CallOpts, tokenContracts_)
+// Solidity: function getBriefTokenInfoPart(uint256 offset_, uint256 limit_) view returns(((address,string,string),uint256,bool)[])
+func (_Marketplace *MarketplaceCallerSession) GetBriefTokenInfoPart(offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceBriefTokenInfo, error) {
+	return _Marketplace.Contract.GetBriefTokenInfoPart(&_Marketplace.CallOpts, offset_, limit_)
 }
 
-// GetDetailedTokenParamsPart is a free data retrieval call binding the contract method 0xce60e378.
+// GetDetailedTokenInfo is a free data retrieval call binding the contract method 0x2195554e.
 //
-// Solidity: function getDetailedTokenParamsPart(uint256 offset_, uint256 limit_) view returns((address,(uint256,uint256,uint256,address,address,bool,bool,bool),string,string)[])
-func (_Marketplace *MarketplaceCaller) GetDetailedTokenParamsPart(opts *bind.CallOpts, offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceDetailedTokenParams, error) {
+// Solidity: function getDetailedTokenInfo(address[] tokenContracts_) view returns(((address,string,string),(uint256,uint256,uint256,address,address,bool,bool,bool))[] detailedTokenParams_)
+func (_Marketplace *MarketplaceCaller) GetDetailedTokenInfo(opts *bind.CallOpts, tokenContracts_ []common.Address) ([]IMarketplaceDetailedTokenInfo, error) {
 	var out []interface{}
-	err := _Marketplace.contract.Call(opts, &out, "getDetailedTokenParamsPart", offset_, limit_)
+	err := _Marketplace.contract.Call(opts, &out, "getDetailedTokenInfo", tokenContracts_)
 
 	if err != nil {
-		return *new([]IMarketplaceDetailedTokenParams), err
+		return *new([]IMarketplaceDetailedTokenInfo), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new([]IMarketplaceDetailedTokenParams)).(*[]IMarketplaceDetailedTokenParams)
+	out0 := *abi.ConvertType(out[0], new([]IMarketplaceDetailedTokenInfo)).(*[]IMarketplaceDetailedTokenInfo)
 
 	return out0, err
 
 }
 
-// GetDetailedTokenParamsPart is a free data retrieval call binding the contract method 0xce60e378.
+// GetDetailedTokenInfo is a free data retrieval call binding the contract method 0x2195554e.
 //
-// Solidity: function getDetailedTokenParamsPart(uint256 offset_, uint256 limit_) view returns((address,(uint256,uint256,uint256,address,address,bool,bool,bool),string,string)[])
-func (_Marketplace *MarketplaceSession) GetDetailedTokenParamsPart(offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceDetailedTokenParams, error) {
-	return _Marketplace.Contract.GetDetailedTokenParamsPart(&_Marketplace.CallOpts, offset_, limit_)
+// Solidity: function getDetailedTokenInfo(address[] tokenContracts_) view returns(((address,string,string),(uint256,uint256,uint256,address,address,bool,bool,bool))[] detailedTokenParams_)
+func (_Marketplace *MarketplaceSession) GetDetailedTokenInfo(tokenContracts_ []common.Address) ([]IMarketplaceDetailedTokenInfo, error) {
+	return _Marketplace.Contract.GetDetailedTokenInfo(&_Marketplace.CallOpts, tokenContracts_)
 }
 
-// GetDetailedTokenParamsPart is a free data retrieval call binding the contract method 0xce60e378.
+// GetDetailedTokenInfo is a free data retrieval call binding the contract method 0x2195554e.
 //
-// Solidity: function getDetailedTokenParamsPart(uint256 offset_, uint256 limit_) view returns((address,(uint256,uint256,uint256,address,address,bool,bool,bool),string,string)[])
-func (_Marketplace *MarketplaceCallerSession) GetDetailedTokenParamsPart(offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceDetailedTokenParams, error) {
-	return _Marketplace.Contract.GetDetailedTokenParamsPart(&_Marketplace.CallOpts, offset_, limit_)
+// Solidity: function getDetailedTokenInfo(address[] tokenContracts_) view returns(((address,string,string),(uint256,uint256,uint256,address,address,bool,bool,bool))[] detailedTokenParams_)
+func (_Marketplace *MarketplaceCallerSession) GetDetailedTokenInfo(tokenContracts_ []common.Address) ([]IMarketplaceDetailedTokenInfo, error) {
+	return _Marketplace.Contract.GetDetailedTokenInfo(&_Marketplace.CallOpts, tokenContracts_)
+}
+
+// GetDetailedTokenInfoPart is a free data retrieval call binding the contract method 0x2b8ee271.
+//
+// Solidity: function getDetailedTokenInfoPart(uint256 offset_, uint256 limit_) view returns(((address,string,string),(uint256,uint256,uint256,address,address,bool,bool,bool))[])
+func (_Marketplace *MarketplaceCaller) GetDetailedTokenInfoPart(opts *bind.CallOpts, offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceDetailedTokenInfo, error) {
+	var out []interface{}
+	err := _Marketplace.contract.Call(opts, &out, "getDetailedTokenInfoPart", offset_, limit_)
+
+	if err != nil {
+		return *new([]IMarketplaceDetailedTokenInfo), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]IMarketplaceDetailedTokenInfo)).(*[]IMarketplaceDetailedTokenInfo)
+
+	return out0, err
+
+}
+
+// GetDetailedTokenInfoPart is a free data retrieval call binding the contract method 0x2b8ee271.
+//
+// Solidity: function getDetailedTokenInfoPart(uint256 offset_, uint256 limit_) view returns(((address,string,string),(uint256,uint256,uint256,address,address,bool,bool,bool))[])
+func (_Marketplace *MarketplaceSession) GetDetailedTokenInfoPart(offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceDetailedTokenInfo, error) {
+	return _Marketplace.Contract.GetDetailedTokenInfoPart(&_Marketplace.CallOpts, offset_, limit_)
+}
+
+// GetDetailedTokenInfoPart is a free data retrieval call binding the contract method 0x2b8ee271.
+//
+// Solidity: function getDetailedTokenInfoPart(uint256 offset_, uint256 limit_) view returns(((address,string,string),(uint256,uint256,uint256,address,address,bool,bool,bool))[])
+func (_Marketplace *MarketplaceCallerSession) GetDetailedTokenInfoPart(offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceDetailedTokenInfo, error) {
+	return _Marketplace.Contract.GetDetailedTokenInfoPart(&_Marketplace.CallOpts, offset_, limit_)
 }
 
 // GetInjector is a free data retrieval call binding the contract method 0x3e3b5b19.
@@ -471,43 +511,12 @@ func (_Marketplace *MarketplaceCallerSession) GetInjector() (common.Address, err
 	return _Marketplace.Contract.GetInjector(&_Marketplace.CallOpts)
 }
 
-// GetNFTRequestsCount is a free data retrieval call binding the contract method 0xaadc9e19.
+// GetNFTRequestsInfo is a free data retrieval call binding the contract method 0x9458c67e.
 //
-// Solidity: function getNFTRequestsCount() view returns(uint256)
-func (_Marketplace *MarketplaceCaller) GetNFTRequestsCount(opts *bind.CallOpts) (*big.Int, error) {
+// Solidity: function getNFTRequestsInfo(uint256[] requestsId_) view returns((address,address,address,uint256,uint8)[] nftRequestsInfo_)
+func (_Marketplace *MarketplaceCaller) GetNFTRequestsInfo(opts *bind.CallOpts, requestsId_ []*big.Int) ([]IMarketplaceNFTRequestInfo, error) {
 	var out []interface{}
-	err := _Marketplace.contract.Call(opts, &out, "getNFTRequestsCount")
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// GetNFTRequestsCount is a free data retrieval call binding the contract method 0xaadc9e19.
-//
-// Solidity: function getNFTRequestsCount() view returns(uint256)
-func (_Marketplace *MarketplaceSession) GetNFTRequestsCount() (*big.Int, error) {
-	return _Marketplace.Contract.GetNFTRequestsCount(&_Marketplace.CallOpts)
-}
-
-// GetNFTRequestsCount is a free data retrieval call binding the contract method 0xaadc9e19.
-//
-// Solidity: function getNFTRequestsCount() view returns(uint256)
-func (_Marketplace *MarketplaceCallerSession) GetNFTRequestsCount() (*big.Int, error) {
-	return _Marketplace.Contract.GetNFTRequestsCount(&_Marketplace.CallOpts)
-}
-
-// GetNFTRequestsPart is a free data retrieval call binding the contract method 0x58fc3a53.
-//
-// Solidity: function getNFTRequestsPart(uint256 offset_, uint256 limit_) view returns((address,address,uint256,address,uint8)[] nftRequests_)
-func (_Marketplace *MarketplaceCaller) GetNFTRequestsPart(opts *bind.CallOpts, offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceNFTRequestInfo, error) {
-	var out []interface{}
-	err := _Marketplace.contract.Call(opts, &out, "getNFTRequestsPart", offset_, limit_)
+	err := _Marketplace.contract.Call(opts, &out, "getNFTRequestsInfo", requestsId_)
 
 	if err != nil {
 		return *new([]IMarketplaceNFTRequestInfo), err
@@ -519,18 +528,49 @@ func (_Marketplace *MarketplaceCaller) GetNFTRequestsPart(opts *bind.CallOpts, o
 
 }
 
-// GetNFTRequestsPart is a free data retrieval call binding the contract method 0x58fc3a53.
+// GetNFTRequestsInfo is a free data retrieval call binding the contract method 0x9458c67e.
 //
-// Solidity: function getNFTRequestsPart(uint256 offset_, uint256 limit_) view returns((address,address,uint256,address,uint8)[] nftRequests_)
-func (_Marketplace *MarketplaceSession) GetNFTRequestsPart(offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceNFTRequestInfo, error) {
-	return _Marketplace.Contract.GetNFTRequestsPart(&_Marketplace.CallOpts, offset_, limit_)
+// Solidity: function getNFTRequestsInfo(uint256[] requestsId_) view returns((address,address,address,uint256,uint8)[] nftRequestsInfo_)
+func (_Marketplace *MarketplaceSession) GetNFTRequestsInfo(requestsId_ []*big.Int) ([]IMarketplaceNFTRequestInfo, error) {
+	return _Marketplace.Contract.GetNFTRequestsInfo(&_Marketplace.CallOpts, requestsId_)
 }
 
-// GetNFTRequestsPart is a free data retrieval call binding the contract method 0x58fc3a53.
+// GetNFTRequestsInfo is a free data retrieval call binding the contract method 0x9458c67e.
 //
-// Solidity: function getNFTRequestsPart(uint256 offset_, uint256 limit_) view returns((address,address,uint256,address,uint8)[] nftRequests_)
-func (_Marketplace *MarketplaceCallerSession) GetNFTRequestsPart(offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceNFTRequestInfo, error) {
-	return _Marketplace.Contract.GetNFTRequestsPart(&_Marketplace.CallOpts, offset_, limit_)
+// Solidity: function getNFTRequestsInfo(uint256[] requestsId_) view returns((address,address,address,uint256,uint8)[] nftRequestsInfo_)
+func (_Marketplace *MarketplaceCallerSession) GetNFTRequestsInfo(requestsId_ []*big.Int) ([]IMarketplaceNFTRequestInfo, error) {
+	return _Marketplace.Contract.GetNFTRequestsInfo(&_Marketplace.CallOpts, requestsId_)
+}
+
+// GetPendingRequestsPart is a free data retrieval call binding the contract method 0x5ef83bc5.
+//
+// Solidity: function getPendingRequestsPart(uint256 offset_, uint256 limit_) view returns(uint256[])
+func (_Marketplace *MarketplaceCaller) GetPendingRequestsPart(opts *bind.CallOpts, offset_ *big.Int, limit_ *big.Int) ([]*big.Int, error) {
+	var out []interface{}
+	err := _Marketplace.contract.Call(opts, &out, "getPendingRequestsPart", offset_, limit_)
+
+	if err != nil {
+		return *new([]*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]*big.Int)).(*[]*big.Int)
+
+	return out0, err
+
+}
+
+// GetPendingRequestsPart is a free data retrieval call binding the contract method 0x5ef83bc5.
+//
+// Solidity: function getPendingRequestsPart(uint256 offset_, uint256 limit_) view returns(uint256[])
+func (_Marketplace *MarketplaceSession) GetPendingRequestsPart(offset_ *big.Int, limit_ *big.Int) ([]*big.Int, error) {
+	return _Marketplace.Contract.GetPendingRequestsPart(&_Marketplace.CallOpts, offset_, limit_)
+}
+
+// GetPendingRequestsPart is a free data retrieval call binding the contract method 0x5ef83bc5.
+//
+// Solidity: function getPendingRequestsPart(uint256 offset_, uint256 limit_) view returns(uint256[])
+func (_Marketplace *MarketplaceCallerSession) GetPendingRequestsPart(offset_ *big.Int, limit_ *big.Int) ([]*big.Int, error) {
+	return _Marketplace.Contract.GetPendingRequestsPart(&_Marketplace.CallOpts, offset_, limit_)
 }
 
 // GetTokenContractsCount is a free data retrieval call binding the contract method 0x11b2bf29.
@@ -595,6 +635,68 @@ func (_Marketplace *MarketplaceCallerSession) GetTokenContractsPart(offset_ *big
 	return _Marketplace.Contract.GetTokenContractsPart(&_Marketplace.CallOpts, offset_, limit_)
 }
 
+// GetUserPendingRequestsCount is a free data retrieval call binding the contract method 0xdbdb9635.
+//
+// Solidity: function getUserPendingRequestsCount(address userAddr_) view returns(uint256)
+func (_Marketplace *MarketplaceCaller) GetUserPendingRequestsCount(opts *bind.CallOpts, userAddr_ common.Address) (*big.Int, error) {
+	var out []interface{}
+	err := _Marketplace.contract.Call(opts, &out, "getUserPendingRequestsCount", userAddr_)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetUserPendingRequestsCount is a free data retrieval call binding the contract method 0xdbdb9635.
+//
+// Solidity: function getUserPendingRequestsCount(address userAddr_) view returns(uint256)
+func (_Marketplace *MarketplaceSession) GetUserPendingRequestsCount(userAddr_ common.Address) (*big.Int, error) {
+	return _Marketplace.Contract.GetUserPendingRequestsCount(&_Marketplace.CallOpts, userAddr_)
+}
+
+// GetUserPendingRequestsCount is a free data retrieval call binding the contract method 0xdbdb9635.
+//
+// Solidity: function getUserPendingRequestsCount(address userAddr_) view returns(uint256)
+func (_Marketplace *MarketplaceCallerSession) GetUserPendingRequestsCount(userAddr_ common.Address) (*big.Int, error) {
+	return _Marketplace.Contract.GetUserPendingRequestsCount(&_Marketplace.CallOpts, userAddr_)
+}
+
+// GetUserPendingRequestsPart is a free data retrieval call binding the contract method 0x024a72bb.
+//
+// Solidity: function getUserPendingRequestsPart(address userAddr_, uint256 offset_, uint256 limit_) view returns(uint256[])
+func (_Marketplace *MarketplaceCaller) GetUserPendingRequestsPart(opts *bind.CallOpts, userAddr_ common.Address, offset_ *big.Int, limit_ *big.Int) ([]*big.Int, error) {
+	var out []interface{}
+	err := _Marketplace.contract.Call(opts, &out, "getUserPendingRequestsPart", userAddr_, offset_, limit_)
+
+	if err != nil {
+		return *new([]*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]*big.Int)).(*[]*big.Int)
+
+	return out0, err
+
+}
+
+// GetUserPendingRequestsPart is a free data retrieval call binding the contract method 0x024a72bb.
+//
+// Solidity: function getUserPendingRequestsPart(address userAddr_, uint256 offset_, uint256 limit_) view returns(uint256[])
+func (_Marketplace *MarketplaceSession) GetUserPendingRequestsPart(userAddr_ common.Address, offset_ *big.Int, limit_ *big.Int) ([]*big.Int, error) {
+	return _Marketplace.Contract.GetUserPendingRequestsPart(&_Marketplace.CallOpts, userAddr_, offset_, limit_)
+}
+
+// GetUserPendingRequestsPart is a free data retrieval call binding the contract method 0x024a72bb.
+//
+// Solidity: function getUserPendingRequestsPart(address userAddr_, uint256 offset_, uint256 limit_) view returns(uint256[])
+func (_Marketplace *MarketplaceCallerSession) GetUserPendingRequestsPart(userAddr_ common.Address, offset_ *big.Int, limit_ *big.Int) ([]*big.Int, error) {
+	return _Marketplace.Contract.GetUserPendingRequestsPart(&_Marketplace.CallOpts, userAddr_, offset_, limit_)
+}
+
 // GetUserTokensPart is a free data retrieval call binding the contract method 0x49049282.
 //
 // Solidity: function getUserTokensPart(address userAddr_, uint256 offset_, uint256 limit_) view returns((address,uint256[])[] userTokens_)
@@ -624,6 +726,37 @@ func (_Marketplace *MarketplaceSession) GetUserTokensPart(userAddr_ common.Addre
 // Solidity: function getUserTokensPart(address userAddr_, uint256 offset_, uint256 limit_) view returns((address,uint256[])[] userTokens_)
 func (_Marketplace *MarketplaceCallerSession) GetUserTokensPart(userAddr_ common.Address, offset_ *big.Int, limit_ *big.Int) ([]IMarketplaceUserTokens, error) {
 	return _Marketplace.Contract.GetUserTokensPart(&_Marketplace.CallOpts, userAddr_, offset_, limit_)
+}
+
+// NextRequestId is a free data retrieval call binding the contract method 0x6a84a985.
+//
+// Solidity: function nextRequestId() view returns(uint256)
+func (_Marketplace *MarketplaceCaller) NextRequestId(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _Marketplace.contract.Call(opts, &out, "nextRequestId")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// NextRequestId is a free data retrieval call binding the contract method 0x6a84a985.
+//
+// Solidity: function nextRequestId() view returns(uint256)
+func (_Marketplace *MarketplaceSession) NextRequestId() (*big.Int, error) {
+	return _Marketplace.Contract.NextRequestId(&_Marketplace.CallOpts)
+}
+
+// NextRequestId is a free data retrieval call binding the contract method 0x6a84a985.
+//
+// Solidity: function nextRequestId() view returns(uint256)
+func (_Marketplace *MarketplaceCallerSession) NextRequestId() (*big.Int, error) {
+	return _Marketplace.Contract.NextRequestId(&_Marketplace.CallOpts)
 }
 
 // Paused is a free data retrieval call binding the contract method 0x5c975abb.
@@ -678,6 +811,27 @@ func (_Marketplace *MarketplaceTransactorSession) MarketplaceInit(baseTokenContr
 	return _Marketplace.Contract.MarketplaceInit(&_Marketplace.TransactOpts, baseTokenContractsURI_)
 }
 
+// AcceptRequest is a paid mutator transaction binding the contract method 0xcd534ad3.
+//
+// Solidity: function acceptRequest((uint256,address,(uint256,string)) requestParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
+func (_Marketplace *MarketplaceTransactor) AcceptRequest(opts *bind.TransactOpts, requestParams_ IMarketplaceAcceptRequestParams, sig_ IMarketplaceSigData) (*types.Transaction, error) {
+	return _Marketplace.contract.Transact(opts, "acceptRequest", requestParams_, sig_)
+}
+
+// AcceptRequest is a paid mutator transaction binding the contract method 0xcd534ad3.
+//
+// Solidity: function acceptRequest((uint256,address,(uint256,string)) requestParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
+func (_Marketplace *MarketplaceSession) AcceptRequest(requestParams_ IMarketplaceAcceptRequestParams, sig_ IMarketplaceSigData) (*types.Transaction, error) {
+	return _Marketplace.Contract.AcceptRequest(&_Marketplace.TransactOpts, requestParams_, sig_)
+}
+
+// AcceptRequest is a paid mutator transaction binding the contract method 0xcd534ad3.
+//
+// Solidity: function acceptRequest((uint256,address,(uint256,string)) requestParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
+func (_Marketplace *MarketplaceTransactorSession) AcceptRequest(requestParams_ IMarketplaceAcceptRequestParams, sig_ IMarketplaceSigData) (*types.Transaction, error) {
+	return _Marketplace.Contract.AcceptRequest(&_Marketplace.TransactOpts, requestParams_, sig_)
+}
+
 // AddToken is a paid mutator transaction binding the contract method 0xa169fd46.
 //
 // Solidity: function addToken(string name_, string symbol_, (uint256,uint256,uint256,address,address,bool,bool,bool) tokenParams_) returns(address tokenProxy_)
@@ -699,108 +853,87 @@ func (_Marketplace *MarketplaceTransactorSession) AddToken(name_ string, symbol_
 	return _Marketplace.Contract.AddToken(&_Marketplace.TransactOpts, name_, symbol_, tokenParams_)
 }
 
-// BuyTokenWithERC20 is a paid mutator transaction binding the contract method 0x842ffe75.
+// BuyTokenWithERC20 is a paid mutator transaction binding the contract method 0xf68e448f.
 //
-// Solidity: function buyTokenWithERC20(((address,uint256,uint256,uint256),address,address,uint256,string) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
-func (_Marketplace *MarketplaceTransactor) BuyTokenWithERC20(opts *bind.TransactOpts, buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSig) (*types.Transaction, error) {
+// Solidity: function buyTokenWithERC20((address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
+func (_Marketplace *MarketplaceTransactor) BuyTokenWithERC20(opts *bind.TransactOpts, buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSigData) (*types.Transaction, error) {
 	return _Marketplace.contract.Transact(opts, "buyTokenWithERC20", buyParams_, sig_)
 }
 
-// BuyTokenWithERC20 is a paid mutator transaction binding the contract method 0x842ffe75.
+// BuyTokenWithERC20 is a paid mutator transaction binding the contract method 0xf68e448f.
 //
-// Solidity: function buyTokenWithERC20(((address,uint256,uint256,uint256),address,address,uint256,string) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
-func (_Marketplace *MarketplaceSession) BuyTokenWithERC20(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSig) (*types.Transaction, error) {
+// Solidity: function buyTokenWithERC20((address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
+func (_Marketplace *MarketplaceSession) BuyTokenWithERC20(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSigData) (*types.Transaction, error) {
 	return _Marketplace.Contract.BuyTokenWithERC20(&_Marketplace.TransactOpts, buyParams_, sig_)
 }
 
-// BuyTokenWithERC20 is a paid mutator transaction binding the contract method 0x842ffe75.
+// BuyTokenWithERC20 is a paid mutator transaction binding the contract method 0xf68e448f.
 //
-// Solidity: function buyTokenWithERC20(((address,uint256,uint256,uint256),address,address,uint256,string) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
-func (_Marketplace *MarketplaceTransactorSession) BuyTokenWithERC20(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSig) (*types.Transaction, error) {
+// Solidity: function buyTokenWithERC20((address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
+func (_Marketplace *MarketplaceTransactorSession) BuyTokenWithERC20(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSigData) (*types.Transaction, error) {
 	return _Marketplace.Contract.BuyTokenWithERC20(&_Marketplace.TransactOpts, buyParams_, sig_)
 }
 
-// BuyTokenWithETH is a paid mutator transaction binding the contract method 0x6b7b63a0.
+// BuyTokenWithETH is a paid mutator transaction binding the contract method 0xfb278ce4.
 //
-// Solidity: function buyTokenWithETH(((address,uint256,uint256,uint256),address,address,uint256,string) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) payable returns()
-func (_Marketplace *MarketplaceTransactor) BuyTokenWithETH(opts *bind.TransactOpts, buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSig) (*types.Transaction, error) {
+// Solidity: function buyTokenWithETH((address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) payable returns()
+func (_Marketplace *MarketplaceTransactor) BuyTokenWithETH(opts *bind.TransactOpts, buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSigData) (*types.Transaction, error) {
 	return _Marketplace.contract.Transact(opts, "buyTokenWithETH", buyParams_, sig_)
 }
 
-// BuyTokenWithETH is a paid mutator transaction binding the contract method 0x6b7b63a0.
+// BuyTokenWithETH is a paid mutator transaction binding the contract method 0xfb278ce4.
 //
-// Solidity: function buyTokenWithETH(((address,uint256,uint256,uint256),address,address,uint256,string) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) payable returns()
-func (_Marketplace *MarketplaceSession) BuyTokenWithETH(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSig) (*types.Transaction, error) {
+// Solidity: function buyTokenWithETH((address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) payable returns()
+func (_Marketplace *MarketplaceSession) BuyTokenWithETH(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSigData) (*types.Transaction, error) {
 	return _Marketplace.Contract.BuyTokenWithETH(&_Marketplace.TransactOpts, buyParams_, sig_)
 }
 
-// BuyTokenWithETH is a paid mutator transaction binding the contract method 0x6b7b63a0.
+// BuyTokenWithETH is a paid mutator transaction binding the contract method 0xfb278ce4.
 //
-// Solidity: function buyTokenWithETH(((address,uint256,uint256,uint256),address,address,uint256,string) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) payable returns()
-func (_Marketplace *MarketplaceTransactorSession) BuyTokenWithETH(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSig) (*types.Transaction, error) {
+// Solidity: function buyTokenWithETH((address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) payable returns()
+func (_Marketplace *MarketplaceTransactorSession) BuyTokenWithETH(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSigData) (*types.Transaction, error) {
 	return _Marketplace.Contract.BuyTokenWithETH(&_Marketplace.TransactOpts, buyParams_, sig_)
 }
 
-// BuyTokenWithNFT is a paid mutator transaction binding the contract method 0x9ee0b982.
+// BuyTokenWithNFT is a paid mutator transaction binding the contract method 0xad2cf8af.
 //
-// Solidity: function buyTokenWithNFT(((address,uint256,uint256,uint256),address,address,uint256,string) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
-func (_Marketplace *MarketplaceTransactor) BuyTokenWithNFT(opts *bind.TransactOpts, buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSig) (*types.Transaction, error) {
+// Solidity: function buyTokenWithNFT((address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
+func (_Marketplace *MarketplaceTransactor) BuyTokenWithNFT(opts *bind.TransactOpts, buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSigData) (*types.Transaction, error) {
 	return _Marketplace.contract.Transact(opts, "buyTokenWithNFT", buyParams_, sig_)
 }
 
-// BuyTokenWithNFT is a paid mutator transaction binding the contract method 0x9ee0b982.
+// BuyTokenWithNFT is a paid mutator transaction binding the contract method 0xad2cf8af.
 //
-// Solidity: function buyTokenWithNFT(((address,uint256,uint256,uint256),address,address,uint256,string) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
-func (_Marketplace *MarketplaceSession) BuyTokenWithNFT(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSig) (*types.Transaction, error) {
+// Solidity: function buyTokenWithNFT((address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
+func (_Marketplace *MarketplaceSession) BuyTokenWithNFT(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSigData) (*types.Transaction, error) {
 	return _Marketplace.Contract.BuyTokenWithNFT(&_Marketplace.TransactOpts, buyParams_, sig_)
 }
 
-// BuyTokenWithNFT is a paid mutator transaction binding the contract method 0x9ee0b982.
+// BuyTokenWithNFT is a paid mutator transaction binding the contract method 0xad2cf8af.
 //
-// Solidity: function buyTokenWithNFT(((address,uint256,uint256,uint256),address,address,uint256,string) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
-func (_Marketplace *MarketplaceTransactorSession) BuyTokenWithNFT(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSig) (*types.Transaction, error) {
+// Solidity: function buyTokenWithNFT((address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
+func (_Marketplace *MarketplaceTransactorSession) BuyTokenWithNFT(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSigData) (*types.Transaction, error) {
 	return _Marketplace.Contract.BuyTokenWithNFT(&_Marketplace.TransactOpts, buyParams_, sig_)
 }
 
-// BuyTokenWithRequest is a paid mutator transaction binding the contract method 0xb9a5998d.
+// BuyTokenWithVoucher is a paid mutator transaction binding the contract method 0x1994c325.
 //
-// Solidity: function buyTokenWithRequest((uint256,uint256,string) requestBuyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
-func (_Marketplace *MarketplaceTransactor) BuyTokenWithRequest(opts *bind.TransactOpts, requestBuyParams_ IMarketplaceRequestBuyParams, sig_ IMarketplaceSig) (*types.Transaction, error) {
-	return _Marketplace.contract.Transact(opts, "buyTokenWithRequest", requestBuyParams_, sig_)
-}
-
-// BuyTokenWithRequest is a paid mutator transaction binding the contract method 0xb9a5998d.
-//
-// Solidity: function buyTokenWithRequest((uint256,uint256,string) requestBuyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
-func (_Marketplace *MarketplaceSession) BuyTokenWithRequest(requestBuyParams_ IMarketplaceRequestBuyParams, sig_ IMarketplaceSig) (*types.Transaction, error) {
-	return _Marketplace.Contract.BuyTokenWithRequest(&_Marketplace.TransactOpts, requestBuyParams_, sig_)
-}
-
-// BuyTokenWithRequest is a paid mutator transaction binding the contract method 0xb9a5998d.
-//
-// Solidity: function buyTokenWithRequest((uint256,uint256,string) requestBuyParams_, (uint256,bytes32,bytes32,uint8) sig_) returns()
-func (_Marketplace *MarketplaceTransactorSession) BuyTokenWithRequest(requestBuyParams_ IMarketplaceRequestBuyParams, sig_ IMarketplaceSig) (*types.Transaction, error) {
-	return _Marketplace.Contract.BuyTokenWithRequest(&_Marketplace.TransactOpts, requestBuyParams_, sig_)
-}
-
-// BuyTokenWithVoucher is a paid mutator transaction binding the contract method 0x65a896f3.
-//
-// Solidity: function buyTokenWithVoucher(((address,uint256,uint256,uint256),address,address,uint256,string) buyParams_, (uint256,bytes32,bytes32,uint8) sig_, (uint256,bytes32,bytes32,uint8) permitSig_) returns()
-func (_Marketplace *MarketplaceTransactor) BuyTokenWithVoucher(opts *bind.TransactOpts, buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSig, permitSig_ IMarketplaceSig) (*types.Transaction, error) {
+// Solidity: function buyTokenWithVoucher((address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams_, (uint256,bytes32,bytes32,uint8) sig_, (uint256,bytes32,bytes32,uint8) permitSig_) returns()
+func (_Marketplace *MarketplaceTransactor) BuyTokenWithVoucher(opts *bind.TransactOpts, buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSigData, permitSig_ IMarketplaceSigData) (*types.Transaction, error) {
 	return _Marketplace.contract.Transact(opts, "buyTokenWithVoucher", buyParams_, sig_, permitSig_)
 }
 
-// BuyTokenWithVoucher is a paid mutator transaction binding the contract method 0x65a896f3.
+// BuyTokenWithVoucher is a paid mutator transaction binding the contract method 0x1994c325.
 //
-// Solidity: function buyTokenWithVoucher(((address,uint256,uint256,uint256),address,address,uint256,string) buyParams_, (uint256,bytes32,bytes32,uint8) sig_, (uint256,bytes32,bytes32,uint8) permitSig_) returns()
-func (_Marketplace *MarketplaceSession) BuyTokenWithVoucher(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSig, permitSig_ IMarketplaceSig) (*types.Transaction, error) {
+// Solidity: function buyTokenWithVoucher((address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams_, (uint256,bytes32,bytes32,uint8) sig_, (uint256,bytes32,bytes32,uint8) permitSig_) returns()
+func (_Marketplace *MarketplaceSession) BuyTokenWithVoucher(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSigData, permitSig_ IMarketplaceSigData) (*types.Transaction, error) {
 	return _Marketplace.Contract.BuyTokenWithVoucher(&_Marketplace.TransactOpts, buyParams_, sig_, permitSig_)
 }
 
-// BuyTokenWithVoucher is a paid mutator transaction binding the contract method 0x65a896f3.
+// BuyTokenWithVoucher is a paid mutator transaction binding the contract method 0x1994c325.
 //
-// Solidity: function buyTokenWithVoucher(((address,uint256,uint256,uint256),address,address,uint256,string) buyParams_, (uint256,bytes32,bytes32,uint8) sig_, (uint256,bytes32,bytes32,uint8) permitSig_) returns()
-func (_Marketplace *MarketplaceTransactorSession) BuyTokenWithVoucher(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSig, permitSig_ IMarketplaceSig) (*types.Transaction, error) {
+// Solidity: function buyTokenWithVoucher((address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams_, (uint256,bytes32,bytes32,uint8) sig_, (uint256,bytes32,bytes32,uint8) permitSig_) returns()
+func (_Marketplace *MarketplaceTransactorSession) BuyTokenWithVoucher(buyParams_ IMarketplaceBuyParams, sig_ IMarketplaceSigData, permitSig_ IMarketplaceSigData) (*types.Transaction, error) {
 	return _Marketplace.Contract.BuyTokenWithVoucher(&_Marketplace.TransactOpts, buyParams_, sig_, permitSig_)
 }
 
@@ -825,25 +958,25 @@ func (_Marketplace *MarketplaceTransactorSession) CancelNFTRequest(requestId_ *b
 	return _Marketplace.Contract.CancelNFTRequest(&_Marketplace.TransactOpts, requestId_)
 }
 
-// CreateNFTRequest is a paid mutator transaction binding the contract method 0x6d04b6fa.
+// CreateNFTRequest is a paid mutator transaction binding the contract method 0x62002896.
 //
-// Solidity: function createNFTRequest(address nftContract_, uint256 nftId_, address tokenContract_) returns(uint256 requestId_)
-func (_Marketplace *MarketplaceTransactor) CreateNFTRequest(opts *bind.TransactOpts, nftContract_ common.Address, nftId_ *big.Int, tokenContract_ common.Address) (*types.Transaction, error) {
-	return _Marketplace.contract.Transact(opts, "createNFTRequest", nftContract_, nftId_, tokenContract_)
+// Solidity: function createNFTRequest(address tokenContract_, address nftContract_, uint256 nftId_) returns(uint256 requestId_)
+func (_Marketplace *MarketplaceTransactor) CreateNFTRequest(opts *bind.TransactOpts, tokenContract_ common.Address, nftContract_ common.Address, nftId_ *big.Int) (*types.Transaction, error) {
+	return _Marketplace.contract.Transact(opts, "createNFTRequest", tokenContract_, nftContract_, nftId_)
 }
 
-// CreateNFTRequest is a paid mutator transaction binding the contract method 0x6d04b6fa.
+// CreateNFTRequest is a paid mutator transaction binding the contract method 0x62002896.
 //
-// Solidity: function createNFTRequest(address nftContract_, uint256 nftId_, address tokenContract_) returns(uint256 requestId_)
-func (_Marketplace *MarketplaceSession) CreateNFTRequest(nftContract_ common.Address, nftId_ *big.Int, tokenContract_ common.Address) (*types.Transaction, error) {
-	return _Marketplace.Contract.CreateNFTRequest(&_Marketplace.TransactOpts, nftContract_, nftId_, tokenContract_)
+// Solidity: function createNFTRequest(address tokenContract_, address nftContract_, uint256 nftId_) returns(uint256 requestId_)
+func (_Marketplace *MarketplaceSession) CreateNFTRequest(tokenContract_ common.Address, nftContract_ common.Address, nftId_ *big.Int) (*types.Transaction, error) {
+	return _Marketplace.Contract.CreateNFTRequest(&_Marketplace.TransactOpts, tokenContract_, nftContract_, nftId_)
 }
 
-// CreateNFTRequest is a paid mutator transaction binding the contract method 0x6d04b6fa.
+// CreateNFTRequest is a paid mutator transaction binding the contract method 0x62002896.
 //
-// Solidity: function createNFTRequest(address nftContract_, uint256 nftId_, address tokenContract_) returns(uint256 requestId_)
-func (_Marketplace *MarketplaceTransactorSession) CreateNFTRequest(nftContract_ common.Address, nftId_ *big.Int, tokenContract_ common.Address) (*types.Transaction, error) {
-	return _Marketplace.Contract.CreateNFTRequest(&_Marketplace.TransactOpts, nftContract_, nftId_, tokenContract_)
+// Solidity: function createNFTRequest(address tokenContract_, address nftContract_, uint256 nftId_) returns(uint256 requestId_)
+func (_Marketplace *MarketplaceTransactorSession) CreateNFTRequest(tokenContract_ common.Address, nftContract_ common.Address, nftId_ *big.Int) (*types.Transaction, error) {
+	return _Marketplace.Contract.CreateNFTRequest(&_Marketplace.TransactOpts, tokenContract_, nftContract_, nftId_)
 }
 
 // OnERC721Received is a paid mutator transaction binding the contract method 0x150b7a02.
@@ -972,25 +1105,25 @@ func (_Marketplace *MarketplaceTransactorSession) Unpause() (*types.Transaction,
 	return _Marketplace.Contract.Unpause(&_Marketplace.TransactOpts)
 }
 
-// UpdateAllParams is a paid mutator transaction binding the contract method 0x7fd471b5.
+// UpdateTokenParams is a paid mutator transaction binding the contract method 0x7b68e174.
 //
-// Solidity: function updateAllParams(address tokenContract_, string name_, string symbol_, (uint256,uint256,uint256,address,address,bool,bool,bool) newTokenParams_) returns()
-func (_Marketplace *MarketplaceTransactor) UpdateAllParams(opts *bind.TransactOpts, tokenContract_ common.Address, name_ string, symbol_ string, newTokenParams_ IMarketplaceTokenParams) (*types.Transaction, error) {
-	return _Marketplace.contract.Transact(opts, "updateAllParams", tokenContract_, name_, symbol_, newTokenParams_)
+// Solidity: function updateTokenParams(address tokenContract_, (uint256,uint256,uint256,address,address,bool,bool,bool) newTokenParams_) returns()
+func (_Marketplace *MarketplaceTransactor) UpdateTokenParams(opts *bind.TransactOpts, tokenContract_ common.Address, newTokenParams_ IMarketplaceTokenParams) (*types.Transaction, error) {
+	return _Marketplace.contract.Transact(opts, "updateTokenParams", tokenContract_, newTokenParams_)
 }
 
-// UpdateAllParams is a paid mutator transaction binding the contract method 0x7fd471b5.
+// UpdateTokenParams is a paid mutator transaction binding the contract method 0x7b68e174.
 //
-// Solidity: function updateAllParams(address tokenContract_, string name_, string symbol_, (uint256,uint256,uint256,address,address,bool,bool,bool) newTokenParams_) returns()
-func (_Marketplace *MarketplaceSession) UpdateAllParams(tokenContract_ common.Address, name_ string, symbol_ string, newTokenParams_ IMarketplaceTokenParams) (*types.Transaction, error) {
-	return _Marketplace.Contract.UpdateAllParams(&_Marketplace.TransactOpts, tokenContract_, name_, symbol_, newTokenParams_)
+// Solidity: function updateTokenParams(address tokenContract_, (uint256,uint256,uint256,address,address,bool,bool,bool) newTokenParams_) returns()
+func (_Marketplace *MarketplaceSession) UpdateTokenParams(tokenContract_ common.Address, newTokenParams_ IMarketplaceTokenParams) (*types.Transaction, error) {
+	return _Marketplace.Contract.UpdateTokenParams(&_Marketplace.TransactOpts, tokenContract_, newTokenParams_)
 }
 
-// UpdateAllParams is a paid mutator transaction binding the contract method 0x7fd471b5.
+// UpdateTokenParams is a paid mutator transaction binding the contract method 0x7b68e174.
 //
-// Solidity: function updateAllParams(address tokenContract_, string name_, string symbol_, (uint256,uint256,uint256,address,address,bool,bool,bool) newTokenParams_) returns()
-func (_Marketplace *MarketplaceTransactorSession) UpdateAllParams(tokenContract_ common.Address, name_ string, symbol_ string, newTokenParams_ IMarketplaceTokenParams) (*types.Transaction, error) {
-	return _Marketplace.Contract.UpdateAllParams(&_Marketplace.TransactOpts, tokenContract_, name_, symbol_, newTokenParams_)
+// Solidity: function updateTokenParams(address tokenContract_, (uint256,uint256,uint256,address,address,bool,bool,bool) newTokenParams_) returns()
+func (_Marketplace *MarketplaceTransactorSession) UpdateTokenParams(tokenContract_ common.Address, newTokenParams_ IMarketplaceTokenParams) (*types.Transaction, error) {
+	return _Marketplace.Contract.UpdateTokenParams(&_Marketplace.TransactOpts, tokenContract_, newTokenParams_)
 }
 
 // WithdrawCurrency is a paid mutator transaction binding the contract method 0x8099d792.
@@ -1012,6 +1145,27 @@ func (_Marketplace *MarketplaceSession) WithdrawCurrency(tokenAddr_ common.Addre
 // Solidity: function withdrawCurrency(address tokenAddr_, address recipient_, uint256 desiredAmount_, bool withdrawAll_) returns()
 func (_Marketplace *MarketplaceTransactorSession) WithdrawCurrency(tokenAddr_ common.Address, recipient_ common.Address, desiredAmount_ *big.Int, withdrawAll_ bool) (*types.Transaction, error) {
 	return _Marketplace.Contract.WithdrawCurrency(&_Marketplace.TransactOpts, tokenAddr_, recipient_, desiredAmount_, withdrawAll_)
+}
+
+// WithdrawNFTs is a paid mutator transaction binding the contract method 0xa684e1fd.
+//
+// Solidity: function withdrawNFTs(address nft_, address recipient_, uint256[] tokenIds_) returns()
+func (_Marketplace *MarketplaceTransactor) WithdrawNFTs(opts *bind.TransactOpts, nft_ common.Address, recipient_ common.Address, tokenIds_ []*big.Int) (*types.Transaction, error) {
+	return _Marketplace.contract.Transact(opts, "withdrawNFTs", nft_, recipient_, tokenIds_)
+}
+
+// WithdrawNFTs is a paid mutator transaction binding the contract method 0xa684e1fd.
+//
+// Solidity: function withdrawNFTs(address nft_, address recipient_, uint256[] tokenIds_) returns()
+func (_Marketplace *MarketplaceSession) WithdrawNFTs(nft_ common.Address, recipient_ common.Address, tokenIds_ []*big.Int) (*types.Transaction, error) {
+	return _Marketplace.Contract.WithdrawNFTs(&_Marketplace.TransactOpts, nft_, recipient_, tokenIds_)
+}
+
+// WithdrawNFTs is a paid mutator transaction binding the contract method 0xa684e1fd.
+//
+// Solidity: function withdrawNFTs(address nft_, address recipient_, uint256[] tokenIds_) returns()
+func (_Marketplace *MarketplaceTransactorSession) WithdrawNFTs(nft_ common.Address, recipient_ common.Address, tokenIds_ []*big.Int) (*types.Transaction, error) {
+	return _Marketplace.Contract.WithdrawNFTs(&_Marketplace.TransactOpts, nft_, recipient_, tokenIds_)
 }
 
 // MarketplaceBaseTokenContractsURIUpdatedIterator is returned from FilterBaseTokenContractsURIUpdated and is used to iterate over the raw logs and unpacked data for BaseTokenContractsURIUpdated events raised by the Marketplace contract.
@@ -1363,15 +1517,15 @@ func (it *MarketplaceNFTRequestCreatedIterator) Close() error {
 type MarketplaceNFTRequestCreated struct {
 	RequestId     *big.Int
 	Requester     common.Address
+	TokenContract common.Address
 	NftContract   common.Address
 	NftId         *big.Int
-	TokenContract common.Address
 	Raw           types.Log // Blockchain specific contextual infos
 }
 
-// FilterNFTRequestCreated is a free log retrieval operation binding the contract event 0x01ac2115ffca9df821a874e019c7cd01df4a3e49c7f72ead1bf66efef3a7c547.
+// FilterNFTRequestCreated is a free log retrieval operation binding the contract event 0x3f8f712ef49e6784ca3e1cf25f4e7d3876b97ff96c11c24926d7164dabf246b7.
 //
-// Solidity: event NFTRequestCreated(uint256 indexed requestId, address indexed requester, address nftContract, uint256 nftId, address indexed tokenContract)
+// Solidity: event NFTRequestCreated(uint256 indexed requestId, address indexed requester, address indexed tokenContract, address nftContract, uint256 nftId)
 func (_Marketplace *MarketplaceFilterer) FilterNFTRequestCreated(opts *bind.FilterOpts, requestId []*big.Int, requester []common.Address, tokenContract []common.Address) (*MarketplaceNFTRequestCreatedIterator, error) {
 
 	var requestIdRule []interface{}
@@ -1382,7 +1536,6 @@ func (_Marketplace *MarketplaceFilterer) FilterNFTRequestCreated(opts *bind.Filt
 	for _, requesterItem := range requester {
 		requesterRule = append(requesterRule, requesterItem)
 	}
-
 	var tokenContractRule []interface{}
 	for _, tokenContractItem := range tokenContract {
 		tokenContractRule = append(tokenContractRule, tokenContractItem)
@@ -1395,9 +1548,9 @@ func (_Marketplace *MarketplaceFilterer) FilterNFTRequestCreated(opts *bind.Filt
 	return &MarketplaceNFTRequestCreatedIterator{contract: _Marketplace.contract, event: "NFTRequestCreated", logs: logs, sub: sub}, nil
 }
 
-// WatchNFTRequestCreated is a free log subscription operation binding the contract event 0x01ac2115ffca9df821a874e019c7cd01df4a3e49c7f72ead1bf66efef3a7c547.
+// WatchNFTRequestCreated is a free log subscription operation binding the contract event 0x3f8f712ef49e6784ca3e1cf25f4e7d3876b97ff96c11c24926d7164dabf246b7.
 //
-// Solidity: event NFTRequestCreated(uint256 indexed requestId, address indexed requester, address nftContract, uint256 nftId, address indexed tokenContract)
+// Solidity: event NFTRequestCreated(uint256 indexed requestId, address indexed requester, address indexed tokenContract, address nftContract, uint256 nftId)
 func (_Marketplace *MarketplaceFilterer) WatchNFTRequestCreated(opts *bind.WatchOpts, sink chan<- *MarketplaceNFTRequestCreated, requestId []*big.Int, requester []common.Address, tokenContract []common.Address) (event.Subscription, error) {
 
 	var requestIdRule []interface{}
@@ -1408,7 +1561,6 @@ func (_Marketplace *MarketplaceFilterer) WatchNFTRequestCreated(opts *bind.Watch
 	for _, requesterItem := range requester {
 		requesterRule = append(requesterRule, requesterItem)
 	}
-
 	var tokenContractRule []interface{}
 	for _, tokenContractItem := range tokenContract {
 		tokenContractRule = append(tokenContractRule, tokenContractItem)
@@ -1446,12 +1598,158 @@ func (_Marketplace *MarketplaceFilterer) WatchNFTRequestCreated(opts *bind.Watch
 	}), nil
 }
 
-// ParseNFTRequestCreated is a log parse operation binding the contract event 0x01ac2115ffca9df821a874e019c7cd01df4a3e49c7f72ead1bf66efef3a7c547.
+// ParseNFTRequestCreated is a log parse operation binding the contract event 0x3f8f712ef49e6784ca3e1cf25f4e7d3876b97ff96c11c24926d7164dabf246b7.
 //
-// Solidity: event NFTRequestCreated(uint256 indexed requestId, address indexed requester, address nftContract, uint256 nftId, address indexed tokenContract)
+// Solidity: event NFTRequestCreated(uint256 indexed requestId, address indexed requester, address indexed tokenContract, address nftContract, uint256 nftId)
 func (_Marketplace *MarketplaceFilterer) ParseNFTRequestCreated(log types.Log) (*MarketplaceNFTRequestCreated, error) {
 	event := new(MarketplaceNFTRequestCreated)
 	if err := _Marketplace.contract.UnpackLog(event, "NFTRequestCreated", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// MarketplaceNFTTokensWithdrawnIterator is returned from FilterNFTTokensWithdrawn and is used to iterate over the raw logs and unpacked data for NFTTokensWithdrawn events raised by the Marketplace contract.
+type MarketplaceNFTTokensWithdrawnIterator struct {
+	Event *MarketplaceNFTTokensWithdrawn // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *MarketplaceNFTTokensWithdrawnIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(MarketplaceNFTTokensWithdrawn)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(MarketplaceNFTTokensWithdrawn)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *MarketplaceNFTTokensWithdrawnIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *MarketplaceNFTTokensWithdrawnIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// MarketplaceNFTTokensWithdrawn represents a NFTTokensWithdrawn event raised by the Marketplace contract.
+type MarketplaceNFTTokensWithdrawn struct {
+	NftAddr   common.Address
+	Recipient common.Address
+	TokenIDs  []*big.Int
+	Raw       types.Log // Blockchain specific contextual infos
+}
+
+// FilterNFTTokensWithdrawn is a free log retrieval operation binding the contract event 0x532e4a6fa1bc2d0da3910834e7b66e23cfac61111db6e1b37b4986cb16ba4614.
+//
+// Solidity: event NFTTokensWithdrawn(address indexed nftAddr, address recipient, uint256[] tokenIDs)
+func (_Marketplace *MarketplaceFilterer) FilterNFTTokensWithdrawn(opts *bind.FilterOpts, nftAddr []common.Address) (*MarketplaceNFTTokensWithdrawnIterator, error) {
+
+	var nftAddrRule []interface{}
+	for _, nftAddrItem := range nftAddr {
+		nftAddrRule = append(nftAddrRule, nftAddrItem)
+	}
+
+	logs, sub, err := _Marketplace.contract.FilterLogs(opts, "NFTTokensWithdrawn", nftAddrRule)
+	if err != nil {
+		return nil, err
+	}
+	return &MarketplaceNFTTokensWithdrawnIterator{contract: _Marketplace.contract, event: "NFTTokensWithdrawn", logs: logs, sub: sub}, nil
+}
+
+// WatchNFTTokensWithdrawn is a free log subscription operation binding the contract event 0x532e4a6fa1bc2d0da3910834e7b66e23cfac61111db6e1b37b4986cb16ba4614.
+//
+// Solidity: event NFTTokensWithdrawn(address indexed nftAddr, address recipient, uint256[] tokenIDs)
+func (_Marketplace *MarketplaceFilterer) WatchNFTTokensWithdrawn(opts *bind.WatchOpts, sink chan<- *MarketplaceNFTTokensWithdrawn, nftAddr []common.Address) (event.Subscription, error) {
+
+	var nftAddrRule []interface{}
+	for _, nftAddrItem := range nftAddr {
+		nftAddrRule = append(nftAddrRule, nftAddrItem)
+	}
+
+	logs, sub, err := _Marketplace.contract.WatchLogs(opts, "NFTTokensWithdrawn", nftAddrRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(MarketplaceNFTTokensWithdrawn)
+				if err := _Marketplace.contract.UnpackLog(event, "NFTTokensWithdrawn", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseNFTTokensWithdrawn is a log parse operation binding the contract event 0x532e4a6fa1bc2d0da3910834e7b66e23cfac61111db6e1b37b4986cb16ba4614.
+//
+// Solidity: event NFTTokensWithdrawn(address indexed nftAddr, address recipient, uint256[] tokenIDs)
+func (_Marketplace *MarketplaceFilterer) ParseNFTTokensWithdrawn(log types.Log) (*MarketplaceNFTTokensWithdrawn, error) {
+	event := new(MarketplaceNFTTokensWithdrawn)
+	if err := _Marketplace.contract.UnpackLog(event, "NFTTokensWithdrawn", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -1885,9 +2183,9 @@ func (_Marketplace *MarketplaceFilterer) ParseTokenContractDeployed(log types.Lo
 	return event, nil
 }
 
-// MarketplaceTokenContractParamsUpdatedIterator is returned from FilterTokenContractParamsUpdated and is used to iterate over the raw logs and unpacked data for TokenContractParamsUpdated events raised by the Marketplace contract.
-type MarketplaceTokenContractParamsUpdatedIterator struct {
-	Event *MarketplaceTokenContractParamsUpdated // Event containing the contract specifics and raw log
+// MarketplaceTokenParamsUpdatedIterator is returned from FilterTokenParamsUpdated and is used to iterate over the raw logs and unpacked data for TokenParamsUpdated events raised by the Marketplace contract.
+type MarketplaceTokenParamsUpdatedIterator struct {
+	Event *MarketplaceTokenParamsUpdated // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -1901,7 +2199,7 @@ type MarketplaceTokenContractParamsUpdatedIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *MarketplaceTokenContractParamsUpdatedIterator) Next() bool {
+func (it *MarketplaceTokenParamsUpdatedIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -1910,7 +2208,7 @@ func (it *MarketplaceTokenContractParamsUpdatedIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(MarketplaceTokenContractParamsUpdated)
+			it.Event = new(MarketplaceTokenParamsUpdated)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -1925,7 +2223,7 @@ func (it *MarketplaceTokenContractParamsUpdatedIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(MarketplaceTokenContractParamsUpdated)
+		it.Event = new(MarketplaceTokenParamsUpdated)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -1941,54 +2239,52 @@ func (it *MarketplaceTokenContractParamsUpdatedIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *MarketplaceTokenContractParamsUpdatedIterator) Error() error {
+func (it *MarketplaceTokenParamsUpdatedIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *MarketplaceTokenContractParamsUpdatedIterator) Close() error {
+func (it *MarketplaceTokenParamsUpdatedIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// MarketplaceTokenContractParamsUpdated represents a TokenContractParamsUpdated event raised by the Marketplace contract.
-type MarketplaceTokenContractParamsUpdated struct {
+// MarketplaceTokenParamsUpdated represents a TokenParamsUpdated event raised by the Marketplace contract.
+type MarketplaceTokenParamsUpdated struct {
 	TokenContract common.Address
-	TokenName     string
-	TokenSymbol   string
 	TokenParams   IMarketplaceTokenParams
 	Raw           types.Log // Blockchain specific contextual infos
 }
 
-// FilterTokenContractParamsUpdated is a free log retrieval operation binding the contract event 0x08c050efe01a2e294a466b4d07435c9a339e5e8e7ee7dc3e1b61e9182cae597d.
+// FilterTokenParamsUpdated is a free log retrieval operation binding the contract event 0xd37221c35049c28d88e4fcc76bda0a4ede57343f131a0ebf1c3bca09baf6f1e1.
 //
-// Solidity: event TokenContractParamsUpdated(address indexed tokenContract, string tokenName, string tokenSymbol, (uint256,uint256,uint256,address,address,bool,bool,bool) tokenParams)
-func (_Marketplace *MarketplaceFilterer) FilterTokenContractParamsUpdated(opts *bind.FilterOpts, tokenContract []common.Address) (*MarketplaceTokenContractParamsUpdatedIterator, error) {
+// Solidity: event TokenParamsUpdated(address indexed tokenContract, (uint256,uint256,uint256,address,address,bool,bool,bool) tokenParams)
+func (_Marketplace *MarketplaceFilterer) FilterTokenParamsUpdated(opts *bind.FilterOpts, tokenContract []common.Address) (*MarketplaceTokenParamsUpdatedIterator, error) {
 
 	var tokenContractRule []interface{}
 	for _, tokenContractItem := range tokenContract {
 		tokenContractRule = append(tokenContractRule, tokenContractItem)
 	}
 
-	logs, sub, err := _Marketplace.contract.FilterLogs(opts, "TokenContractParamsUpdated", tokenContractRule)
+	logs, sub, err := _Marketplace.contract.FilterLogs(opts, "TokenParamsUpdated", tokenContractRule)
 	if err != nil {
 		return nil, err
 	}
-	return &MarketplaceTokenContractParamsUpdatedIterator{contract: _Marketplace.contract, event: "TokenContractParamsUpdated", logs: logs, sub: sub}, nil
+	return &MarketplaceTokenParamsUpdatedIterator{contract: _Marketplace.contract, event: "TokenParamsUpdated", logs: logs, sub: sub}, nil
 }
 
-// WatchTokenContractParamsUpdated is a free log subscription operation binding the contract event 0x08c050efe01a2e294a466b4d07435c9a339e5e8e7ee7dc3e1b61e9182cae597d.
+// WatchTokenParamsUpdated is a free log subscription operation binding the contract event 0xd37221c35049c28d88e4fcc76bda0a4ede57343f131a0ebf1c3bca09baf6f1e1.
 //
-// Solidity: event TokenContractParamsUpdated(address indexed tokenContract, string tokenName, string tokenSymbol, (uint256,uint256,uint256,address,address,bool,bool,bool) tokenParams)
-func (_Marketplace *MarketplaceFilterer) WatchTokenContractParamsUpdated(opts *bind.WatchOpts, sink chan<- *MarketplaceTokenContractParamsUpdated, tokenContract []common.Address) (event.Subscription, error) {
+// Solidity: event TokenParamsUpdated(address indexed tokenContract, (uint256,uint256,uint256,address,address,bool,bool,bool) tokenParams)
+func (_Marketplace *MarketplaceFilterer) WatchTokenParamsUpdated(opts *bind.WatchOpts, sink chan<- *MarketplaceTokenParamsUpdated, tokenContract []common.Address) (event.Subscription, error) {
 
 	var tokenContractRule []interface{}
 	for _, tokenContractItem := range tokenContract {
 		tokenContractRule = append(tokenContractRule, tokenContractItem)
 	}
 
-	logs, sub, err := _Marketplace.contract.WatchLogs(opts, "TokenContractParamsUpdated", tokenContractRule)
+	logs, sub, err := _Marketplace.contract.WatchLogs(opts, "TokenParamsUpdated", tokenContractRule)
 	if err != nil {
 		return nil, err
 	}
@@ -1998,8 +2294,8 @@ func (_Marketplace *MarketplaceFilterer) WatchTokenContractParamsUpdated(opts *b
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(MarketplaceTokenContractParamsUpdated)
-				if err := _Marketplace.contract.UnpackLog(event, "TokenContractParamsUpdated", log); err != nil {
+				event := new(MarketplaceTokenParamsUpdated)
+				if err := _Marketplace.contract.UnpackLog(event, "TokenParamsUpdated", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -2020,12 +2316,12 @@ func (_Marketplace *MarketplaceFilterer) WatchTokenContractParamsUpdated(opts *b
 	}), nil
 }
 
-// ParseTokenContractParamsUpdated is a log parse operation binding the contract event 0x08c050efe01a2e294a466b4d07435c9a339e5e8e7ee7dc3e1b61e9182cae597d.
+// ParseTokenParamsUpdated is a log parse operation binding the contract event 0xd37221c35049c28d88e4fcc76bda0a4ede57343f131a0ebf1c3bca09baf6f1e1.
 //
-// Solidity: event TokenContractParamsUpdated(address indexed tokenContract, string tokenName, string tokenSymbol, (uint256,uint256,uint256,address,address,bool,bool,bool) tokenParams)
-func (_Marketplace *MarketplaceFilterer) ParseTokenContractParamsUpdated(log types.Log) (*MarketplaceTokenContractParamsUpdated, error) {
-	event := new(MarketplaceTokenContractParamsUpdated)
-	if err := _Marketplace.contract.UnpackLog(event, "TokenContractParamsUpdated", log); err != nil {
+// Solidity: event TokenParamsUpdated(address indexed tokenContract, (uint256,uint256,uint256,address,address,bool,bool,bool) tokenParams)
+func (_Marketplace *MarketplaceFilterer) ParseTokenParamsUpdated(log types.Log) (*MarketplaceTokenParamsUpdated, error) {
+	event := new(MarketplaceTokenParamsUpdated)
+	if err := _Marketplace.contract.UnpackLog(event, "TokenParamsUpdated", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -2101,40 +2397,29 @@ func (it *MarketplaceTokenSuccessfullyExchangedIterator) Close() error {
 
 // MarketplaceTokenSuccessfullyExchanged represents a TokenSuccessfullyExchanged event raised by the Marketplace contract.
 type MarketplaceTokenSuccessfullyExchanged struct {
-	Recipient      common.Address
-	BuyParams      IMarketplaceRequestBuyParams
-	NftRequestInfo IMarketplaceNFTRequestInfo
-	Raw            types.Log // Blockchain specific contextual infos
+	AcceptRequestParams IMarketplaceAcceptRequestParams
+	NftRequestInfo      IMarketplaceNFTRequestInfo
+	Raw                 types.Log // Blockchain specific contextual infos
 }
 
-// FilterTokenSuccessfullyExchanged is a free log retrieval operation binding the contract event 0xbd82d66d3b336458814e5ce7b8c885c577e4ff7c5b8bd58fdc76a31a1ba7f01b.
+// FilterTokenSuccessfullyExchanged is a free log retrieval operation binding the contract event 0xeb314bbb2d6fa7e2d75c3225d2d867d89b3dba641c935cced0b29b006c1323b0.
 //
-// Solidity: event TokenSuccessfullyExchanged(address indexed recipient, (uint256,uint256,string) buyParams, (address,address,uint256,address,uint8) nftRequestInfo)
-func (_Marketplace *MarketplaceFilterer) FilterTokenSuccessfullyExchanged(opts *bind.FilterOpts, recipient []common.Address) (*MarketplaceTokenSuccessfullyExchangedIterator, error) {
+// Solidity: event TokenSuccessfullyExchanged((uint256,address,(uint256,string)) acceptRequestParams, (address,address,address,uint256,uint8) nftRequestInfo)
+func (_Marketplace *MarketplaceFilterer) FilterTokenSuccessfullyExchanged(opts *bind.FilterOpts) (*MarketplaceTokenSuccessfullyExchangedIterator, error) {
 
-	var recipientRule []interface{}
-	for _, recipientItem := range recipient {
-		recipientRule = append(recipientRule, recipientItem)
-	}
-
-	logs, sub, err := _Marketplace.contract.FilterLogs(opts, "TokenSuccessfullyExchanged", recipientRule)
+	logs, sub, err := _Marketplace.contract.FilterLogs(opts, "TokenSuccessfullyExchanged")
 	if err != nil {
 		return nil, err
 	}
 	return &MarketplaceTokenSuccessfullyExchangedIterator{contract: _Marketplace.contract, event: "TokenSuccessfullyExchanged", logs: logs, sub: sub}, nil
 }
 
-// WatchTokenSuccessfullyExchanged is a free log subscription operation binding the contract event 0xbd82d66d3b336458814e5ce7b8c885c577e4ff7c5b8bd58fdc76a31a1ba7f01b.
+// WatchTokenSuccessfullyExchanged is a free log subscription operation binding the contract event 0xeb314bbb2d6fa7e2d75c3225d2d867d89b3dba641c935cced0b29b006c1323b0.
 //
-// Solidity: event TokenSuccessfullyExchanged(address indexed recipient, (uint256,uint256,string) buyParams, (address,address,uint256,address,uint8) nftRequestInfo)
-func (_Marketplace *MarketplaceFilterer) WatchTokenSuccessfullyExchanged(opts *bind.WatchOpts, sink chan<- *MarketplaceTokenSuccessfullyExchanged, recipient []common.Address) (event.Subscription, error) {
+// Solidity: event TokenSuccessfullyExchanged((uint256,address,(uint256,string)) acceptRequestParams, (address,address,address,uint256,uint8) nftRequestInfo)
+func (_Marketplace *MarketplaceFilterer) WatchTokenSuccessfullyExchanged(opts *bind.WatchOpts, sink chan<- *MarketplaceTokenSuccessfullyExchanged) (event.Subscription, error) {
 
-	var recipientRule []interface{}
-	for _, recipientItem := range recipient {
-		recipientRule = append(recipientRule, recipientItem)
-	}
-
-	logs, sub, err := _Marketplace.contract.WatchLogs(opts, "TokenSuccessfullyExchanged", recipientRule)
+	logs, sub, err := _Marketplace.contract.WatchLogs(opts, "TokenSuccessfullyExchanged")
 	if err != nil {
 		return nil, err
 	}
@@ -2166,9 +2451,9 @@ func (_Marketplace *MarketplaceFilterer) WatchTokenSuccessfullyExchanged(opts *b
 	}), nil
 }
 
-// ParseTokenSuccessfullyExchanged is a log parse operation binding the contract event 0xbd82d66d3b336458814e5ce7b8c885c577e4ff7c5b8bd58fdc76a31a1ba7f01b.
+// ParseTokenSuccessfullyExchanged is a log parse operation binding the contract event 0xeb314bbb2d6fa7e2d75c3225d2d867d89b3dba641c935cced0b29b006c1323b0.
 //
-// Solidity: event TokenSuccessfullyExchanged(address indexed recipient, (uint256,uint256,string) buyParams, (address,address,uint256,address,uint8) nftRequestInfo)
+// Solidity: event TokenSuccessfullyExchanged((uint256,address,(uint256,string)) acceptRequestParams, (address,address,address,uint256,uint8) nftRequestInfo)
 func (_Marketplace *MarketplaceFilterer) ParseTokenSuccessfullyExchanged(log types.Log) (*MarketplaceTokenSuccessfullyExchanged, error) {
 	event := new(MarketplaceTokenSuccessfullyExchanged)
 	if err := _Marketplace.contract.UnpackLog(event, "TokenSuccessfullyExchanged", log); err != nil {
@@ -2247,7 +2532,6 @@ func (it *MarketplaceTokenSuccessfullyPurchasedIterator) Close() error {
 
 // MarketplaceTokenSuccessfullyPurchased represents a TokenSuccessfullyPurchased event raised by the Marketplace contract.
 type MarketplaceTokenSuccessfullyPurchased struct {
-	Recipient        common.Address
 	MintedTokenPrice *big.Int
 	PaidTokensAmount *big.Int
 	BuyParams        IMarketplaceBuyParams
@@ -2255,34 +2539,24 @@ type MarketplaceTokenSuccessfullyPurchased struct {
 	Raw              types.Log // Blockchain specific contextual infos
 }
 
-// FilterTokenSuccessfullyPurchased is a free log retrieval operation binding the contract event 0x36f4838ae4627a42a86813d34d41a61b3a30dd4bfe08014117f3d32392471c6f.
+// FilterTokenSuccessfullyPurchased is a free log retrieval operation binding the contract event 0x693a26d2a31857c9285cd7d58481fcd72b3b1dd2f2a60b0e990c5d15bab6b8b9.
 //
-// Solidity: event TokenSuccessfullyPurchased(address indexed recipient, uint256 mintedTokenPrice, uint256 paidTokensAmount, ((address,uint256,uint256,uint256),address,address,uint256,string) buyParams, uint8 paymentType)
-func (_Marketplace *MarketplaceFilterer) FilterTokenSuccessfullyPurchased(opts *bind.FilterOpts, recipient []common.Address) (*MarketplaceTokenSuccessfullyPurchasedIterator, error) {
+// Solidity: event TokenSuccessfullyPurchased(uint256 mintedTokenPrice, uint256 paidTokensAmount, (address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams, uint8 paymentType)
+func (_Marketplace *MarketplaceFilterer) FilterTokenSuccessfullyPurchased(opts *bind.FilterOpts) (*MarketplaceTokenSuccessfullyPurchasedIterator, error) {
 
-	var recipientRule []interface{}
-	for _, recipientItem := range recipient {
-		recipientRule = append(recipientRule, recipientItem)
-	}
-
-	logs, sub, err := _Marketplace.contract.FilterLogs(opts, "TokenSuccessfullyPurchased", recipientRule)
+	logs, sub, err := _Marketplace.contract.FilterLogs(opts, "TokenSuccessfullyPurchased")
 	if err != nil {
 		return nil, err
 	}
 	return &MarketplaceTokenSuccessfullyPurchasedIterator{contract: _Marketplace.contract, event: "TokenSuccessfullyPurchased", logs: logs, sub: sub}, nil
 }
 
-// WatchTokenSuccessfullyPurchased is a free log subscription operation binding the contract event 0x36f4838ae4627a42a86813d34d41a61b3a30dd4bfe08014117f3d32392471c6f.
+// WatchTokenSuccessfullyPurchased is a free log subscription operation binding the contract event 0x693a26d2a31857c9285cd7d58481fcd72b3b1dd2f2a60b0e990c5d15bab6b8b9.
 //
-// Solidity: event TokenSuccessfullyPurchased(address indexed recipient, uint256 mintedTokenPrice, uint256 paidTokensAmount, ((address,uint256,uint256,uint256),address,address,uint256,string) buyParams, uint8 paymentType)
-func (_Marketplace *MarketplaceFilterer) WatchTokenSuccessfullyPurchased(opts *bind.WatchOpts, sink chan<- *MarketplaceTokenSuccessfullyPurchased, recipient []common.Address) (event.Subscription, error) {
+// Solidity: event TokenSuccessfullyPurchased(uint256 mintedTokenPrice, uint256 paidTokensAmount, (address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams, uint8 paymentType)
+func (_Marketplace *MarketplaceFilterer) WatchTokenSuccessfullyPurchased(opts *bind.WatchOpts, sink chan<- *MarketplaceTokenSuccessfullyPurchased) (event.Subscription, error) {
 
-	var recipientRule []interface{}
-	for _, recipientItem := range recipient {
-		recipientRule = append(recipientRule, recipientItem)
-	}
-
-	logs, sub, err := _Marketplace.contract.WatchLogs(opts, "TokenSuccessfullyPurchased", recipientRule)
+	logs, sub, err := _Marketplace.contract.WatchLogs(opts, "TokenSuccessfullyPurchased")
 	if err != nil {
 		return nil, err
 	}
@@ -2314,9 +2588,9 @@ func (_Marketplace *MarketplaceFilterer) WatchTokenSuccessfullyPurchased(opts *b
 	}), nil
 }
 
-// ParseTokenSuccessfullyPurchased is a log parse operation binding the contract event 0x36f4838ae4627a42a86813d34d41a61b3a30dd4bfe08014117f3d32392471c6f.
+// ParseTokenSuccessfullyPurchased is a log parse operation binding the contract event 0x693a26d2a31857c9285cd7d58481fcd72b3b1dd2f2a60b0e990c5d15bab6b8b9.
 //
-// Solidity: event TokenSuccessfullyPurchased(address indexed recipient, uint256 mintedTokenPrice, uint256 paidTokensAmount, ((address,uint256,uint256,uint256),address,address,uint256,string) buyParams, uint8 paymentType)
+// Solidity: event TokenSuccessfullyPurchased(uint256 mintedTokenPrice, uint256 paidTokensAmount, (address,address,(address,uint256,uint256,uint256),(uint256,string)) buyParams, uint8 paymentType)
 func (_Marketplace *MarketplaceFilterer) ParseTokenSuccessfullyPurchased(log types.Log) (*MarketplaceTokenSuccessfullyPurchased, error) {
 	event := new(MarketplaceTokenSuccessfullyPurchased)
 	if err := _Marketplace.contract.UnpackLog(event, "TokenSuccessfullyPurchased", log); err != nil {

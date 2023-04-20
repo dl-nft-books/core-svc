@@ -14,7 +14,7 @@ var AddressRegexp = regexp.MustCompile("^(0x)?[0-9a-fA-F]{40}$")
 type SignMintRequest struct {
 	TaskID       int64  `url:"task_id"`
 	Platform     string `url:"platform"`
-	TokenAddress string `url:"token_address"`
+	TokenAddress string `url:"token_address"` // address of token (erc20, 0x00...0, voucher etc.)
 	PromocodeID  int64  `url:"promocode_id"`
 }
 

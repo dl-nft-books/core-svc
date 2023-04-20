@@ -26,10 +26,11 @@ type service struct {
 	db       *pgdb.DB
 
 	// Custom configs
-	ethMinterConfig *config.MintConfig
-	apiRestrictions config.ApiRestrictions
-	promocoder      config.PromocoderCfg
-	ipfser          config.IpfserCfg
+	ethMinterConfig     *config.MintConfig
+	ethTransacterConfig *config.TransactionConfig
+	apiRestrictions     config.ApiRestrictions
+	promocoder          config.PromocoderCfg
+	ipfser              config.IpfserCfg
 	// Connectors
 	pricer     *pricer.Connector
 	booker     *booker.Connector
@@ -58,10 +59,11 @@ func newService(cfg config.Config) *service {
 		db:       cfg.DB(),
 
 		// Custom configs
-		ethMinterConfig: cfg.MintConfig(),
-		apiRestrictions: cfg.ApiRestrictions(),
-		promocoder:      cfg.PromocoderCfg(),
-		ipfser:          cfg.IpfserCfg(),
+		ethMinterConfig:     cfg.MintConfig(),
+		ethTransacterConfig: cfg.TransactionConfig(),
+		apiRestrictions:     cfg.ApiRestrictions(),
+		promocoder:          cfg.PromocoderCfg(),
+		ipfser:              cfg.IpfserCfg(),
 		// Connectors
 		pricer:     cfg.PricerConnector(),
 		booker:     cfg.BookerConnector(),

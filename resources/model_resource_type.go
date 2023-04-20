@@ -11,6 +11,7 @@ const (
 	BANNERS            ResourceType = "banners"
 	BOOKS              ResourceType = "books"
 	BOOK_NETWORK       ResourceType = "book-network"
+	BUY_WITH_VOUCHER   ResourceType = "buy-with-voucher"
 	TASKS              ResourceType = "tasks"
 	FILES              ResourceType = "files"
 	NFT_PAYMENT        ResourceType = "nft-payment"

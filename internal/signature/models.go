@@ -16,6 +16,7 @@ type EIP712DomainData struct {
 }
 
 type MintInfo struct {
+	TokenRecipient   string
 	TokenContract    string
 	TokenId          int64
 	TokenAddress     string
