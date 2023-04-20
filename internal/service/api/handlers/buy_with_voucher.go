@@ -4,9 +4,9 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
-	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
 	"github.com/dl-nft-books/core-svc/internal/signature"
 	"github.com/dl-nft-books/core-svc/solidity/generated/contractsregistry"
 	"github.com/dl-nft-books/core-svc/solidity/generated/marketplace"
@@ -153,13 +153,7 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 	copy(sig.R[:], mintSignature.R)
 	copy(sig.S[:], mintSignature.S)
 
-	transactor, err := marketplace.NewMarketplaceTransactor(marketplaceContractAddress, network.RpcUrl)
-	if err != nil {
-		logger.WithError(err).Error("failed to create marketplace transactor")
-		ape.RenderErr(w, problems.NotFound())
-		return
-	}
-	tx, err := transactor.BuyTokenWithVoucher(auth, marketplace.IMarketplaceBuyParams{
+	buyPurums := marketplace.IMarketplaceBuyParams{
 		TokenContract: common.HexToAddress(mintInfo.TokenContract),
 		Recipient:     common.HexToAddress(mintInfo.TokenRecipient),
 		PaymentDetails: marketplace.IMarketplacePaymentDetails{
@@ -172,7 +166,21 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 			TokenId:  big.NewInt(mintInfo.TokenId),
 			TokenURI: mintInfo.TokenURI,
 		},
-	}, sig, permitSig)
+	}
+
+	transactor, err := marketplace.NewMarketplaceTransactor(marketplaceContractAddress, network.RpcUrl)
+	if err != nil {
+		logger.WithError(err).Error("failed to create marketplace transactor")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
+
+	spew.Dump(auth)
+	spew.Dump(buyPurums)
+	spew.Dump(sig)
+	spew.Dump(permitSig)
+
+	tx, err := transactor.BuyTokenWithVoucher(auth, buyPurums, sig, permitSig)
 
 	if err != nil {
 		logger.WithError(err).Error("failed to generate send transaction")
@@ -180,14 +188,10 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Printf("sent transaction: %s\n", tx.Hash().Hex())
 	receipt, err := bind.WaitMined(context.Background(), network.RpcUrl, tx)
 	fmt.Printf("transaction mined in block %d\n", receipt.BlockNumber.Uint64())
+	fmt.Printf("transaction mined with hash %v\n", receipt.TxHash)
 
-	ape.Render(w, responses.NewSignMintResponse(
-		mintInfo.PricePerOneToken.String(),
-		mintInfo.Discount.String(),
-		mintSignature,
-		mintInfo.EndTimestamp,
-		mintInfo.TokenId,
-	))
+	w.WriteHeader(http.StatusNoContent)
 }
