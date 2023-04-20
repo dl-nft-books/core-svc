@@ -69,7 +69,7 @@ func CtxMinter(entry config.MintConfig) func(context.Context) context.Context {
 	}
 }
 func Transacter(r *http.Request) config.TransactionConfig {
-	return r.Context().Value(minterCtxKey).(config.TransactionConfig)
+	return r.Context().Value(transacterCtxKey).(config.TransactionConfig)
 }
 
 func CtxTransacter(entry config.TransactionConfig) func(context.Context) context.Context {

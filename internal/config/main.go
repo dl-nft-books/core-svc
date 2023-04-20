@@ -35,7 +35,6 @@ type Config interface {
 	TaskProcessor
 	TaskCleaner
 	Ipfser
-	PdfSignatureParams() *SignatureParams
 	ApiRestrictions() ApiRestrictions
 }
 type config struct {
@@ -59,7 +58,6 @@ type config struct {
 	Promocoder
 	TaskCleaner
 	Ipfser
-	pdfSignatureParams comfig.Once
 
 	// Getters and comfig.Once's
 	getter  kv.Getter
