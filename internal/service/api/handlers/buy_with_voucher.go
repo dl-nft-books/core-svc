@@ -112,9 +112,7 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-
-	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
-	nonce, err := network.RpcUrl.PendingNonceAt(context.Background(), fromAddress)
+	nonce, err := network.RpcUrl.PendingNonceAt(context.Background(), crypto.PubkeyToAddress(*publicKeyECDSA))
 	if err != nil {
 		logger.WithError(err).Error("failed to get nonce")
 		ape.RenderErr(w, problems.InternalError())
@@ -153,7 +151,7 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 	copy(sig.R[:], mintSignature.R)
 	copy(sig.S[:], mintSignature.S)
 
-	buyPurums := marketplace.IMarketplaceBuyParams{
+	buyParams := marketplace.IMarketplaceBuyParams{
 		TokenContract: common.HexToAddress(mintInfo.TokenContract),
 		Recipient:     common.HexToAddress(mintInfo.TokenRecipient),
 		PaymentDetails: marketplace.IMarketplacePaymentDetails{
@@ -175,12 +173,18 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	spew.Dump(auth)
-	spew.Dump(buyPurums)
+	fmt.Println("domainData")
+	spew.Dump(domainData)
+	fmt.Println("mintInfo")
+	spew.Dump(mintInfo)
+	fmt.Println("mintSignature")
+	spew.Dump(mintSignature)
+	fmt.Println("sig")
 	spew.Dump(sig)
-	spew.Dump(permitSig)
+	fmt.Println("buyParams")
+	spew.Dump(buyParams)
 
-	tx, err := transactor.BuyTokenWithVoucher(auth, buyPurums, sig, permitSig)
+	tx, err := transactor.BuyTokenWithVoucher(auth, buyParams, sig, permitSig)
 
 	if err != nil {
 		logger.WithError(err).Error("failed to generate send transaction")
@@ -188,10 +192,15 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("sent transaction: %s\n", tx.Hash().Hex())
 	receipt, err := bind.WaitMined(context.Background(), network.RpcUrl, tx)
 	fmt.Printf("transaction mined in block %d\n", receipt.BlockNumber.Uint64())
 	fmt.Printf("transaction mined with hash %v\n", receipt.TxHash)
+	fmt.Printf("transaction mined with status %v\n", receipt.Status)
+	if err != nil {
+		logger.WithError(err).Error("failed to submit transaction")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
 
 	w.WriteHeader(http.StatusNoContent)
 }
