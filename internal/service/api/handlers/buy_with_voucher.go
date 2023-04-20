@@ -146,10 +146,10 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 
 	sig := marketplace.IMarketplaceSigData{
 		EndSigTimestamp: big.NewInt(mintInfo.EndTimestamp),
-		V:               uint8(mintSignature.V),
+		V:               mintSignature[64],
 	}
-	copy(sig.R[:], mintSignature.R)
-	copy(sig.S[:], mintSignature.S)
+	copy(sig.R[:], mintSignature[:32])
+	copy(sig.S[:], mintSignature[32:64])
 
 	buyParams := marketplace.IMarketplaceBuyParams{
 		TokenContract: common.HexToAddress(mintInfo.TokenContract),
@@ -181,6 +181,8 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 	spew.Dump(mintSignature)
 	fmt.Println("sig")
 	spew.Dump(sig)
+	fmt.Println("permitSig")
+	spew.Dump(permitSig)
 	fmt.Println("buyParams")
 	spew.Dump(buyParams)
 
@@ -198,11 +200,6 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("transaction mined with status %v\n", receipt.Status)
 	if err != nil {
 		logger.WithError(err).Error("failed to submit transaction")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
-	if err != nil {
-		logger.WithError(err).Error("failed to get pub key")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
