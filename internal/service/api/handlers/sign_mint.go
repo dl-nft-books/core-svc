@@ -139,16 +139,11 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 
 		logger.Info("promocode applied, discount: ", mintInfo.Discount.String())
 	}
-	RSV, err := signature.ParseSignatureParameters(mintSignature)
-	if err != nil {
-		logger.WithError(err).Error("failed to parse signature")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
+
 	ape.Render(w, responses.NewSignMintResponse(
 		mintInfo.PricePerOneToken.String(),
 		mintInfo.Discount.String(),
-		RSV,
+		mintSignature,
 		mintInfo.EndTimestamp,
 		mintInfo.TokenId,
 	))

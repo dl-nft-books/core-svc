@@ -146,15 +146,10 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 
 	sig := marketplace.IMarketplaceSigData{
 		EndSigTimestamp: big.NewInt(mintInfo.EndTimestamp),
-		V:               mintSignature[64],
+		V:               uint8(mintSignature.V),
 	}
-	if err != nil {
-		logger.WithError(err).Error("failed to decode R")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
-	copy(sig.R[:], mintSignature[:32])
-	copy(sig.S[:], mintSignature[32:64])
+	copy(sig.R[:], mintSignature.R)
+	copy(sig.S[:], mintSignature.S)
 
 	buyParams := marketplace.IMarketplaceBuyParams{
 		TokenContract: common.HexToAddress(mintInfo.TokenContract),
