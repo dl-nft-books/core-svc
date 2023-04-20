@@ -12,6 +12,7 @@ import (
 	"github.com/dl-nft-books/core-svc/solidity/generated/marketplace"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
@@ -141,15 +142,40 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		EndSigTimestamp: request.Data.Attributes.EndSigTimestamp,
 		V:               uint8(request.Data.Attributes.PermitSig.Attributes.V),
 	}
-	copy(permitSig.R[:], request.Data.Attributes.PermitSig.Attributes.R)
-	copy(permitSig.S[:], request.Data.Attributes.PermitSig.Attributes.S)
+	inByte, err := hexutil.Decode(request.Data.Attributes.PermitSig.Attributes.R)
+	if err != nil {
+		logger.WithError(err).Error("failed to decode R")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	copy(permitSig.R[:], inByte)
+
+	inByte, err = hexutil.Decode(request.Data.Attributes.PermitSig.Attributes.S)
+	if err != nil {
+		logger.WithError(err).Error("failed to decode S")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	copy(permitSig.S[:], inByte)
 
 	sig := marketplace.IMarketplaceSigData{
 		EndSigTimestamp: big.NewInt(mintInfo.EndTimestamp),
 		V:               uint8(mintSignature.V),
 	}
-	copy(sig.R[:], mintSignature.R)
-	copy(sig.S[:], mintSignature.S)
+	inByte, err = hexutil.Decode(mintSignature.R)
+	if err != nil {
+		logger.WithError(err).Error("failed to decode R")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	copy(sig.R[:], inByte)
+	inByte, err = hexutil.Decode(mintSignature.R)
+	if err != nil {
+		logger.WithError(err).Error("failed to decode R")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	copy(sig.S[:], inByte)
 
 	buyParams := marketplace.IMarketplaceBuyParams{
 		TokenContract: common.HexToAddress(mintInfo.TokenContract),
@@ -201,6 +227,10 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-
+	if err != nil {
+		logger.WithError(err).Error("failed to get pub key")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
 	w.WriteHeader(http.StatusNoContent)
 }
