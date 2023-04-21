@@ -10,6 +10,12 @@ import (
 
 const yamlTaskCleanerKey = "task_cleaner"
 
+type RunnerData struct {
+	NormalPeriod      time.Duration `fig:"normal_period"`
+	MinAbnormalPeriod time.Duration `fig:"min_abnormal_period"`
+	MaxAbnormalPeriod time.Duration `fig:"max_abnormal_period"`
+}
+
 type TaskCleaner interface {
 	TaskCleanerCfg() TaskCleanerCfg
 }

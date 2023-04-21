@@ -32,7 +32,6 @@ type Config interface {
 	MintConfigurator
 	TransactionConfigurator
 	Promocoder
-	TaskProcessor
 	TaskCleaner
 	Ipfser
 	ApiRestrictions() ApiRestrictions
@@ -54,7 +53,6 @@ type config struct {
 	// Internal service configuration
 	MintConfigurator
 	TransactionConfigurator
-	TaskProcessor
 	Promocoder
 	TaskCleaner
 	Ipfser
@@ -83,7 +81,6 @@ func New(getter kv.Getter) Config {
 		// Internal service configuration
 		MintConfigurator:        NewEthMinterConfigurator(getter),
 		TransactionConfigurator: NewEthTransactionerConfigurator(getter),
-		TaskProcessor:           NewTaskProcessor(getter),
 		Promocoder:              NewPromocoder(getter),
 		TaskCleaner:             NewTaskCleaner(getter),
 		Ipfser:                  NewIpfser(getter),
