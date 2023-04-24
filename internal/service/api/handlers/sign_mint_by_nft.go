@@ -82,12 +82,13 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 		ChainID:          task.ChainId,
 	}
 	mintInfo := signature.MintInfo{
-		TokenContract: book.Data.Attributes.Networks[0].Attributes.ContractAddress,
-		TokenId:       task.TokenId,
-		Discount:      big.NewInt(0),
-		TokenAddress:  request.NftAddress,
-		TokenURI:      task.MetadataIpfsHash,
-		EndTimestamp:  time.Now().Add(mintConfig.Expiration).Unix(),
+		TokenContract:  book.Data.Attributes.Networks[0].Attributes.ContractAddress,
+		TokenId:        task.TokenId,
+		Discount:       big.NewInt(0),
+		TokenAddress:   request.NftAddress,
+		TokenURI:       task.MetadataIpfsHash,
+		TokenRecipient: task.Account,
+		EndTimestamp:   time.Now().Add(mintConfig.Expiration).Unix(),
 	}
 
 	// Getting price per token in dollars

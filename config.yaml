@@ -5,16 +5,6 @@ log:
 db:
   url: postgres://book:book@localhost:2543/book?sslmode=disable
 
-task_processor:
-  name: task_processor # Name to be displayed in logs
-  processes_number: 1 # Number of parallel processes to add
-  cursor: 0 # Default cursor value
-  limit: 1 # Number of subtasks to be processed during one run (no more than 10)
-  runner: # Period settings
-    normal_period: 10s
-    min_abnormal_period: 10s
-    max_abnormal_period: 10s
-
 mime_types:
   banner:
     - image/png
