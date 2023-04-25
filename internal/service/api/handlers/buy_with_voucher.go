@@ -173,7 +173,7 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	helpers.Log(r).Debug(fmt.Sprintf("Traing to send transaction. Tx gas price is %v", gasPrice))
+	helpers.Log(r).Debug(fmt.Sprintf("Traing to send transaction. Tx gas price is %v", weiToGwei(gasPrice)))
 	transactor, err := marketplace.NewMarketplaceTransactor(marketplaceContractAddress, network.RpcUrl)
 	if err != nil {
 		logger.WithError(err).Error("failed to create marketplace transactor")
@@ -194,7 +194,7 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 }
 func getGasPrice(r *http.Request, rpc *ethclient.Client) (*big.Int, error) {
 	gasPrice, err := rpc.SuggestGasPrice(context.Background())
-	helpers.Log(r).Debug(fmt.Sprintf("On chain gas price is %v ", gasPrice))
+	helpers.Log(r).Debug(fmt.Sprintf("On chain gas price is %v ", weiToGwei(gasPrice)))
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get gas price")
 	}
@@ -205,4 +205,9 @@ func getGasPrice(r *http.Request, rpc *ethclient.Client) (*big.Int, error) {
 
 	return helpers.Transacter(r).MaxGasPrice, nil
 
+}
+func weiToGwei(wei *big.Int) *big.Int {
+	gwei := new(big.Int)
+	gwei.Div(wei, big.NewInt(1000000000))
+	return gwei
 }
