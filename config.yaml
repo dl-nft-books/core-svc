@@ -45,6 +45,7 @@ mint: # Parameters for mint signature generation
 transaction:
   private_key: private_key
   gas_limit: 300000
+  max_gas_price: 400 # in GWEI
 
 connector: # Connector to other APIs
   url:

@@ -5,6 +5,7 @@ import (
 	"gitlab.com/distributed_lab/figure"
 	"gitlab.com/distributed_lab/kit/comfig"
 	"gitlab.com/distributed_lab/kit/kv"
+	"math/big"
 )
 
 type TransactionConfigurator interface {
@@ -12,8 +13,9 @@ type TransactionConfigurator interface {
 }
 
 type TransactionConfig struct {
-	PrivateKey *ecdsa.PrivateKey `fig:"private_key,required"`
-	GasLimit   uint64            `fig:"gas_limit,required"`
+	PrivateKey  *ecdsa.PrivateKey `fig:"private_key,required"`
+	GasLimit    uint64            `fig:"gas_limit,required"`
+	MaxGasPrice *big.Int          `fig:"max_gas_price,required"`
 }
 
 type ethTransactionerConfigurator struct {
@@ -38,7 +40,11 @@ func (c *ethTransactionerConfigurator) TransactionConfig() *TransactionConfig {
 		if err != nil {
 			panic(err)
 		}
-
+		cfg.MaxGasPrice = gweiToWei(cfg.MaxGasPrice)
 		return &cfg
 	}).(*TransactionConfig)
+}
+
+func gweiToWei(gwei *big.Int) *big.Int {
+	return new(big.Int).Mul(gwei, big.NewInt(1000000000))
 }

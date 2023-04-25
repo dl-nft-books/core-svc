@@ -20,5 +20,6 @@ const (
 	PRICES             ResourceType = "prices"
 	PROMOCODE          ResourceType = "promocode"
 	SIGNATURES         ResourceType = "signatures"
+	TRANSACTION        ResourceType = "transaction"
 	VALIDATE_PROMOCODE ResourceType = "validate-promocode"
 )

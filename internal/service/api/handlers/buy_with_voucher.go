@@ -5,6 +5,7 @@ import (
 	"crypto/ecdsa"
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
+	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
 	"github.com/dl-nft-books/core-svc/internal/signature"
 	"github.com/dl-nft-books/core-svc/solidity/generated/contractsregistry"
 	"github.com/dl-nft-books/core-svc/solidity/generated/marketplace"
@@ -12,6 +13,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/pkg/errors"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 	"math/big"
@@ -120,7 +123,7 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	gasPrice, err := network.RpcUrl.SuggestGasPrice(context.Background())
+	gasPrice, err := getGasPrice(r, network.RpcUrl)
 	if err != nil {
 		logger.WithError(err).Error("failed to get gas price")
 		ape.RenderErr(w, problems.InternalError())
@@ -184,12 +187,19 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	receipt, err := bind.WaitMined(context.Background(), network.RpcUrl, tx)
-	if err != nil || receipt.Status != receiptStatusOk {
-		logger.WithError(err).Error("failed to submit transaction")
-		ape.RenderErr(w, problems.InternalError())
-		return
+	ape.Render(w, responses.NewBuyVoucherResponse(tx.Hash().String()))
+
+}
+func getGasPrice(r *http.Request, rpc *ethclient.Client) (*big.Int, error) {
+	gasPrice, err := rpc.SuggestGasPrice(context.Background())
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get gas price")
 	}
-	w.WriteHeader(http.StatusNoContent)
+
+	if helpers.Transacter(r).MaxGasPrice.Cmp(gasPrice) != -1 {
+		return gasPrice, nil
+	}
+
+	return helpers.Transacter(r).MaxGasPrice, nil
 
 }
