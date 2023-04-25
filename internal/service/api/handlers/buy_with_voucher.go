@@ -173,7 +173,7 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	helpers.Log(r).Debug(fmt.Sprintf("Traing to send transaction. Tx gas price is %v", weiToGwei(gasPrice)))
+	helpers.Log(r).Debug(fmt.Sprintf("Trying to send transaction. Tx gas price is %v", weiToGwei(gasPrice)))
 	transactor, err := marketplace.NewMarketplaceTransactor(marketplaceContractAddress, network.RpcUrl)
 	if err != nil {
 		logger.WithError(err).Error("failed to create marketplace transactor")
