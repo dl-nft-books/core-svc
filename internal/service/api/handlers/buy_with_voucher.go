@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"crypto/ecdsa"
+	"fmt"
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
@@ -172,6 +173,7 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
+	helpers.Log(r).Debug(fmt.Sprintf("Traing to send transaction. Tx gas price is %v", gasPrice))
 	transactor, err := marketplace.NewMarketplaceTransactor(marketplaceContractAddress, network.RpcUrl)
 	if err != nil {
 		logger.WithError(err).Error("failed to create marketplace transactor")
@@ -192,6 +194,7 @@ func BuyWithVoucher(w http.ResponseWriter, r *http.Request) {
 }
 func getGasPrice(r *http.Request, rpc *ethclient.Client) (*big.Int, error) {
 	gasPrice, err := rpc.SuggestGasPrice(context.Background())
+	helpers.Log(r).Debug(fmt.Sprintf("On chain gas price is %v ", gasPrice))
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get gas price")
 	}
