@@ -1,10 +1,10 @@
 package responses
 
 import (
+	booker "github.com/dl-nft-books/book-svc/connector"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/resources"
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	booker "gitlab.com/tokend/nft-books/book-svc/connector"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
 func NewGetTaskResponse(task data.Task, booker *booker.Connector) (*resources.TaskResponse, error) {
@@ -13,11 +13,10 @@ func NewGetTaskResponse(task data.Task, booker *booker.Connector) (*resources.Ta
 	taskResource := task.Resource()
 	taskResource.Relationships = getTaskRelationships(task)
 
-	bookResponse, err := booker.GetBookById(task.BookId)
+	bookResponse, err := booker.GetBookById(task.BookId, task.ChainId)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get a book")
 	}
-
 	response.Data = taskResource
 	response.Included.Add(convertBookToResource(*bookResponse))
 

@@ -10,10 +10,11 @@ allOf:
         required:
           - token_id
           - book_id
-          - signature
-          - file_ipfs_hash
+          - chain_id
+          - token_name
+          - banner
+          - banner_ipfs_hash
           - metadata_ipfs_hash
-          - uri
           - status
         properties:
           token_id:
@@ -26,45 +27,47 @@ allOf:
             format: int64
             description: Id of book
             example: 2
-          signature:
+          chain_id:
+            type: integer
+            format: int64
+            description: Id of network chain
+            example: 2
+          token_name:
             type: string
-            description: personal string on first page
-            example: I love Distributed Lab!!!
-          file_ipfs_hash:
+            description: name of future token
+            example: BDS
+          banner_ipfs_hash:
             type: string
-            description: hash of file on IPFS
+            description: hash of banner on IPFS
             example: QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
           metadata_ipfs_hash:
             type: string
             description: hash of metadata on IPFS
             example: QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
-          uri:
-            type: string
-            example: >-
-              https://ipfs.io/ipfs/QmPCPk1EzPCg7iHYPQLzrU4kHE3vKp4V2tKmtnfzLje3BY
+          banner:
+            description: Banner info
+            type: array
+            items:
+              type: byte
           status:
             type: integer
             format: TaskStatus
             enum:
               - name: pending
                 value: 1
-              - name: generating
-                value: 2
-              - name: finished_generation
-                value: 3
               - name: uploading
-                value: 4
+                value: 2
               - name: finished_uploading
-                value: 5
+                value: 3
             description: task solution status
             example: 2
       relationships:
         type: object
         properties:
           book:
+            description: "which book you want to mint"
             type: object
             properties:
               data:
-                type: object
                 $ref: '#/components/schemas/BookKey'
 

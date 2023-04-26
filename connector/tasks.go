@@ -3,48 +3,17 @@ package connector
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/cast"
+	"github.com/dl-nft-books/core-svc/connector/models"
+	"github.com/dl-nft-books/core-svc/resources"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/urlval"
-	"gitlab.com/tokend/nft-books/generator-svc/connector/models"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
 const (
-	generatorEndpoint = "generator"
-	tasksEndpoint     = "tasks"
+	coreEndpoint  = "core"
+	tasksEndpoint = "tasks"
 )
-
-func (c *Connector) CreateTask(params models.CreateTaskParams) (id int64, err error) {
-	var (
-		response resources.KeyResponse
-		request  = resources.CreateTaskRequest{
-			Data: resources.CreateTask{
-				Key: resources.NewKeyInt64(0, resources.TASKS),
-				Attributes: resources.CreateTaskAttributes{
-					Account:   params.Account,
-					BookId:    params.BookId,
-					Signature: params.Signature,
-				},
-			},
-			Included: resources.Included{},
-		}
-	)
-
-	endpoint := fmt.Sprintf("%s/%s/%s", c.baseUrl, generatorEndpoint, tasksEndpoint)
-	requestAsBytes, err := json.Marshal(request)
-	if err != nil {
-		return 0, errors.Wrap(err, "failed to marshal request")
-	}
-
-	if err = c.post(endpoint, requestAsBytes, &response); err != nil {
-		return 0, errors.Wrap(err, "failed to create token")
-	}
-
-	createdTokenId := cast.ToInt64(response.Data.ID)
-	return createdTokenId, nil
-}
 
 func (c *Connector) UpdateTask(params models.UpdateTaskParams) error {
 	request := resources.UpdateTaskRequest{
@@ -58,7 +27,7 @@ func (c *Connector) UpdateTask(params models.UpdateTaskParams) error {
 		Included: resources.Included{},
 	}
 
-	endpoint := fmt.Sprintf("%s/%s/%s/%s", c.baseUrl, generatorEndpoint, tasksEndpoint, request.Data.Key.ID)
+	endpoint := fmt.Sprintf("%s/%s/%s/%s", c.baseUrl, coreEndpoint, tasksEndpoint, request.Data.Key.ID)
 	requestAsBytes, err := json.Marshal(request)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal request")
@@ -71,7 +40,7 @@ func (c *Connector) ListTasks(request models.ListTasksRequest) (*models.ListTask
 	var result models.ListTasksResponse
 
 	// setting full endpoint
-	fullEndpoint := fmt.Sprintf("%s/%s/%s?%s", c.baseUrl, generatorEndpoint, tasksEndpoint, urlval.MustEncode(request))
+	fullEndpoint := fmt.Sprintf("%s/%s/%s?%s", c.baseUrl, coreEndpoint, tasksEndpoint, urlval.MustEncode(request))
 
 	// getting response
 	if _, err := c.get(fullEndpoint, &result); err != nil {
@@ -86,7 +55,7 @@ func (c *Connector) GetTaskById(id int64) (*models.TaskResponse, error) {
 	var result models.TaskResponse
 
 	// setting full endpoint
-	fullEndpoint := fmt.Sprintf("%s/%s/%s/%d", c.baseUrl, generatorEndpoint, tasksEndpoint, id)
+	fullEndpoint := fmt.Sprintf("%s/%s/%s/%d", c.baseUrl, coreEndpoint, tasksEndpoint, id)
 
 	// getting response
 	found, err := c.get(fullEndpoint, &result)

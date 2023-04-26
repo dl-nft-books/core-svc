@@ -2,7 +2,7 @@ package requests
 
 import (
 	"gitlab.com/distributed_lab/kit/pgdb"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/resources"
 	"net/http"
 	"strconv"
 )

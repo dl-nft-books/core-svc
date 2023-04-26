@@ -2,17 +2,19 @@ package handlers
 
 import (
 	"fmt"
+	bookModel "github.com/dl-nft-books/book-svc/connector/models"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
+	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
+	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
+	"github.com/dl-nft-books/core-svc/internal/signature"
+	"github.com/dl-nft-books/core-svc/resources"
+	"github.com/dl-nft-books/core-svc/solidity/generated/contractsregistry"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 	"gitlab.com/distributed_lab/logan/v3"
-	bookModel "gitlab.com/tokend/nft-books/book-svc/connector/models"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/signature"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"math"
 	"math/big"
 	"net/http"
@@ -35,7 +37,6 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
-
 	// Getting task's mintInfo
 	task, err := helpers.DB(r).Tasks().GetById(request.TaskID)
 	if err != nil {
@@ -49,31 +50,56 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Getting book's mintInfo
-	book, err := helpers.Booker(r).GetBookById(task.BookId)
+	book, err := helpers.Booker(r).GetBookById(task.BookId, task.ChainId)
 	if err != nil {
 		logger.WithError(err).Error("failed to get a book")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 	if book == nil {
-		logger.Warnf("Book with specified id %d was not found", task.BookId)
+		logger.Warnf("Book with specified id %d in network with chain id %d was not found", task.BookId, task.ChainId)
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
-
 	// Forming signature mintInfo
 	mintConfig := helpers.Minter(r)
 
+	network, err := helpers.Networker(r).GetNetworkDetailedByChainID(task.ChainId)
+	if err != nil {
+		logger.WithError(err).Error("failed to get network")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	if network == nil {
+		logger.Error("network with such id doesn't exists")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
+	contractRegistry, err := contractsregistry.NewContractsregistry(common.HexToAddress(network.FactoryAddress), network.RpcUrl)
+	if err != nil {
+		logger.WithError(err).Error("failed to create contract registry")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
+	marketplaceContractAddress, err := contractRegistry.GetMarketplaceContract(nil)
+	if err != nil {
+		logger.WithError(err).Error("failed to get marketplace contract name")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
 	domainData := signature.EIP712DomainData{
-		VerifyingAddress: book.Data.Attributes.ContractAddress,
-		ContractName:     book.Data.Attributes.ContractName,
-		ContractVersion:  book.Data.Attributes.ContractVersion,
-		ChainID:          book.Data.Attributes.ChainId,
+		VerifyingAddress: marketplaceContractAddress.String(),
+		ContractName:     "Marketplace",
+		ContractVersion:  "1",
+		ChainID:          task.ChainId,
 	}
 	mintInfo := signature.MintInfo{
-		TokenAddress: request.TokenAddress,
-		TokenURI:     task.MetadataIpfsHash,
-		EndTimestamp: time.Now().Add(mintConfig.Expiration).Unix(),
+		TokenContract:  book.Data.Attributes.Networks[0].Attributes.ContractAddress,
+		TokenId:        task.TokenId,
+		TokenAddress:   request.TokenAddress,
+		TokenURI:       task.MetadataIpfsHash,
+		TokenRecipient: task.Account,
+		EndTimestamp:   time.Now().Add(mintConfig.Expiration).Unix(),
 	}
 
 	mintInfo.PricePerOneToken, err = getPricePerOneToken(w, r, request, *book, mintConfig.Precision)
@@ -90,9 +116,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	isVoucherTokenApplied := book.Data.Attributes.VoucherToken == request.TokenAddress
-
-	mintInfo.Discount, ok = getPromocodeDiscount(w, r, isVoucherTokenApplied, promocode)
+	mintInfo.Discount, ok = getPromocodeDiscount(w, r, promocode)
 	if !ok {
 		return
 	}
@@ -106,7 +130,7 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Using promocode after signature is formed
-	if promocode != nil && !isVoucherTokenApplied {
+	if promocode != nil {
 		if err = helpers.DB(r).Promocodes().New().UpdateUsages(promocode.Usages + 1).FilterUpdateById(promocode.Id).Update(); err != nil {
 			logger.WithError(err).WithFields(logan.F{"promocode": promocode.Promocode}).Error("failed to update promocode")
 			ape.RenderErr(w, problems.InternalError())
@@ -115,31 +139,30 @@ func SignMint(w http.ResponseWriter, r *http.Request) {
 
 		logger.Info("promocode applied, discount: ", mintInfo.Discount.String())
 	}
+	RSV, err := signature.ParseSignatureParameters(mintSignature)
+
+	if err != nil {
+		logger.WithError(err).Error("failed to parse signature")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
 
 	ape.Render(w, responses.NewSignMintResponse(
 		mintInfo.PricePerOneToken.String(),
 		mintInfo.Discount.String(),
-		mintSignature,
+		RSV,
 		mintInfo.EndTimestamp,
+		mintInfo.TokenId,
 	))
 }
 
-func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, isVoucherTokenApplied bool, promocode *data.Promocode) (*big.Int, bool) {
+func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, promocode *data.Promocode) (*big.Int, bool) {
 	logger := helpers.Log(r)
 	// Promocodes and vouchers can't be used together
-	if !isVoucherTokenApplied && promocode != nil {
-		//Validating promocode
-		promocodeResponse, err := responses.NewValidatePromocodeResponse(*promocode)
-
-		if err != nil {
-			logger.WithError(err).Error("failed to get promocode response")
-			ape.RenderErr(w, problems.InternalError())
-			return nil, false
-		}
-
+	if promocode != nil {
 		//Checking promocode state
-		if promocodeResponse.Data.Attributes.State != resources.PromocodeActive {
-			logger.WithError(err).Error(Inactive())
+		if promocode.State != resources.PromocodeActive {
+			logger.Error(Inactive())
 			ape.RenderErr(w, problems.BadRequest(Inactive())...)
 			return nil, false
 		}
@@ -157,13 +180,7 @@ func getPromocodeDiscount(w http.ResponseWriter, r *http.Request, isVoucherToken
 }
 func getPricePerOneToken(w http.ResponseWriter, r *http.Request, request *requests.SignMintRequest, book bookModel.GetBookResponse, precision int) (*big.Int, error) {
 	logger := helpers.Log(r)
-	if book.Data.Attributes.VoucherToken == request.TokenAddress {
-		return big.NewInt(0), nil
-	}
-
-	// Normal scenario without voucher
-	// Getting price per token in dollars
-	priceResponse, err := helpers.Pricer(r).GetPrice(request.Platform, request.TokenAddress, book.Data.Attributes.ChainId)
+	priceResponse, err := helpers.Pricer(r).GetPrice(request.TokenAddress, book.Data.Attributes.Networks[0].Attributes.ChainId)
 	if err != nil {
 		logger.WithError(err).Error("failed to get price response")
 		ape.RenderErr(w, problems.InternalError())

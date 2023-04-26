@@ -2,17 +2,18 @@ package helpers
 
 import (
 	"context"
+	"github.com/dl-nft-books/core-svc/internal/config"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	networker "github.com/dl-nft-books/network-svc/connector"
 	"net/http"
 
-	booker "gitlab.com/tokend/nft-books/book-svc/connector"
-	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
-	"gitlab.com/tokend/nft-books/doorman/connector"
+	s3connector "github.com/dl-nft-books/blob-svc/connector/api"
+	booker "github.com/dl-nft-books/book-svc/connector"
+	"github.com/dl-nft-books/doorman/connector"
 
-	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
+	pricer "github.com/dl-nft-books/price-svc/connector"
 
 	"gitlab.com/distributed_lab/logan/v3"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
 )
 
 type ctxKey int
@@ -24,15 +25,18 @@ const (
 
 	// Custom configs
 	minterCtxKey
+	transacterCtxKey
 	apiRestrictionsCtxKey
 	promocoderCtxKey
 	ipfserCtxKey
+	mimeTypesCtxKey
 
 	// Connectors
 	pricerCtxKey
 	bookerCtxKey
-	trackerCtxKey
+	networkerCtxKey
 	doormanConnectorCtxKey
+	documenterConnectorCtxKey
 )
 
 func Log(r *http.Request) *logan.Entry {
@@ -62,6 +66,15 @@ func Minter(r *http.Request) config.MintConfig {
 func CtxMinter(entry config.MintConfig) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
 		return context.WithValue(ctx, minterCtxKey, entry)
+	}
+}
+func Transacter(r *http.Request) config.TransactionConfig {
+	return r.Context().Value(transacterCtxKey).(config.TransactionConfig)
+}
+
+func CtxTransacter(entry config.TransactionConfig) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, transacterCtxKey, entry)
 	}
 }
 
@@ -105,6 +118,20 @@ func CtxPricer(entry *pricer.Connector) func(context.Context) context.Context {
 	}
 }
 
+func CtxDocumenterConnector(entry *s3connector.Connector) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, documenterConnectorCtxKey, entry)
+	}
+}
+
+func DocumenterConnector(r *http.Request) *s3connector.Connector {
+	return r.Context().Value(documenterConnectorCtxKey).(*s3connector.Connector)
+}
+
+func MimeTypes(r *http.Request) *config.MimeTypes {
+	return r.Context().Value(mimeTypesCtxKey).(*config.MimeTypes)
+}
+
 func Booker(r *http.Request) *booker.Connector {
 	return r.Context().Value(bookerCtxKey).(*booker.Connector)
 }
@@ -115,13 +142,13 @@ func CtxBooker(entry *booker.Connector) func(context.Context) context.Context {
 	}
 }
 
-func Tracker(r *http.Request) *tracker.Connector {
-	return r.Context().Value(trackerCtxKey).(*tracker.Connector)
+func Networker(r *http.Request) *networker.Connector {
+	return r.Context().Value(networkerCtxKey).(*networker.Connector)
 }
 
-func CtxTracker(entry *tracker.Connector) func(context.Context) context.Context {
+func CtxNetworker(entry *networker.Connector) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
-		return context.WithValue(ctx, trackerCtxKey, entry)
+		return context.WithValue(ctx, networkerCtxKey, entry)
 	}
 }
 

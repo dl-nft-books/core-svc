@@ -1,0 +1,28 @@
+allOf:
+  - $ref: '#/components/schemas/NftRequestKey'
+  - type: object
+    required:
+      - attributes
+    x-go-is-request: true
+    properties:
+      attributes:
+        type: object
+        required:
+          - status
+        properties:
+          status:
+            type: integer
+            format: NftRequestStatus
+            enum:
+              - name: pending
+                value: 1
+              - name: canceled
+                value: 2
+              - name: rejected
+                value: 3
+              - name: accepted
+                value: 4
+              - name: exchanged
+                value: 5
+            description: nft request status
+            example: 2

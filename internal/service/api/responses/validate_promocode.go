@@ -1,8 +1,8 @@
 package responses
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/resources"
 )
 
 func NewValidatePromocodeResponse(promocode data.Promocode) (*resources.ValidatePromocodeResponse, error) {
@@ -21,8 +21,11 @@ func NewValidatePromocodeResponse(promocode data.Promocode) (*resources.Validate
 				Data: &relKey,
 			},
 		}
-		resPromocode := promocode.Resource()
-		response.Included.Add(&resPromocode)
+		resPromocode, err := promocode.Resource()
+		if err != nil {
+			return nil, err
+		}
+		response.Included.Add(resPromocode)
 	}
 	return &response, nil
 }

@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/resources"
 )
 
 func NewUpdateTaskRequest(r *http.Request) (*resources.UpdateTaskRequest, error) {

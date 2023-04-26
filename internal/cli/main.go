@@ -2,11 +2,11 @@ package cli
 
 import (
 	"context"
+	"github.com/dl-nft-books/core-svc/internal/config"
+	"github.com/dl-nft-books/core-svc/internal/service/api"
+	"github.com/dl-nft-books/core-svc/internal/service/runners"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/runners"
 	"os"
 	"os/signal"
 	"sync"
@@ -21,7 +21,6 @@ var (
 	// Run commands
 	runCommand              = app.Command("run", "run command")
 	apiCommand              = runCommand.Command("api", "run api")
-	taskProcessorCommand    = runCommand.Command("task-processor", "run task processor")
 	promocodeCheckerCommand = runCommand.Command("promocode-checker", "run promocode checker")
 	allCommand              = runCommand.Command("all", "run all")
 
@@ -61,11 +60,6 @@ func Run(args []string) bool {
 	case apiCommand.FullCommand():
 		run(waitGroup, ctx, cfg, api.Run)
 		log.Info("started api...")
-	case taskProcessorCommand.FullCommand():
-		for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
-			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
-			log.Infof("started task_processor #%d", i+1)
-		}
 	case promocodeCheckerCommand.FullCommand():
 		run(waitGroup, ctx, cfg, runners.RunPromocodeChecker)
 		log.Info("started promocode_checker...")
@@ -73,10 +67,6 @@ func Run(args []string) bool {
 		for name, processor := range allRunners {
 			run(waitGroup, ctx, cfg, processor)
 			log.Infof("started %v", name)
-		}
-		for i := uint64(0); i < cfg.TaskProcessorCfg().ProcessesNumber; i++ {
-			run(waitGroup, ctx, cfg, runners.RunTaskProcessor)
-			log.Infof("started task_processor #%d", i+1)
 		}
 	case migrateUpCommand.FullCommand():
 		err = MigrateUp(cfg)

@@ -1,0 +1,15 @@
+allOf:
+  - $ref: '#/components/schemas/TransactionKey'
+  - type: object
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - tx_hash
+        properties:
+          tx_hash:
+            type: string
+            description: Transaction hash
+            example: 'EY821h...'

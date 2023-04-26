@@ -1,21 +1,21 @@
 package data
 
 import (
+	"github.com/dl-nft-books/core-svc/resources"
 	"time"
 
 	"gitlab.com/distributed_lab/kit/pgdb"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
 type Task struct {
 	Id               int64                `db:"id" structs:"-" json:"-"`
 	BookId           int64                `db:"book_id" structs:"book_id" json:"book_id"`
 	TokenId          int64                `db:"token_id" structs:"token_id"`
+	ChainId          int64                `db:"chain_id" structs:"chain_id"`
 	Account          string               `db:"account" structs:"account"`
-	Signature        string               `db:"signature" structs:"signature"`
-	FileIpfsHash     string               `db:"file_ipfs_hash" structs:"file_ipfs_hash"`
+	BannerIpfsHash   string               `db:"banner_ipfs_hash" structs:"banner_ipfs_hash"`
+	TokenName        string               `db:"token_name" structs:"token_name"`
 	MetadataIpfsHash string               `db:"metadata_ipfs_hash" structs:"metadata_ipfs_hash"`
-	Uri              string               `db:"uri" structs:"uri"`
 	Status           resources.TaskStatus `db:"status" structs:"status"`
 	CreatedAt        time.Time            `db:"created_at" structs:"created_at"`
 }
@@ -28,6 +28,7 @@ type TaskSelector struct {
 	IpfsHash     *string
 	Status       *resources.TaskStatus
 	TokenId      *int64
+	ChainId      *int64
 	Period       *time.Duration
 }
 
@@ -44,9 +45,8 @@ type TasksQ interface {
 	Delete(id int64) error
 	Transaction(fn func(q TasksQ) error) error
 
-	UpdateFileIpfsHash(newIpfsHash string) TasksQ
+	UpdateBannerIpfsHash(newIpfsHash string) TasksQ
 	UpdateMetadataIpfsHash(newIpfsHash string) TasksQ
-	UpdateUri(newUri string) TasksQ
 	UpdateTokenId(newTokenId int64) TasksQ
 	UpdateStatus(newStatus resources.TaskStatus) TasksQ
 	Update(id int64) error
@@ -58,10 +58,10 @@ func (t Task) Resource() resources.Task {
 		Attributes: resources.TaskAttributes{
 			TokenId:          t.TokenId,
 			BookId:           t.BookId,
-			FileIpfsHash:     t.FileIpfsHash,
+			ChainId:          t.ChainId,
+			TokenName:        t.TokenName,
+			BannerIpfsHash:   t.BannerIpfsHash,
 			MetadataIpfsHash: t.MetadataIpfsHash,
-			Uri:              t.Uri,
-			Signature:        t.Signature,
 			Status:           t.Status,
 		},
 	}

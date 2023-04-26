@@ -1,17 +1,17 @@
 package handlers
 
 import (
-	"fmt"
+	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
+	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
+	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
+	"github.com/dl-nft-books/core-svc/internal/signature"
+	"github.com/dl-nft-books/core-svc/solidity/generated/contractsregistry"
+	"github.com/ethereum/go-ethereum/common"
+	"gitlab.com/distributed_lab/ape"
+	"gitlab.com/distributed_lab/ape/problems"
 	"math/big"
 	"net/http"
 	"time"
-
-	"gitlab.com/distributed_lab/ape"
-	"gitlab.com/distributed_lab/ape/problems"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/signature"
 )
 
 func SignMintByNft(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +19,7 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewSignMintByNftRequest(r)
 	if err != nil {
-		logger.WithError(err).Error("failed to fetch new sign mint by nft request")
+		logger.WithError(err).Error("failed to fetch new sign mint request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -37,49 +37,73 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Getting book's mintInfo
-	book, err := helpers.Booker(r).GetBookById(task.BookId)
+	book, err := helpers.Booker(r).GetBookById(task.BookId, task.ChainId)
 	if err != nil {
 		logger.WithError(err).Error("failed to get a book")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 	if book == nil {
-		logger.Warnf("Book with specified id %d was not found", task.BookId)
+		logger.Warnf("Book with specified id %d in network with chain id %d was not found", task.BookId, task.ChainId)
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
-
 	// Forming signature mintInfo
 	mintConfig := helpers.Minter(r)
 
+	network, err := helpers.Networker(r).GetNetworkDetailedByChainID(task.ChainId)
+	if err != nil {
+		logger.WithError(err).Error("failed to get network")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+	if network == nil {
+		logger.Error("network with such id doesn't exists")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
+	contractRegistry, err := contractsregistry.NewContractsregistry(common.HexToAddress(network.FactoryAddress), network.RpcUrl)
+	if err != nil {
+		logger.WithError(err).Error("failed to create contract registry")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
+	marketplaceContractAddress, err := contractRegistry.GetMarketplaceContract(nil)
+	if err != nil {
+		logger.WithError(err).Error("failed to get marketplace contract name")
+		ape.RenderErr(w, problems.NotFound())
+		return
+	}
 	domainData := signature.EIP712DomainData{
-		VerifyingAddress: book.Data.Attributes.ContractAddress,
-		ContractName:     book.Data.Attributes.ContractName,
-		ContractVersion:  book.Data.Attributes.ContractVersion,
-		ChainID:          book.Data.Attributes.ChainId,
+		VerifyingAddress: marketplaceContractAddress.String(),
+		ContractName:     "Marketplace",
+		ContractVersion:  "1",
+		ChainID:          task.ChainId,
 	}
 	mintInfo := signature.MintInfo{
-		TokenAddress: request.NftAddress,
-		Discount:     big.NewInt(0),
-		TokenURI:     task.MetadataIpfsHash,
+		TokenContract:  book.Data.Attributes.Networks[0].Attributes.ContractAddress,
+		TokenId:        task.TokenId,
+		Discount:       big.NewInt(0),
+		TokenAddress:   request.NftAddress,
+		TokenURI:       task.MetadataIpfsHash,
+		TokenRecipient: task.Account,
+		EndTimestamp:   time.Now().Add(mintConfig.Expiration).Unix(),
 	}
 
 	// Getting price per token in dollars
-	priceResponse, err := helpers.Pricer(r).GetNftPrice(request.Platform, request.NftAddress)
+	priceResponse, err := helpers.Pricer(r).GetNftPrice(request.NftAddress, network.ChainId)
 	if err != nil {
 		logger.WithError(err).Error("failed to get nft floor price")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 	// Converting price
-	mintInfo.PricePerOneToken, err = helpers.ConvertPrice(fmt.Sprintf("%f", priceResponse.Data.Attributes.Usd), mintConfig.Precision)
+	mintInfo.PricePerOneToken, err = helpers.ConvertPrice(priceResponse.Data.Attributes.FloorPrice, mintConfig.Precision)
 	if err != nil {
 		logger.WithError(err).Error("failed to convert price")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-
-	mintInfo.EndTimestamp = time.Now().Add(mintConfig.Expiration).Unix()
 
 	// Signing the mint transaction
 	mintSignature, err := signature.SignMintInfo(&mintInfo, &domainData, &mintConfig)
@@ -88,11 +112,19 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
+	RSV, err := signature.ParseSignatureParameters(mintSignature)
+
+	if err != nil {
+		logger.WithError(err).Error("failed to parse signature")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
 
 	ape.Render(w, responses.NewSignMintResponse(
 		mintInfo.PricePerOneToken.String(),
 		mintInfo.Discount.String(),
-		mintSignature,
+		RSV,
 		mintInfo.EndTimestamp,
+		mintInfo.TokenId,
 	))
 }

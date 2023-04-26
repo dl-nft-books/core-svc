@@ -7,11 +7,11 @@ import (
 	"gitlab.com/distributed_lab/kit/kv"
 	"gitlab.com/distributed_lab/kit/pgdb"
 
-	s3config "gitlab.com/tokend/nft-books/blob-svc/connector/config"
-	booker "gitlab.com/tokend/nft-books/book-svc/connector"
-	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
-	doormanCfg "gitlab.com/tokend/nft-books/doorman/connector/config"
-	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
+	s3config "github.com/dl-nft-books/blob-svc/connector/config"
+	booker "github.com/dl-nft-books/book-svc/connector"
+	doormanCfg "github.com/dl-nft-books/doorman/connector/config"
+	networker "github.com/dl-nft-books/network-svc/connector"
+	pricer "github.com/dl-nft-books/price-svc/connector"
 )
 
 type Config interface {
@@ -25,16 +25,15 @@ type Config interface {
 	booker.Booker
 	pricer.Pricer
 	s3config.Documenter
-	tracker.Tracker
 	doormanCfg.DoormanConfiger
+	networker.NetworkConfigurator
 
 	// Internal service configuration
 	MintConfigurator
+	TransactionConfigurator
 	Promocoder
-	TaskProcessor
 	TaskCleaner
 	Ipfser
-	PdfSignatureParams() *SignatureParams
 	ApiRestrictions() ApiRestrictions
 }
 type config struct {
@@ -48,16 +47,15 @@ type config struct {
 	booker.Booker
 	pricer.Pricer
 	s3config.Documenter
-	tracker.Tracker
 	doormanCfg.DoormanConfiger
+	networker.NetworkConfigurator
 
 	// Internal service configuration
 	MintConfigurator
-	TaskProcessor
+	TransactionConfigurator
 	Promocoder
 	TaskCleaner
 	Ipfser
-	pdfSignatureParams comfig.Once
 
 	// Getters and comfig.Once's
 	getter  kv.Getter
@@ -74,17 +72,17 @@ func New(getter kv.Getter) Config {
 		Logger:     comfig.NewLogger(getter, comfig.LoggerOpts{}),
 
 		// Connectors
-		Documenter:      s3config.NewDocumenter(getter),
-		Pricer:          pricer.NewPricer(getter),
-		Booker:          booker.NewBooker(getter),
-		Tracker:         tracker.NewTracker(getter),
-		DoormanConfiger: doormanCfg.NewDoormanConfiger(getter),
+		Documenter:          s3config.NewDocumenter(getter),
+		Pricer:              pricer.NewPricer(getter),
+		Booker:              booker.NewBooker(getter),
+		NetworkConfigurator: networker.NewNetworkConfigurator(getter),
+		DoormanConfiger:     doormanCfg.NewDoormanConfiger(getter),
 
 		// Internal service configuration
-		MintConfigurator: NewEthMinterConfigurator(getter),
-		TaskProcessor:    NewTaskProcessor(getter),
-		Promocoder:       NewPromocoder(getter),
-		TaskCleaner:      NewTaskCleaner(getter),
-		Ipfser:           NewIpfser(getter),
+		MintConfigurator:        NewEthMinterConfigurator(getter),
+		TransactionConfigurator: NewEthTransactionerConfigurator(getter),
+		Promocoder:              NewPromocoder(getter),
+		TaskCleaner:             NewTaskCleaner(getter),
+		Ipfser:                  NewIpfser(getter),
 	}
 }

@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/Masterminds/squirrel"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/resources"
 	"github.com/fatih/structs"
 	"gitlab.com/distributed_lab/kit/pgdb"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"time"
 )
 
@@ -16,12 +16,11 @@ const (
 
 	tasksId               = "id"
 	tasksAccount          = "account"
-	tasksSignature        = "signature"
-	tasksFileIpfsHash     = "file_ipfs_hash"
+	tasksBannerIpfsHash   = "banner_ipfs_hash"
 	tasksMetadataIpfsHash = "metadata_ipfs_hash"
 	tasksTokenId          = "token_id"
+	tasksChainId          = "chain_id"
 	tasksStatus           = "status"
-	tasksUri              = "uri"
 	TasksCreatedAt        = "created_at"
 )
 
@@ -86,8 +85,8 @@ func (q *tasksQ) Delete(id int64) error {
 	return q.database.Exec(statement)
 }
 
-func (q *tasksQ) UpdateFileIpfsHash(newIpfsHash string) data.TasksQ {
-	q.updater = q.updater.Set(tasksFileIpfsHash, newIpfsHash)
+func (q *tasksQ) UpdateBannerIpfsHash(newIpfsHash string) data.TasksQ {
+	q.updater = q.updater.Set(tasksBannerIpfsHash, newIpfsHash)
 	return q
 }
 
@@ -103,11 +102,6 @@ func (q *tasksQ) updateHash(fieldName, newIpfsHash string) data.TasksQ {
 
 func (q *tasksQ) UpdateTokenId(newTokenId int64) data.TasksQ {
 	q.updater = q.updater.Set(tasksTokenId, newTokenId)
-	return q
-}
-
-func (q *tasksQ) UpdateUri(newUri string) data.TasksQ {
-	q.updater = q.updater.Set(tasksUri, newUri)
 	return q
 }
 
@@ -137,6 +131,9 @@ func applyTasksSelector(sql squirrel.SelectBuilder, selector data.TaskSelector) 
 	}
 	if selector.TokenId != nil {
 		sql = sql.Where(squirrel.Eq{tasksTokenId: *selector.TokenId})
+	}
+	if selector.ChainId != nil {
+		sql = sql.Where(squirrel.Eq{tasksChainId: *selector.ChainId})
 	}
 	if selector.IpfsHash != nil {
 		sql = sql.Where(squirrel.Eq{tasksMetadataIpfsHash: *selector.IpfsHash})

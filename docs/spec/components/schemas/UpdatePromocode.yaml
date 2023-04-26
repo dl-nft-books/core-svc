@@ -27,6 +27,10 @@ allOf:
             format: int64
             description: how many times promocode has been used
             example: 8
+          promocode:
+            type: string
+            example: 'PROMOCODE20'
+            description: Custom promocode
           state:
             type: integer
             format: PromocodeState
@@ -39,3 +43,10 @@ allOf:
                 value: 3
             description: promocode status
             example: 1
+          books:
+            type: array
+            items:
+              type: integer
+              format: int64
+              example: 1
+            description: Book with can support this promocode

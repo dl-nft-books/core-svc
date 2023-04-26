@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/pkg/errors"
 	"gitlab.com/distributed_lab/logan/v3"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/opensea"
+	"github.com/dl-nft-books/core-svc/internal/data/opensea"
 	"io/ioutil"
 	"net/http"
 	"time"

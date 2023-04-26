@@ -1,15 +1,15 @@
 package handlers
 
 import (
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/resources"
 	"net/http"
 
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/responses"
+	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
 
+	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
+	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
 )
 
 func ValidatePromocodeById(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +22,7 @@ func ValidatePromocodeById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	promocode, err := helpers.DB(r).Promocodes().FilterByPromocode(request.Promocode).Get()
+	promocode, err := helpers.DB(r).Promocodes().FilterByPromocode(request.Promocode).FilterByBookId(request.Bookid).Get()
 	if err != nil {
 		logger.WithError(err).Error("failed to get promocode")
 		ape.RenderErr(w, problems.InternalError())

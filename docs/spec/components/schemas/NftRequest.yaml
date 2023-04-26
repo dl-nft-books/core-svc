@@ -1,0 +1,75 @@
+allOf:
+  - $ref: '#/components/schemas/NftRequestKey'
+  - type: object
+    required:
+      - attributes
+      - relationships
+    properties:
+      attributes:
+        type: object
+        required:
+          - payer_address
+          - collection_address
+          - nft_id
+          - chain_id
+          - status
+          - created_at
+          - last_updated_at
+        properties:
+          payer_address:
+            type: string
+            example: '0x77dADb3Ce09Ef981A008fDC1cE40D8A023E0925e'
+            description: Address of a user who bought a book
+          collection_address:
+            type: string
+            example: '0x77dADb3Ce09Ef981A008fDC1cE40D8A023E0925e'
+            description: Address of a nft collection
+          nft_id:
+            type: integer
+            format: int64
+            description: Id of NFT
+            example: 123
+          chain_id:
+            type: integer
+            format: int64
+            description: Id of network chain
+            example: 5
+          status:
+            type: integer
+            format: NftRequestStatus
+            enum:
+              - name: pending
+                value: 1
+              - name: canceled
+                value: 2
+              - name: rejected
+                value: 3
+              - name: accepted
+                value: 4
+              - name: exchanged
+                value: 5
+            description: nft request status
+            example: 2
+          created_at:
+            type: string
+            format: time.Time
+            example: '2006-01-02'
+            description: Timestamp when the user have purchased a book
+          last_updated_at:
+            type: string
+            format: time.Time
+            example: '2006-01-02'
+            description: Last updated status time
+      relationships:
+        type: object
+        required:
+          - book
+        properties:
+          book:
+            description: "which book you want to buy"
+            type: object
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/BookKey'
+

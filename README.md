@@ -15,8 +15,8 @@ PDF params (`pdf_signature_params` in the `config.yaml`) explanation:
 ## Install
 
   ```bash
-  git clone generator-svc
-  cd generator-svc
+  git clone core-svc
+  cd core-svc
   go build main.go
   export KV_VIPER_FILE=./config.yaml
   ./main migrate up
@@ -45,8 +45,8 @@ use `./generate.sh --help` to see all available options.
 Make sure that docker is installed. Use `docker run ` with `-p 8080:80` to expose port 80 to 8080
 
 ```bash
-docker build -t generator-svc .
-docker run -e KV_VIPER_FILE=/config.yaml generator-svc
+docker build -t core-svc .
+docker run -e KV_VIPER_FILE=/config.yaml core-svc
 ```
 
 ## Running from Source

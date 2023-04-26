@@ -3,14 +3,14 @@ package cleaner
 import (
 	"context"
 	"fmt"
+	documenter "github.com/dl-nft-books/blob-svc/connector/api"
+	"github.com/dl-nft-books/core-svc/internal/config"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/internal/data/postgres"
+	"github.com/dl-nft-books/core-svc/resources"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/running"
-	documenter "gitlab.com/tokend/nft-books/blob-svc/connector/api"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 	"net/http"
 )
 
@@ -68,14 +68,13 @@ func (p *TaskCleaner) run(ctx context.Context) error {
 
 	for _, task := range unresolvedTasks {
 		errFields := logan.F{
-			"task_id":        task.Id,
-			"task_signature": task.Signature,
-			"task_status":    task.Status,
+			"task_id":     task.Id,
+			"task_status": task.Status,
 		}
 
-		fileName := fmt.Sprintf("%s.pdf", task.FileIpfsHash)
+		bannerName := fmt.Sprintf("%s.png", task.BannerIpfsHash)
 
-		statusCode, err := p.documenter.DeleteDocument(fileName)
+		statusCode, err := p.documenter.DeleteDocument(bannerName)
 
 		if err != nil {
 			return errors.Wrap(err, "failed to delete document from S3", errFields)

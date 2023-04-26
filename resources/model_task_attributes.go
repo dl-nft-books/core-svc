@@ -5,17 +5,20 @@
 package resources
 
 type TaskAttributes struct {
+	// Banner info
+	Banner []byte `json:"banner"`
+	// hash of banner on IPFS
+	BannerIpfsHash string `json:"banner_ipfs_hash"`
 	// Id of book
 	BookId int64 `json:"book_id"`
-	// hash of file on IPFS
-	FileIpfsHash string `json:"file_ipfs_hash"`
+	// Id of network chain
+	ChainId int64 `json:"chain_id"`
 	// hash of metadata on IPFS
 	MetadataIpfsHash string `json:"metadata_ipfs_hash"`
-	// personal string on first page
-	Signature string `json:"signature"`
 	// task solution status
 	Status TaskStatus `json:"status"`
 	// Id of token
-	TokenId int64  `json:"token_id"`
-	Uri     string `json:"uri"`
+	TokenId int64 `json:"token_id"`
+	// name of future token
+	TokenName string `json:"token_name"`
 }

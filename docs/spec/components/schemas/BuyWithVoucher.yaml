@@ -1,0 +1,30 @@
+allOf:
+  - $ref: '#/components/schemas/BuyWithVoucherKey'
+  - type: object
+    x-go-is-request: true
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - voucher_address
+          - task_id
+          - permit_sig
+        properties:
+          voucher_address:
+            type: string
+            description: Voucher address
+            example: '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+          task_id:
+            type: integer
+            format: int64
+            description: id of task
+            example: 5
+          end_sig_timestamp:
+            type: integer
+            format: big.Int
+            description: end timestamp of signature
+            example: 5
+          permit_sig:
+            $ref: '#/components/schemas/Signature'

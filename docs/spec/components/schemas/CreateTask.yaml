@@ -8,14 +8,10 @@ allOf:
       attributes:
         type: object
         required:
-          - signature
           - account
           - book_id
+          - chain_id
         properties:
-          signature:
-            type: string
-            description: personal string on first page
-            example: I love Distributed Lab!!!
           account:
             type: string
             description: payer account
@@ -24,4 +20,9 @@ allOf:
             type: integer
             format: int64
             description: id of book
+            example: 2
+          chain_id:
+            type: integer
+            format: int64
+            description: id of network chain
             example: 2

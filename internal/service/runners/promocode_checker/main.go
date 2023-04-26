@@ -5,10 +5,10 @@ import (
 	"github.com/pkg/errors"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/running"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data/postgres"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/internal/config"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/internal/data/postgres"
+	"github.com/dl-nft-books/core-svc/resources"
 )
 
 type PromocodeChecker struct {

@@ -3,12 +3,11 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/resources"
 	"time"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/fatih/structs"
 	"gitlab.com/distributed_lab/kit/pgdb"
 )
 
@@ -33,8 +32,14 @@ type promocodesQ struct {
 func NewPromocodesQ(database *pgdb.DB) data.PromocodesQ {
 	return &promocodesQ{
 		database: database,
-		selector: squirrel.Select(fmt.Sprintf("%s.*", promocodesTable)).From(promocodesTable),
-		updater:  squirrel.Update(promocodesTable).Suffix("RETURNING *"),
+		selector: squirrel.Select(fmt.Sprintf("%s.*, json_agg(%s.%s) as books",
+			promocodesTable, promocodesBooksTable, promocodesBooksBookId)).
+			From(promocodesTable).
+			Join(fmt.Sprintf("%s ON %s.%s = %s.%s",
+				promocodesBooksTable, promocodesTable, promocodesId,
+				promocodesBooksTable, promocodesBooksPromocodeId)).
+			GroupBy(promocodesId),
+		updater: squirrel.Update(promocodesTable).Suffix("RETURNING *"),
 	}
 }
 
@@ -76,6 +81,12 @@ func (q *promocodesQ) FilterByState(state ...resources.PromocodeState) data.Prom
 	return q
 }
 
+func (q *promocodesQ) FilterByBookId(bookId ...int64) data.PromocodesQ {
+	q.selector = q.selector.Where(squirrel.Eq{promocodesBooksBookId: bookId})
+
+	return q
+}
+
 func (q *promocodesQ) Select() (promocodes []data.Promocode, err error) {
 	err = q.database.Select(&promocodes, q.selector)
 	return
@@ -96,14 +107,14 @@ func (q *promocodesQ) DeleteByID(id int64) error {
 		Where(squirrel.Eq{promocodesId: id}))
 }
 
-func (q *promocodesQ) Insert(promocode data.Promocode) (int64, error) {
-	var id int64
+func (q *promocodesQ) Insert(promocode data.Promocode) (id int64, err error) {
 	statement := squirrel.Insert(promocodesTable).
-		Suffix("returning id").
-		SetMap(structs.Map(&promocode))
-
-	err := q.database.Get(&id, statement)
-	return id, err
+		Columns(promocodesPromocode, promocodesDiscount, promocodesInitialUsages,
+			promocodesUsages, promocodesExpirationDate, promocodesState).
+		Values(promocode.Promocode, promocode.Discount, promocode.InitialUsages,
+			promocode.Usages, promocode.ExpirationDate, promocode.State).Suffix("returning id")
+	err = q.database.Get(&id, statement)
+	return
 }
 
 func (q *promocodesQ) Transaction(fn func(q data.PromocodesQ) error) (err error) {
@@ -134,6 +145,11 @@ func (q *promocodesQ) UpdateUsages(newUsages int64) data.PromocodesQ {
 
 func (q *promocodesQ) UpdateExpirationDate(newExpirationDate time.Time) data.PromocodesQ {
 	q.updater = q.updater.Set(promocodesExpirationDate, newExpirationDate)
+	return q
+}
+
+func (q *promocodesQ) UpdatePromocode(promocode string) data.PromocodesQ {
+	q.updater = q.updater.Set(promocodesPromocode, promocode)
 	return q
 }
 

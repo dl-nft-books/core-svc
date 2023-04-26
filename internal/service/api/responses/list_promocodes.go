@@ -3,9 +3,9 @@ package responses
 import (
 	"net/http"
 
-	"gitlab.com/tokend/nft-books/generator-svc/internal/data"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/requests"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
+	"github.com/dl-nft-books/core-svc/resources"
 )
 
 func NewPromocodeListResponse(r *http.Request, request *requests.ListPromocodesRequest, promocodes []data.Promocode) (*resources.PromocodeListResponse, error) {
@@ -18,7 +18,11 @@ func NewPromocodeListResponse(r *http.Request, request *requests.ListPromocodesR
 	}
 
 	for _, promocode := range promocodes {
-		response.Data = append(response.Data, promocode.Resource())
+		resourse, err := promocode.Resource()
+		if err != nil {
+			return nil, err
+		}
+		response.Data = append(response.Data, *resourse)
 	}
 
 	response.Links = requests.GetOffsetLinksWithSort(r, request.OffsetPageParams, request.Sorts)

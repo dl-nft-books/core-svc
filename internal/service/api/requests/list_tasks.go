@@ -4,9 +4,9 @@ import (
 	"github.com/pkg/errors"
 	"net/http"
 
+	"github.com/dl-nft-books/core-svc/resources"
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/urlval"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
 
 type ListTasksRequest struct {

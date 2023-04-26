@@ -2,14 +2,12 @@ package requests
 
 import (
 	"encoding/json"
+	"github.com/dl-nft-books/core-svc/resources"
 	"net/http"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/resources"
 )
-
-const maxSignatureLength = 64
 
 type CreateTaskRequest struct {
 	resources.CreateTaskRequest
@@ -30,12 +28,11 @@ func (r CreateTaskRequest) validate() error {
 			&r.Data.Attributes.Account,
 			validation.Required,
 		),
-		"data/attributes/signature": validation.Validate(
-			&r.Data.Attributes.Signature,
-			validation.Required,
-			validation.Length(1, maxSignatureLength),
-		),
 		"data/attributes/book_id": validation.Validate(
+			&r.Data.Attributes.BookId,
+			validation.Required,
+		),
+		"data/attributes/chain_id": validation.Validate(
 			&r.Data.Attributes.BookId,
 			validation.Required,
 		),

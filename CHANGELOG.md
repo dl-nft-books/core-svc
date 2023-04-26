@@ -27,7 +27,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Initial stable version of a generator service.
 
-[1.1.0]: https://gitlab.com/tokend/nft-books/generator-svc/compare/1.0.0...1.1.0
-[1.0.0]: https://gitlab.com/tokend/nft-books/generator-svc/compare/1.0.0-rc.0...1.0.0
-[1.0.0-rc.0]: https://gitlab.com/tokend/nft-books/generator-svc/tags/1.0.0-rc.0
+[1.1.0]: https://github.com/dl-nft-books/core-svc/compare/1.0.0...1.1.0
+[1.0.0]: https://github.com/dl-nft-books/core-svc/compare/1.0.0-rc.0...1.0.0
+[1.0.0-rc.0]: https://github.com/dl-nft-books/core-svc/tags/1.0.0-rc.0
 

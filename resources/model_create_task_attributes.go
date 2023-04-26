@@ -9,6 +9,6 @@ type CreateTaskAttributes struct {
 	Account string `json:"account"`
 	// id of book
 	BookId int64 `json:"book_id"`
-	// personal string on first page
-	Signature string `json:"signature"`
+	// id of network chain
+	ChainId int64 `json:"chain_id"`
 }

@@ -2,16 +2,17 @@ package api
 
 import (
 	"context"
+	documenter "github.com/dl-nft-books/blob-svc/connector/api"
+	booker "github.com/dl-nft-books/book-svc/connector"
+	doorman "github.com/dl-nft-books/doorman/connector"
+	networker "github.com/dl-nft-books/network-svc/connector"
+	pricer "github.com/dl-nft-books/price-svc/connector"
 	"gitlab.com/distributed_lab/kit/pgdb"
 	"gitlab.com/distributed_lab/logan/v3"
-	booker "gitlab.com/tokend/nft-books/book-svc/connector"
-	tracker "gitlab.com/tokend/nft-books/contract-tracker/connector"
-	doorman "gitlab.com/tokend/nft-books/doorman/connector"
-	pricer "gitlab.com/tokend/nft-books/price-svc/connector"
 	"net"
 	"net/http"
 
-	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
+	"github.com/dl-nft-books/core-svc/internal/config"
 
 	"gitlab.com/distributed_lab/kit/copus/types"
 	"gitlab.com/distributed_lab/logan/v3/errors"
@@ -25,15 +26,17 @@ type service struct {
 	db       *pgdb.DB
 
 	// Custom configs
-	ethMinterConfig *config.MintConfig
-	apiRestrictions config.ApiRestrictions
-	promocoder      config.PromocoderCfg
-	ipfser          config.IpfserCfg
+	ethMinterConfig     *config.MintConfig
+	ethTransacterConfig *config.TransactionConfig
+	apiRestrictions     config.ApiRestrictions
+	promocoder          config.PromocoderCfg
+	ipfser              config.IpfserCfg
 	// Connectors
-	pricer  *pricer.Connector
-	booker  *booker.Connector
-	tracker *tracker.Connector
-	doorman doorman.ConnectorI
+	pricer     *pricer.Connector
+	booker     *booker.Connector
+	networker  *networker.Connector
+	doorman    doorman.ConnectorI
+	documenter *documenter.Connector
 }
 
 func (s *service) run() error {
@@ -56,15 +59,17 @@ func newService(cfg config.Config) *service {
 		db:       cfg.DB(),
 
 		// Custom configs
-		ethMinterConfig: cfg.MintConfig(),
-		apiRestrictions: cfg.ApiRestrictions(),
-		promocoder:      cfg.PromocoderCfg(),
-		ipfser:          cfg.IpfserCfg(),
+		ethMinterConfig:     cfg.MintConfig(),
+		ethTransacterConfig: cfg.TransactionConfig(),
+		apiRestrictions:     cfg.ApiRestrictions(),
+		promocoder:          cfg.PromocoderCfg(),
+		ipfser:              cfg.IpfserCfg(),
 		// Connectors
-		pricer:  cfg.PricerConnector(),
-		booker:  cfg.BookerConnector(),
-		tracker: cfg.TrackerConnector(),
-		doorman: cfg.DoormanConnector(),
+		pricer:     cfg.PricerConnector(),
+		booker:     cfg.BookerConnector(),
+		networker:  cfg.NetworkConnector(),
+		doorman:    cfg.DoormanConnector(),
+		documenter: cfg.DocumenterConnector(),
 	}
 }
 

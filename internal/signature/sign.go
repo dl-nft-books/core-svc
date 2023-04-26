@@ -5,6 +5,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"gitlab.com/distributed_lab/logan/v3"
 
+	"github.com/dl-nft-books/core-svc/internal/config"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
@@ -12,7 +13,6 @@ import (
 	"github.com/ethersphere/bee/pkg/crypto/eip712"
 	sha3 "github.com/miguelmota/go-solidity-sha3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/nft-books/generator-svc/internal/config"
 )
 
 var (
@@ -25,7 +25,7 @@ func SignMintInfo(
 	domainData *EIP712DomainData,
 	config *config.MintConfig,
 ) (
-	*Parameters,
+	[]byte,
 	error,
 ) {
 	privateKey := config.PrivateKey
@@ -38,12 +38,12 @@ func SignMintInfo(
 	if mintInfo.TokenAddress == "" {
 		mintInfo.TokenAddress = defaultAddress
 	}
+
 	signature, err := signMintInfoByEIP712(privateKey, mintInfo, domainData)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to sign EIP712 hash")
 	}
-
-	return parseSignatureParameters(signature)
+	return signature, nil
 }
 
 func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
@@ -55,7 +55,10 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 ) {
 	data := &eip712.TypedData{
 		Types: apitypes.Types{
-			"Mint": []apitypes.Type{
+			"Buy": []apitypes.Type{
+				{Name: "tokenRecipient", Type: "address"},
+				{Name: "tokenContract", Type: "address"},
+				{Name: "futureTokenId", Type: "uint256"},
 				{Name: "paymentTokenAddress", Type: "address"},
 				{Name: "paymentTokenPrice", Type: "uint256"},
 				{Name: "discount", Type: "uint256"},
@@ -69,7 +72,7 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 				{Name: "verifyingContract", Type: "address"},
 			},
 		},
-		PrimaryType: "Mint",
+		PrimaryType: "Buy",
 		Domain: apitypes.TypedDataDomain{
 			Name:              domainData.ContractName,
 			Version:           domainData.ContractVersion,
@@ -77,6 +80,9 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 			VerifyingContract: domainData.VerifyingAddress,
 		},
 		Message: apitypes.TypedDataMessage{
+			"tokenRecipient":      mintInfo.TokenRecipient,
+			"tokenContract":       mintInfo.TokenContract,
+			"futureTokenId":       math.NewHexOrDecimal256(mintInfo.TokenId),
 			"paymentTokenAddress": mintInfo.TokenAddress,
 			"paymentTokenPrice":   mintInfo.PricePerOneToken.String(),
 			"discount":            mintInfo.Discount.String(),
@@ -88,7 +94,7 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 	return signer.NewDefaultSigner(privateKey).SignTypedData(data)
 }
 
-func parseSignatureParameters(signature []byte) (*Parameters, error) {
+func ParseSignatureParameters(signature []byte) (*Parameters, error) {
 	if len(signature) != 65 {
 		return nil, errors.From(wrongSignatureLengthErr, logan.F{
 			"signature": string(signature),

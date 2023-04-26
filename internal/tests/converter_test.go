@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"gitlab.com/tokend/nft-books/generator-svc/internal/service/api/helpers"
+	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 )
 
 const (

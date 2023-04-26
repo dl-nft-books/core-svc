@@ -7,6 +7,8 @@ package resources
 import "time"
 
 type PromocodeAttributes struct {
+	// Book with can support this promocode
+	Books []int64 `json:"books"`
 	// between 0.0 and 1.0 representing discount percentage
 	Discount float64 `json:"discount"`
 	// Time of expiration
