@@ -17,7 +17,6 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rubenv/sql-migrate v1.2.0
 	github.com/spf13/cast v1.4.1
-	github.com/unidoc/unipdf/v3 v3.39.0
 	gitlab.com/distributed_lab/ape v1.7.1
 	gitlab.com/distributed_lab/figure v2.1.0+incompatible
 	gitlab.com/distributed_lab/kit v1.11.1
@@ -28,12 +27,11 @@ require (
 )
 
 require (
-	github.com/davecgh/go-spew v1.1.1
 	github.com/dl-nft-books/blob-svc v0.0.4-0.20230412083832-9441aef1be89
 	github.com/dl-nft-books/book-svc v0.0.0-20230411130424-8a2d7515116f
 	github.com/dl-nft-books/doorman v0.1.0-rc.1.0.20230329143604-2590a5e15d38
 	github.com/dl-nft-books/network-svc v0.0.0-20230329160452-99950496eafe
-	github.com/dl-nft-books/price-svc v0.0.0-20230329163011-979c17fbecbe
+	github.com/dl-nft-books/price-svc v0.0.0-20230426094051-c547872fe190
 	github.com/google/jsonapi v0.0.0-20200226002910-c8283f632fb7
 	github.com/google/uuid v1.3.0
 	github.com/miguelmota/go-solidity-sha3 v0.1.1

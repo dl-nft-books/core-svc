@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
 	"github.com/dl-nft-books/core-svc/internal/service/api/requests"
 	"github.com/dl-nft-books/core-svc/internal/service/api/responses"
@@ -92,14 +91,14 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Getting price per token in dollars
-	priceResponse, err := helpers.Pricer(r).GetNftPrice(request.Platform, request.NftAddress)
+	priceResponse, err := helpers.Pricer(r).GetNftPrice(request.NftAddress, network.ChainId)
 	if err != nil {
 		logger.WithError(err).Error("failed to get nft floor price")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 	// Converting price
-	mintInfo.PricePerOneToken, err = helpers.ConvertPrice(fmt.Sprintf("%f", priceResponse.Data.Attributes.Usd), mintConfig.Precision)
+	mintInfo.PricePerOneToken, err = helpers.ConvertPrice(priceResponse.Data.Attributes.FloorPrice, mintConfig.Precision)
 	if err != nil {
 		logger.WithError(err).Error("failed to convert price")
 		ape.RenderErr(w, problems.InternalError())
