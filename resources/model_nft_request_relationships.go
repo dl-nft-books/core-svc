@@ -5,5 +5,5 @@
 package resources
 
 type NftRequestRelationships struct {
-	Book CreateNftRequestRelationshipsBook `json:"book"`
+	Book *Relation `json:"book,omitempty"`
 }
