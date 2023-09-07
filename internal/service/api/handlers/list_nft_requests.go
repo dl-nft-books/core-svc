@@ -16,7 +16,6 @@ func ListNftRequests(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewListNftRequestsRequest(r)
 	if err != nil {
-		logger.WithError(err).Error("failed to fetch list nft requests request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -30,7 +29,7 @@ func ListNftRequests(w http.ResponseWriter, r *http.Request) {
 
 	nftRequestsListResponse, err := responses.NewNftRequestListResponse(r, request, nftRequests)
 	if err != nil {
-		logger.WithError(err).Error("unable to form promocode list response")
+		logger.WithError(err).Error("unable to form nftRequests list response")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
@@ -38,23 +37,20 @@ func ListNftRequests(w http.ResponseWriter, r *http.Request) {
 }
 
 func applyNftRequestsQFilters(q data.NftRequestsQ, request *requests.ListNftRequestsRequest) data.NftRequestsQ {
-	if len(request.Status) > 0 {
+	if len(request.Status) != 0 {
 		q = q.FilterByStatus(request.Status...)
 	}
-	if len(request.NftId) > 0 {
-		q = q.FilterByNftId(request.NftId...)
-	}
-	if len(request.BookId) > 0 {
+	if len(request.BookId) != 0 {
 		q = q.FilterById(request.BookId...)
 	}
-	if len(request.ChainId) > 0 {
+	if len(request.ChainId) != 0 {
 		q = q.FilterByChainId(request.ChainId...)
 	}
-	if len(request.PayerAddress) > 0 {
-		q = q.FilterByPayerAddress(request.PayerAddress...)
+	if len(request.Requester) != 0 {
+		q = q.FilterByRequester(request.Requester...)
 	}
-	if len(request.CollectionAddress) > 0 {
-		q = q.FilterByCollectionAddress(request.CollectionAddress...)
+	if len(request.NftAddress) != 0 {
+		q = q.FilterByNftAddress(request.NftAddress...)
 	}
 
 	q = q.Page(request.OffsetPageParams)

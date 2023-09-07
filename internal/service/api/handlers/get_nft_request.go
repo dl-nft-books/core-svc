@@ -14,21 +14,19 @@ import (
 func GetNftRequestById(w http.ResponseWriter, r *http.Request) {
 	logger := helpers.Log(r)
 
-	request, err := requests.NewNftRequestByIdRequest(r)
+	idToGet, err := requests.NewNftRequestByIdRequest(r)
 	if err != nil {
-		logger.WithError(err).Error("failed to fetch get nft request request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
 
-	nftRequest, err := helpers.DB(r).NftRequests().FilterById(request.Id).Get()
+	nftRequest, err := helpers.DB(r).NftRequests().FilterById(idToGet).Get()
 	if err != nil {
 		logger.WithError(err).Error("failed to get nft request")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 	if nftRequest == nil {
-		logger.Error("nft request with such id is not found")
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}

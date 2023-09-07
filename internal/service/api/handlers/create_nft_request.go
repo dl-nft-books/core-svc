@@ -12,27 +12,9 @@ import (
 	"time"
 )
 
-const recreatingRequestInterval = time.Hour * 24
-
 func CreateNftRequest(w http.ResponseWriter, r *http.Request) {
 	request, err := requests.NewCreateNftRequestRequest(r)
 	if err != nil {
-		helpers.Log(r).WithError(err).Error("failed to fetch create nft request request")
-		ape.RenderErr(w, problems.BadRequest(err)...)
-		return
-	}
-	nftReq, err := helpers.DB(r).NftRequests().
-		FilterByPayerAddress(request.Data.Attributes.PayerAddress).
-		FilterByCollectionAddress(request.Data.Attributes.CollectionAddress).
-		FilterByNftId(request.Data.Attributes.NftId).Get()
-
-	if nftReq != nil && nftReq.Status != resources.RequestRejected {
-		helpers.Log(r).WithError(err).Error("request with such nft is already exists")
-		ape.RenderErr(w, problems.BadRequest(err)...)
-		return
-	}
-	if nftReq != nil && time.Now().Sub(nftReq.LastUpdatedAt) < recreatingRequestInterval {
-		helpers.Log(r).WithError(err).Error("request with such nft is already exists")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -44,14 +26,15 @@ func CreateNftRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	nftRequestID, err := helpers.DB(r).NftRequests().Insert(data.NftRequest{
-		PayerAddress:      request.Data.Attributes.PayerAddress,
-		CollectionAddress: request.Data.Attributes.CollectionAddress,
-		NftId:             request.Data.Attributes.NftId,
-		ChainId:           request.Data.Attributes.ChainId,
-		BookId:            int64(bookId),
-		Status:            resources.RequestPending,
-		CreatedAt:         time.Now(),
-		LastUpdatedAt:     time.Now(),
+		Requester:            request.Data.Attributes.Requester,
+		MarketplaceRequestId: request.Data.Attributes.MarketplaceRequestId,
+		NftAddress:           request.Data.Attributes.NftAddress,
+		NftId:                request.Data.Attributes.NftId,
+		ChainId:              request.Data.Attributes.ChainId,
+		BookId:               int64(bookId),
+		Status:               resources.RequestPending,
+		CreatedAt:            time.Now(),
+		LastUpdatedAt:        time.Now(),
 	})
 	if err != nil {
 		helpers.Log(r).WithError(err).Errorf("failed to create new nft request")
@@ -59,6 +42,7 @@ func CreateNftRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
 	ape.Render(w, resources.KeyResponse{
 		Data: resources.NewKeyInt64(nftRequestID, resources.NFT_REQUEST),
 	})

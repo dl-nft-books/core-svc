@@ -61,13 +61,13 @@ func (s *service) router() chi.Router {
 			})
 		})
 		r.Route("/nft-request", func(r chi.Router) {
-			r.Post("/", handlers.CreateNftRequest)
+			r.With(middlewares.CheckAccessToken).Post("/", handlers.CreateNftRequest)
 			r.Get("/", handlers.ListNftRequests)
 
 			r.Route("/{id}", func(r chi.Router) {
 				r.Get("/", handlers.GetNftRequestById)
 				r.With(middlewares.CheckAccessToken).Patch("/", handlers.UpdateNftRequestById)
-				r.Patch("/cancel", handlers.CancelNftRequestById)
+				r.With(middlewares.CheckAccessToken).Patch("/cancel", handlers.CancelNftRequestById)
 			})
 		})
 		r.Post("/buy/voucher", handlers.BuyWithVoucher)

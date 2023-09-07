@@ -7,15 +7,16 @@ import (
 )
 
 type NftRequest struct {
-	Id                int64                      `db:"id" structs:"-"`
-	PayerAddress      string                     `db:"payer_address" structs:"payer_address"`
-	CollectionAddress string                     `db:"collection_address" structs:"collection_address"`
-	NftId             int64                      `db:"nft_id" structs:"nft_id"`
-	ChainId           int64                      `db:"chain_id" structs:"chain_id"`
-	BookId            int64                      `db:"book_id" structs:"book_id"`
-	Status            resources.NftRequestStatus `db:"status" structs:"status"`
-	CreatedAt         time.Time                  `db:"created_at" structs:"created_at"`
-	LastUpdatedAt     time.Time                  `db:"last_updated_at" structs:"last_updated_at"`
+	Id                   int64                      `db:"id" structs:"-"`
+	Requester            string                     `db:"requester" structs:"requester"`
+	MarketplaceRequestId int64                      `db:"marketplace_request_id" structs:"marketplace_request_id"`
+	NftAddress           string                     `db:"nft_address" structs:"nft_address"`
+	NftId                int64                      `db:"nft_id" structs:"nft_id"`
+	ChainId              int64                      `db:"chain_id" structs:"chain_id"`
+	BookId               int64                      `db:"book_id" structs:"book_id"`
+	Status               resources.NftRequestStatus `db:"status" structs:"status"`
+	CreatedAt            time.Time                  `db:"created_at" structs:"created_at"`
+	LastUpdatedAt        time.Time                  `db:"last_updated_at" structs:"last_updated_at"`
 }
 
 func (nftRequest *NftRequest) Resource() resources.NftRequest {
@@ -23,13 +24,14 @@ func (nftRequest *NftRequest) Resource() resources.NftRequest {
 	return resources.NftRequest{
 		Key: resources.NewKeyInt64(nftRequest.Id, resources.PROMOCODE),
 		Attributes: resources.NftRequestAttributes{
-			ChainId:           nftRequest.ChainId,
-			CollectionAddress: nftRequest.CollectionAddress,
-			NftId:             nftRequest.NftId,
-			PayerAddress:      nftRequest.PayerAddress,
-			Status:            nftRequest.Status,
-			CreatedAt:         nftRequest.CreatedAt,
-			LastUpdatedAt:     nftRequest.LastUpdatedAt,
+			ChainId:              nftRequest.ChainId,
+			MarketplaceRequestId: nftRequest.MarketplaceRequestId,
+			NftAddress:           nftRequest.NftAddress,
+			NftId:                nftRequest.NftId,
+			Requester:            nftRequest.Requester,
+			Status:               nftRequest.Status,
+			CreatedAt:            nftRequest.CreatedAt,
+			LastUpdatedAt:        nftRequest.LastUpdatedAt,
 		},
 		Relationships: resources.NftRequestRelationships{
 			Book: resources.Relation{
@@ -56,8 +58,8 @@ type NftRequestsQ interface {
 	FilterByChainId(id ...int64) NftRequestsQ
 	FilterByBookId(id ...int64) NftRequestsQ
 	FilterByNftId(id ...int64) NftRequestsQ
-	FilterByCollectionAddress(address ...string) NftRequestsQ
-	FilterByPayerAddress(address ...string) NftRequestsQ
+	FilterByNftAddress(address ...string) NftRequestsQ
+	FilterByRequester(address ...string) NftRequestsQ
 
 	FilterUpdateById(id ...int64) NftRequestsQ
 	UpdateStatus(newStatus resources.NftRequestStatus) NftRequestsQ

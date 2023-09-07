@@ -1,0 +1,25 @@
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      description: Nft request id
+patch:
+  tags:
+    - Nft requests
+  summary: Cancel nft request
+  operationId: cancelNftRequest
+  responses:
+    '204':
+      description: Success
+    '400':
+      description: Invalid request
+    '401':
+      description: Unauthorized
+    '403':
+      description: Forbidden
+    '404':
+      description: Not found
+    '500':
+      description: Internal Error

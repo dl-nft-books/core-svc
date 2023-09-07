@@ -1,9 +1,11 @@
 package handlers
 
 import (
-	"fmt"
+	"errors"
+	"github.com/dl-nft-books/core-svc/internal/data"
+	"github.com/dl-nft-books/core-svc/internal/service/api/jsonerrors"
 	"github.com/dl-nft-books/core-svc/resources"
-	"github.com/spf13/cast"
+	"gitlab.com/distributed_lab/logan/v3"
 	"net/http"
 
 	"github.com/dl-nft-books/core-svc/internal/service/api/helpers"
@@ -17,32 +19,32 @@ func UpdateNftRequestById(w http.ResponseWriter, r *http.Request) {
 
 	request, err := requests.NewUpdateNftRequestRequest(r)
 	if err != nil {
-		logger.WithError(err).Error("failed to fetch update nft request request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
 
-	nftRequestId := cast.ToInt64(request.Data.ID)
-	nftRequest, err := helpers.DB(r).NftRequests().FilterById(nftRequestId).Get()
-	if err != nil {
-		logger.WithError(err).Error("failed to get nft request")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
-	if nftRequest == nil {
-		ape.RenderErr(w, problems.NotFound())
-		return
+	statusToSet := request.Data.Attributes.Status
+	if statusToSet == resources.RequestAccepted || statusToSet == resources.RequestRejected {
+		address := r.Context().Value("address").(string)
+		isMarketplaceManager, err := helpers.CheckMarketplacePerrmision(*helpers.Networker(r), address)
+		if err != nil {
+			helpers.Log(r).WithError(err).WithFields(logan.F{"account": address}).Debug("failed to check permissions")
+			ape.RenderErr(w, problems.InternalError())
+			return
+		}
+		if !isMarketplaceManager {
+			helpers.Log(r).WithFields(logan.F{"account": address}).Debug("you don't have permission to set the status")
+			ape.RenderErr(w, jsonerrors.WithDetails(problems.Forbidden(), jsonerrors.NotManagerAuthToken))
+			return
+		}
 	}
 
-	if nftRequest.Status != resources.RequestPending {
-		logger.WithError(err).Error(fmt.Sprintf("can not canceled nft request with status %v", nftRequest.Status))
-		ape.RenderErr(w, problems.Forbidden())
-		return
-	}
-	if err = helpers.DB(r).NftRequests().New().
-		UpdateStatus(request.Data.Attributes.Status).
-		FilterUpdateById(nftRequestId).
-		Update(); err != nil {
+	nftRequestsQ := helpers.DB(r).NftRequests().New()
+	if err = nftRequestsQ.UpdateStatus(request.Data.Attributes.Status).FilterUpdateById(request.ID).Update(); err != nil {
+		if errors.Is(err, data.NoRowsAffected) {
+			ape.RenderErr(w, problems.NotFound())
+			return
+		}
 		logger.WithError(err).Error("failed to update nft request")
 		ape.RenderErr(w, problems.InternalError())
 		return

@@ -24,7 +24,6 @@ import (
 func CreateTask(w http.ResponseWriter, r *http.Request) {
 	request, err := requests.NewCreateTaskRequest(r)
 	if err != nil {
-		helpers.Log(r).WithError(err).Error("failed to fetch create task request")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -100,6 +99,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
+
 	// Then creating task
 	createdTaskId, err := helpers.DB(r).Tasks().Insert(data.Task{
 		BookId:    bookId,
