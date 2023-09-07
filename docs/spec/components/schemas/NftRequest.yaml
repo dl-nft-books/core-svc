@@ -67,14 +67,11 @@ allOf:
             description: Last updated status time
       relationships:
         type: object
-        required:
-          - book
         properties:
           book:
-            description: "which book you want to get"
+            description: "which book nft request is sent for"
             type: object
             properties:
               data:
-                type: object
                 $ref: '#/components/schemas/BookKey'
 

@@ -14,7 +14,7 @@ const (
 )
 
 func (c *Connector) CreateNFTRequest(requestData models.CreateNftRequestRequest) error {
-	request := resources.CreateNftRequestResponse{
+	request := resources.CreateNftRequestRequest{
 		Data: resources.CreateNftRequest{
 			Attributes: resources.CreateNftRequestAttributes{
 				Requester:            requestData.Requester,

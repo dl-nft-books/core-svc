@@ -10,7 +10,7 @@ import (
 )
 
 type CreateNftRequestRequest struct {
-	resources.CreateNftRequestResponse
+	resources.CreateNftRequestRequest
 }
 
 func NewCreateNftRequestRequest(r *http.Request) (*CreateNftRequestRequest, error) {

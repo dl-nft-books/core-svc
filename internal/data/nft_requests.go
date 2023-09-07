@@ -34,7 +34,7 @@ func (nftRequest *NftRequest) Resource() resources.NftRequest {
 			LastUpdatedAt:        nftRequest.LastUpdatedAt,
 		},
 		Relationships: resources.NftRequestRelationships{
-			Book: resources.Relation{
+			Book: &resources.Relation{
 				Data: &book,
 			},
 		},

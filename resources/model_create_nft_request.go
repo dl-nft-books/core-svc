@@ -9,12 +9,12 @@ type CreateNftRequest struct {
 	Attributes    CreateNftRequestAttributes    `json:"attributes"`
 	Relationships CreateNftRequestRelationships `json:"relationships"`
 }
-type CreateNftRequestResponse struct {
+type CreateNftRequestRequest struct {
 	Data     CreateNftRequest `json:"data"`
 	Included Included         `json:"included"`
 }
 
-type CreateNftRequestListResponse struct {
+type CreateNftRequestListRequest struct {
 	Data     []CreateNftRequest `json:"data"`
 	Included Included           `json:"included"`
 	Links    *Links             `json:"links"`

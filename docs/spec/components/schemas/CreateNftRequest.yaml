@@ -1,6 +1,7 @@
 allOf:
-  - $ref: '#/components/schemas/NftRequestKey'
+  - $ref: '#/components/schemas/CreateNftRequestKey'
   - type: object
+    x-go-is-request: true
     required:
       - attributes
       - relationships

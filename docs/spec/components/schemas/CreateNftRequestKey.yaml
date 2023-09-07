@@ -1,0 +1,9 @@
+type: object
+required:
+  - type
+properties:
+  type:
+    type: string
+    example: create-nft-request
+    enum:
+      - create-nft-request
