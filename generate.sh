@@ -2,8 +2,8 @@
 
 GENERATOR_IMAGE=registry.gitlab.com/tokend/openapi-go-generator:69f004b58152c83f007b593cc13e94b81d7200da
 
-GENERATED="${GOPATH}/src/github.com/dl-nft-books/core-svc/resources"
-OPENAPI_DIR="${GOPATH}/src/github.com/dl-nft-books/core-svc/docs/web_deploy"
+GENERATED="${GOPATH}/src/core-svc/resources"
+OPENAPI_DIR="${GOPATH}/src/core-svc/docs/web_deploy"
 PACKAGE_NAME=resources
 
 function printHelp {

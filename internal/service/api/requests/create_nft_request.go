@@ -48,8 +48,8 @@ func (r CreateNftRequestRequest) validate() error {
 			&r.Data.Attributes.Requester,
 			validation.Required,
 		),
-		"data/relationships/book": validation.Validate(
-			&r.Data.Relationships.Book,
+		"data/attributes/book_id": validation.Validate(
+			&r.Data.Attributes.BookId,
 			validation.Required,
 		),
 	}.Filter()

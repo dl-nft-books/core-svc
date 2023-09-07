@@ -8,7 +8,6 @@ import (
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -19,19 +18,13 @@ func CreateNftRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bookId, err := strconv.Atoi(request.Data.Relationships.Book.Data.ID)
-	if err != nil {
-		helpers.Log(r).WithError(err).Error("failed to convert book_id")
-		ape.RenderErr(w, problems.BadRequest(err)...)
-		return
-	}
 	nftRequestID, err := helpers.DB(r).NftRequests().Insert(data.NftRequest{
 		Requester:            request.Data.Attributes.Requester,
 		MarketplaceRequestId: request.Data.Attributes.MarketplaceRequestId,
 		NftAddress:           request.Data.Attributes.NftAddress,
 		NftId:                request.Data.Attributes.NftId,
 		ChainId:              request.Data.Attributes.ChainId,
-		BookId:               int64(bookId),
+		BookId:               request.Data.Attributes.BookId,
 		Status:               resources.RequestPending,
 		CreatedAt:            time.Now(),
 		LastUpdatedAt:        time.Now(),

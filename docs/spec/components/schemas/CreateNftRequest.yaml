@@ -14,6 +14,7 @@ allOf:
           - nft_address
           - nft_id
           - chain_id
+          - book_id
         properties:
           requester:
             type: string
@@ -37,15 +38,8 @@ allOf:
             format: int64
             description: Id of network chain
             example: 5
-      relationships:
-        type: object
-        required:
-          - book
-        properties:
-          book:
-            description: "which book you want to get"
-            type: object
-            properties:
-              data:
-                type: object
-                $ref: '#/components/schemas/BookKey'
+          book_id:
+            type: integer
+            format: int64
+            description: Id of book to get
+            example: 5

@@ -13,16 +13,10 @@ const (
 	nftRequestEndpoint = "nft-request"
 )
 
-func (c *Connector) CreateNFTRequest(requestData models.CreateNftRequestRequest) error {
+func (c *Connector) CreateNFTRequest(requestData resources.CreateNftRequestAttributes) error {
 	request := resources.CreateNftRequestRequest{
 		Data: resources.CreateNftRequest{
-			Attributes: resources.CreateNftRequestAttributes{
-				Requester:            requestData.Requester,
-				ChainId:              requestData.ChainId,
-				NftAddress:           requestData.NftAddress,
-				NftId:                requestData.NftId,
-				MarketplaceRequestId: requestData.MarketplaceRequestId,
-			},
+			Attributes: requestData,
 		},
 	}
 

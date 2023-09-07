@@ -6,8 +6,7 @@ import (
 )
 
 type (
-	CreateNftRequestRequest resources.CreateNftRequestAttributes
-	ListNftRequestRequest   requests.ListNftRequestsRequest
-	ListNftRequestResponse  resources.NftRequestListResponse
-	NftRequestResponse      resources.NftRequestResponse
+	ListNftRequestRequest  requests.ListNftRequestsRequest
+	ListNftRequestResponse resources.NftRequestListResponse
+	NftRequestResponse     resources.NftRequestResponse
 )
