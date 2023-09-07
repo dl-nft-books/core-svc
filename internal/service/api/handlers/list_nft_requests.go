@@ -27,7 +27,7 @@ func ListNftRequests(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nftRequestsListResponse, err := responses.NewNftRequestListResponse(r, request, nftRequests)
+	nftRequestsListResponse, err := responses.NewNftRequestListResponse(r, request, nftRequests, *helpers.Booker(r))
 	if err != nil {
 		logger.WithError(err).Error("unable to form nftRequests list response")
 		ape.RenderErr(w, problems.InternalError())
