@@ -40,7 +40,7 @@ func UpdateNftRequestById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	nftRequestsQ := helpers.DB(r).NftRequests().New()
-	if err = nftRequestsQ.UpdateStatus(request.Data.Attributes.Status).FilterUpdateById(request.ID).Update(); err != nil {
+	if err = nftRequestsQ.UpdateStatus(request.Data.Attributes.Status).FilterUpdateByMarketplaceId(request.ID).Update(); err != nil {
 		if errors.Is(err, data.NoRowsAffected) {
 			ape.RenderErr(w, problems.NotFound())
 			return

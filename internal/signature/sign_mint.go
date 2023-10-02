@@ -2,11 +2,8 @@ package signature
 
 import (
 	"crypto/ecdsa"
-	"github.com/ethereum/go-ethereum/common"
-	"gitlab.com/distributed_lab/logan/v3"
-
 	"github.com/dl-nft-books/core-svc/internal/config"
-	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	signer "github.com/ethersphere/bee/pkg/crypto"
@@ -92,20 +89,4 @@ func signMintInfoByEIP712(privateKey *ecdsa.PrivateKey,
 	}
 
 	return signer.NewDefaultSigner(privateKey).SignTypedData(data)
-}
-
-func ParseSignatureParameters(signature []byte) (*Parameters, error) {
-	if len(signature) != 65 {
-		return nil, errors.From(wrongSignatureLengthErr, logan.F{
-			"signature": string(signature),
-		})
-	}
-
-	params := Parameters{}
-
-	params.R = hexutil.Encode(signature[:32])
-	params.S = hexutil.Encode(signature[32:64])
-	params.V = int8(signature[64])
-
-	return &params, nil
 }

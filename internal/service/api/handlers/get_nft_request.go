@@ -20,7 +20,7 @@ func GetNftRequestById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nftRequest, err := helpers.DB(r).NftRequests().FilterById(idToGet).Get()
+	nftRequest, err := helpers.DB(r).NftRequests().FilterByMarketplaceId(idToGet).Get()
 	if err != nil {
 		logger.WithError(err).Error("failed to get nft request")
 		ape.RenderErr(w, problems.InternalError())

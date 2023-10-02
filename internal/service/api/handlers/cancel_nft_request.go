@@ -35,7 +35,7 @@ func CancelNftRequestById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = nftRequestsQ.UpdateStatus(resources.RequestCanceled).FilterUpdateById(idToCancel).Update()
+	err = nftRequestsQ.UpdateStatus(resources.RequestCanceled).FilterUpdateByMarketplaceId(idToCancel).Update()
 	if err != nil {
 		logger.WithError(err).Error("failed to update nft request")
 		ape.RenderErr(w, problems.InternalError())

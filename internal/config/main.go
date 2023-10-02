@@ -30,6 +30,7 @@ type Config interface {
 
 	// Internal service configuration
 	MintConfigurator
+	AcceptConfigurator
 	TransactionConfigurator
 	Promocoder
 	TaskCleaner
@@ -52,6 +53,7 @@ type config struct {
 
 	// Internal service configuration
 	MintConfigurator
+	AcceptConfigurator
 	TransactionConfigurator
 	Promocoder
 	TaskCleaner
@@ -80,6 +82,7 @@ func New(getter kv.Getter) Config {
 
 		// Internal service configuration
 		MintConfigurator:        NewEthMinterConfigurator(getter),
+		AcceptConfigurator:      NewEthAccepterConfigurator(getter),
 		TransactionConfigurator: NewEthTransactionerConfigurator(getter),
 		Promocoder:              NewPromocoder(getter),
 		TaskCleaner:             NewTaskCleaner(getter),

@@ -42,6 +42,12 @@ mint: # Parameters for mint signature generation
   expiration: 5m
   chain_id: 137
 
+accept: # Parameters for accept signature generation
+  signer: b5b6c7a28756d349ac1e7f7bf11fa885ea7d761c498c6f9803ad6b03675ad4a9
+  precision: 18
+  expiration: 5m
+  chain_id: 137
+
 transaction:
   private_key: private_key
   gas_limit: 300000

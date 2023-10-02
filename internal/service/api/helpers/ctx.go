@@ -25,6 +25,7 @@ const (
 
 	// Custom configs
 	minterCtxKey
+	accepterCtxKey
 	transacterCtxKey
 	apiRestrictionsCtxKey
 	promocoderCtxKey
@@ -68,6 +69,17 @@ func CtxMinter(entry config.MintConfig) func(context.Context) context.Context {
 		return context.WithValue(ctx, minterCtxKey, entry)
 	}
 }
+
+func Accepter(r *http.Request) config.AcceptConfig {
+	return r.Context().Value(accepterCtxKey).(config.AcceptConfig)
+}
+
+func CtxAccepter(entry config.AcceptConfig) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, accepterCtxKey, entry)
+	}
+}
+
 func Transacter(r *http.Request) config.TransactionConfig {
 	return r.Context().Value(transacterCtxKey).(config.TransactionConfig)
 }

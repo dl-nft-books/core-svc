@@ -4,7 +4,7 @@ create table nft_requests
 (
     id bigserial primary key,
     requester char(42) not null default '',
-    marketplace_request_id bigint not null default 0,
+    marketplace_request_id bigint not null default 0 unique,
     nft_address char(42) not null default '',
     nft_id bigint not null default 0,
     book_id bigint not null default 0,

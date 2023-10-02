@@ -67,8 +67,13 @@ func (q *nftRequestsQ) FilterByChainId(id ...int64) data.NftRequestsQ {
 	return q
 }
 
-func (q *nftRequestsQ) FilterUpdateById(id ...int64) data.NftRequestsQ {
-	q.updater = q.updater.Where(squirrel.Eq{nftRequestsId: id})
+func (q *nftRequestsQ) FilterUpdateByMarketplaceId(id ...int64) data.NftRequestsQ {
+	q.updater = q.updater.Where(squirrel.Eq{nftRequestsMarketplaceRequestId: id})
+	return q
+}
+
+func (q *nftRequestsQ) FilterByMarketplaceId(id ...int64) data.NftRequestsQ {
+	q.selector = q.selector.Where(squirrel.Eq{nftRequestsMarketplaceRequestId: id})
 	return q
 }
 

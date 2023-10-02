@@ -8,7 +8,7 @@ parameters:
 patch:
   tags:
     - Nft requests
-  summary: Cancel nft request
+  summary: Cancel nft request by request id
   operationId: cancelNftRequest
   responses:
     '204':

@@ -22,6 +22,7 @@ func (s *service) router() chi.Router {
 
 			// Custom configs
 			helpers.CtxMinter(*s.ethMinterConfig),
+			helpers.CtxAccepter(*s.ethAccepterConfig),
 			helpers.CtxTransacter(*s.ethTransacterConfig),
 			helpers.CtxApiRestrictions(s.apiRestrictions),
 			helpers.CtxPromocoder(s.promocoder),

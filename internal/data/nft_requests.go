@@ -60,8 +60,9 @@ type NftRequestsQ interface {
 	FilterByNftId(id ...int64) NftRequestsQ
 	FilterByNftAddress(address ...string) NftRequestsQ
 	FilterByRequester(address ...string) NftRequestsQ
+	FilterByMarketplaceId(id ...int64) NftRequestsQ
 
-	FilterUpdateById(id ...int64) NftRequestsQ
+	FilterUpdateByMarketplaceId(id ...int64) NftRequestsQ
 	UpdateStatus(newStatus resources.NftRequestStatus) NftRequestsQ
 	Update() error
 }
