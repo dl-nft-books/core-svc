@@ -67,6 +67,8 @@ allOf:
             description: Last updated status time
       relationships:
         type: object
+        required:
+          - book
         properties:
           book:
             description: "which book nft request is sent for"

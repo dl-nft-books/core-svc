@@ -105,8 +105,9 @@ func SignMintByNft(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	signerDataConfig := helpers.SignererData(r)
 	// Signing the mint transaction
-	mintSignature, err := signature.SignMintInfo(&mintInfo, &domainData, &mintConfig)
+	mintSignature, err := signature.SignMintInfo(&mintInfo, &domainData, &signerDataConfig)
 	if err != nil {
 		logger.WithError(err).Error("failed to generate eip712 mint signature")
 		ape.RenderErr(w, problems.InternalError())

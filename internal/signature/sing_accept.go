@@ -17,12 +17,12 @@ import (
 func SignAcceptInfo(
 	acceptInfo *AcceptInfo,
 	domainData *EIP712DomainData,
-	config *config.AcceptConfig,
+	signerConfig *config.SignerDataConfig,
 ) (
 	[]byte,
 	error,
 ) {
-	privateKey := config.PrivateKey
+	privateKey := signerConfig.PrivateKey
 
 	// hashing token uri
 	tokenURIRaw := sha3.String(acceptInfo.TokenURI)

@@ -1,7 +1,6 @@
 package config
 
 import (
-	"crypto/ecdsa"
 	"time"
 
 	"gitlab.com/distributed_lab/figure"
@@ -14,9 +13,8 @@ type AcceptConfigurator interface {
 }
 
 type AcceptConfig struct {
-	PrivateKey *ecdsa.PrivateKey `fig:"signer,required"`
-	Precision  int               `fig:"precision,required"`
-	Expiration time.Duration     `fig:"expiration,required"`
+	Precision  int           `fig:"precision,required"`
+	Expiration time.Duration `fig:"expiration,required"`
 }
 
 type ethAccepterConfigurator struct {

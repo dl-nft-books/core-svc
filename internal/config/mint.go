@@ -1,7 +1,6 @@
 package config
 
 import (
-	"crypto/ecdsa"
 	"fmt"
 	"reflect"
 	"time"
@@ -18,9 +17,8 @@ type MintConfigurator interface {
 }
 
 type MintConfig struct {
-	PrivateKey *ecdsa.PrivateKey `fig:"signer,required"`
-	Precision  int               `fig:"precision,required"`
-	Expiration time.Duration     `fig:"expiration,required"`
+	Precision  int           `fig:"precision,required"`
+	Expiration time.Duration `fig:"expiration,required"`
 }
 
 type ethMinterConfigurator struct {

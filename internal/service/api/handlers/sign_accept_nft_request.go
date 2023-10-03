@@ -92,8 +92,9 @@ func SignAcceptNftRequest(w http.ResponseWriter, r *http.Request) {
 		EndTimestamp:   time.Now().Add(acceptConfig.Expiration).Unix(),
 	}
 
+	signerDataConfig := helpers.SignererData(r)
 	// Signing the mint transaction
-	acceptSignature, err := signature.SignAcceptInfo(&acceptInfo, &domainData, &acceptConfig)
+	acceptSignature, err := signature.SignAcceptInfo(&acceptInfo, &domainData, &signerDataConfig)
 	if err != nil {
 		logger.WithError(err).Error("failed to generate eip712 accept signature")
 		ape.RenderErr(w, problems.InternalError())
