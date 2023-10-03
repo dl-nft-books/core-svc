@@ -26,6 +26,7 @@ const (
 	// Custom configs
 	minterCtxKey
 	accepterCtxKey
+	signerDataCtxKey
 	transacterCtxKey
 	apiRestrictionsCtxKey
 	promocoderCtxKey
@@ -77,6 +78,16 @@ func Accepter(r *http.Request) config.AcceptConfig {
 func CtxAccepter(entry config.AcceptConfig) func(context.Context) context.Context {
 	return func(ctx context.Context) context.Context {
 		return context.WithValue(ctx, accepterCtxKey, entry)
+	}
+}
+
+func SignererData(r *http.Request) config.SignerDataConfig {
+	return r.Context().Value(signerDataCtxKey).(config.SignerDataConfig)
+}
+
+func CtxSignererData(entry config.SignerDataConfig) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, signerDataCtxKey, entry)
 	}
 }
 

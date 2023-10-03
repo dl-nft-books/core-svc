@@ -23,6 +23,7 @@ func (s *service) router() chi.Router {
 			// Custom configs
 			helpers.CtxMinter(*s.ethMinterConfig),
 			helpers.CtxAccepter(*s.ethAccepterConfig),
+			helpers.CtxSignererData(*s.ethSignererConfig),
 			helpers.CtxTransacter(*s.ethTransacterConfig),
 			helpers.CtxApiRestrictions(s.apiRestrictions),
 			helpers.CtxPromocoder(s.promocoder),
@@ -76,6 +77,7 @@ func (s *service) router() chi.Router {
 		r.Route("/signature", func(r chi.Router) {
 			r.Get("/mint", handlers.SignMint)
 			r.Get("/mint/nft", handlers.SignMintByNft)
+			r.Get("/accept", handlers.SignAcceptNftRequest)
 		})
 	})
 

@@ -31,7 +31,7 @@ get:
   tags:
     - Nft requests
   summary: List all nft requests
-  operationId: ListTasks
+  operationId: ListNftRequests
   parameters:
     - $ref: '#/components/parameters/pageNumberParam'
     - $ref: '#/components/parameters/pageLimitParam'

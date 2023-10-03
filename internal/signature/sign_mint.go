@@ -20,12 +20,12 @@ var (
 func SignMintInfo(
 	mintInfo *MintInfo,
 	domainData *EIP712DomainData,
-	config *config.MintConfig,
+	signerConfig *config.SignerDataConfig,
 ) (
 	[]byte,
 	error,
 ) {
-	privateKey := config.PrivateKey
+	privateKey := signerConfig.PrivateKey
 
 	// hashing token uri
 	tokenURIRaw := sha3.String(mintInfo.TokenURI)

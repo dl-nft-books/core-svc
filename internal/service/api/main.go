@@ -28,6 +28,7 @@ type service struct {
 	// Custom configs
 	ethMinterConfig     *config.MintConfig
 	ethAccepterConfig   *config.AcceptConfig
+	ethSignererConfig   *config.SignerDataConfig
 	ethTransacterConfig *config.TransactionConfig
 	apiRestrictions     config.ApiRestrictions
 	promocoder          config.PromocoderCfg
@@ -62,6 +63,7 @@ func newService(cfg config.Config) *service {
 		// Custom configs
 		ethMinterConfig:     cfg.MintConfig(),
 		ethAccepterConfig:   cfg.AcceptConfig(),
+		ethSignererConfig:   cfg.SignerDataConfig(),
 		ethTransacterConfig: cfg.TransactionConfig(),
 		apiRestrictions:     cfg.ApiRestrictions(),
 		promocoder:          cfg.PromocoderCfg(),
