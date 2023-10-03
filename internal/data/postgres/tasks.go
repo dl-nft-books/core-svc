@@ -8,6 +8,7 @@ import (
 	"github.com/dl-nft-books/core-svc/resources"
 	"github.com/fatih/structs"
 	"gitlab.com/distributed_lab/kit/pgdb"
+	"gitlab.com/distributed_lab/logan/v3/errors"
 	"time"
 )
 
@@ -81,8 +82,19 @@ func (q *tasksQ) Insert(task data.Task) (id int64, err error) {
 }
 
 func (q *tasksQ) Delete(id int64) error {
-	statement := squirrel.Delete(tasksTable).Where(squirrel.Eq{tasksId: id})
-	return q.database.Exec(statement)
+	result, err := q.database.ExecWithResult(squirrel.Delete(tasksTable).Where(squirrel.Eq{tasksId: id}))
+	if err != nil {
+		return errors.Wrap(err, "failed to delete task")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return errors.Wrap(err, "failed to get affected rows")
+	}
+	if rowsAffected == 0 {
+		return data.NoRowsAffected
+	}
+	return nil
 }
 
 func (q *tasksQ) UpdateBannerIpfsHash(newIpfsHash string) data.TasksQ {

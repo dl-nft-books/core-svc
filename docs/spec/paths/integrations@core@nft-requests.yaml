@@ -1,0 +1,116 @@
+post:
+  tags:
+    - Nft requests
+  summary: Create new nft request
+  operationId: CreateNftRequest
+  requestBody:
+    content:
+      applications/vnd.api+json:
+        schema:
+          type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/CreateNftRequest'
+  responses:
+    '201':
+      description: Nft request created successfully
+      content:
+        application/vnd.api+json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/NftRequestKey'
+    '400':
+      description: bad request
+    '500':
+      description: internal error
+get:
+  tags:
+    - Nft requests
+  summary: List all nft requests
+  operationId: ListNftRequests
+  parameters:
+    - $ref: '#/components/parameters/pageNumberParam'
+    - $ref: '#/components/parameters/pageLimitParam'
+    - name: 'filter[requester]'
+      in: query
+      description: Array of requesters to be filtered by
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    - name: 'filter[nft_address]'
+      in: query
+      description: Array of nft addresses to be filtered by
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    - name: 'filter[chain_id]'
+      in: query
+      description: Array of chain ids to be filtered by
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+    - name: 'filter[book_id]'
+      in: query
+      description: Array of book ids to be filtered by
+      explode: false
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+    - name: 'filter[status]'
+      in: query
+      description: Task states to be filtered with
+      explode: false
+      required: false
+      schema:
+        type: integer
+        enum:
+          - name: pending
+            value: 1
+          - name: canceled
+            value: 2
+          - name: rejected
+            value: 3
+          - name: accepted
+            value: 4
+          - name: exchanged
+            value: 5
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                description: Array of nft requests
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/NftRequest'
+                    - type: object
+              included:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+    '400':
+      $ref: '#/components/responses/BadRequestError'
+    '500':
+      $ref: '#/components/responses/InternalError'

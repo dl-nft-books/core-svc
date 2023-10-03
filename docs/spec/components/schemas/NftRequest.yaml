@@ -8,26 +8,31 @@ allOf:
       attributes:
         type: object
         required:
-          - payer_address
-          - collection_address
+          - requester
+          - marketplace_request_id
+          - nft_address
           - nft_id
           - chain_id
           - status
           - created_at
           - last_updated_at
         properties:
-          payer_address:
+          requester:
             type: string
             example: '0x77dADb3Ce09Ef981A008fDC1cE40D8A023E0925e'
-            description: Address of a user who bought a book
-          collection_address:
+            description: Address of a user who sent the request
+          marketplace_request_id:
+            type: integer
+            format: int64
+            description: Id of the request in the marketplace contract
+          nft_address:
             type: string
             example: '0x77dADb3Ce09Ef981A008fDC1cE40D8A023E0925e'
-            description: Address of a nft collection
+            description: Address of a nft collection which contains the nft to exchange
           nft_id:
             type: integer
             format: int64
-            description: Id of NFT
+            description: Id of NFT to exchange
             example: 123
           chain_id:
             type: integer
@@ -48,13 +53,13 @@ allOf:
                 value: 4
               - name: exchanged
                 value: 5
-            description: nft request status
+            description: Nft request status
             example: 2
           created_at:
             type: string
             format: time.Time
             example: '2006-01-02'
-            description: Timestamp when the user have purchased a book
+            description: Timestamp when the user has created the request a book
           last_updated_at:
             type: string
             format: time.Time
@@ -66,10 +71,9 @@ allOf:
           - book
         properties:
           book:
-            description: "which book you want to buy"
+            description: "which book nft request is sent for"
             type: object
             properties:
               data:
-                type: object
                 $ref: '#/components/schemas/BookKey'
 

@@ -22,6 +22,8 @@ func (s *service) router() chi.Router {
 
 			// Custom configs
 			helpers.CtxMinter(*s.ethMinterConfig),
+			helpers.CtxAccepter(*s.ethAccepterConfig),
+			helpers.CtxSignererData(*s.ethSignererConfig),
 			helpers.CtxTransacter(*s.ethTransacterConfig),
 			helpers.CtxApiRestrictions(s.apiRestrictions),
 			helpers.CtxPromocoder(s.promocoder),
@@ -61,13 +63,13 @@ func (s *service) router() chi.Router {
 			})
 		})
 		r.Route("/nft-request", func(r chi.Router) {
-			r.Post("/", handlers.CreateNftRequest)
+			r.With(middlewares.CheckAccessToken).Post("/", handlers.CreateNftRequest)
 			r.Get("/", handlers.ListNftRequests)
 
 			r.Route("/{id}", func(r chi.Router) {
 				r.Get("/", handlers.GetNftRequestById)
 				r.With(middlewares.CheckAccessToken).Patch("/", handlers.UpdateNftRequestById)
-				r.Patch("/cancel", handlers.CancelNftRequestById)
+				r.With(middlewares.CheckAccessToken).Patch("/cancel", handlers.CancelNftRequestById)
 			})
 		})
 		r.Post("/buy/voucher", handlers.BuyWithVoucher)
@@ -75,6 +77,7 @@ func (s *service) router() chi.Router {
 		r.Route("/signature", func(r chi.Router) {
 			r.Get("/mint", handlers.SignMint)
 			r.Get("/mint/nft", handlers.SignMintByNft)
+			r.Get("/accept", handlers.SignAcceptNftRequest)
 		})
 	})
 

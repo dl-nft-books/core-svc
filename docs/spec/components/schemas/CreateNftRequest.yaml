@@ -1,0 +1,45 @@
+allOf:
+  - $ref: '#/components/schemas/CreateNftRequestKey'
+  - type: object
+    x-go-is-request: true
+    required:
+      - attributes
+      - relationships
+    properties:
+      attributes:
+        type: object
+        required:
+          - requester
+          - marketplace_request_id
+          - nft_address
+          - nft_id
+          - chain_id
+          - book_id
+        properties:
+          requester:
+            type: string
+            example: '0x77dADb3Ce09Ef981A008fDC1cE40D8A023E0925e'
+            description: Address of a user who sent the request
+          marketplace_request_id:
+            type: integer
+            format: int64
+            description: Id of the request in the marketplace contract
+          nft_address:
+            type: string
+            example: '0x77dADb3Ce09Ef981A008fDC1cE40D8A023E0925e'
+            description: Address of a nft collection which contains the nft to exchange
+          nft_id:
+            type: integer
+            format: int64
+            description: Id of NFT to exchange
+            example: 123
+          chain_id:
+            type: integer
+            format: int64
+            description: Id of network chain
+            example: 5
+          book_id:
+            type: integer
+            format: int64
+            description: Id of book to get
+            example: 5

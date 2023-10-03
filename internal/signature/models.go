@@ -27,3 +27,13 @@ type MintInfo struct {
 
 	HashedTokenURI []byte
 }
+
+type AcceptInfo struct {
+	TokenRecipient string
+	RequestId      int64
+	TokenId        int64
+	TokenURI       string
+	EndTimestamp   int64
+
+	HashedTokenURI []byte
+}

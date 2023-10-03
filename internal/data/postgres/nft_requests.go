@@ -8,20 +8,22 @@ import (
 	"github.com/dl-nft-books/core-svc/resources"
 	"github.com/fatih/structs"
 	"gitlab.com/distributed_lab/kit/pgdb"
+	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
 const (
 	nftRequestsTable = "nft_requests"
 
-	nftRequestsId                = "id"
-	nftRequestsPayerAddress      = "payer_address"
-	nftRequestsCollectionAddress = "collection_address"
-	nftRequestsFloorPrice        = "floor_price"
-	nftRequestsNftId             = "nft_id"
-	nftRequestsChainId           = "chain_id"
-	nftRequestsBookId            = "book_id"
-	nftRequestsCreatedAt         = "created_at"
-	nftRequestsStatus            = "status"
+	nftRequestsId                   = "id"
+	nftRequestsRequester            = "requester"
+	nftRequestsMarketplaceRequestId = "marketplace_request_id"
+	nftRequestsNftAddress           = "nft_address"
+	nftRequestsNftId                = "nft_id"
+	nftRequestsChainId              = "chain_id"
+	nftRequestsBookId               = "book_id"
+	nftRequestsCreatedAt            = "created_at"
+	nftRequestsLastUpdatedAt        = "last_updated_at"
+	nftRequestsStatus               = "status"
 )
 
 type nftRequestsQ struct {
@@ -65,8 +67,13 @@ func (q *nftRequestsQ) FilterByChainId(id ...int64) data.NftRequestsQ {
 	return q
 }
 
-func (q *nftRequestsQ) FilterUpdateById(id ...int64) data.NftRequestsQ {
-	q.updater = q.updater.Where(squirrel.Eq{nftRequestsId: id})
+func (q *nftRequestsQ) FilterUpdateByMarketplaceId(id ...int64) data.NftRequestsQ {
+	q.updater = q.updater.Where(squirrel.Eq{nftRequestsMarketplaceRequestId: id})
+	return q
+}
+
+func (q *nftRequestsQ) FilterByMarketplaceId(id ...int64) data.NftRequestsQ {
+	q.selector = q.selector.Where(squirrel.Eq{nftRequestsMarketplaceRequestId: id})
 	return q
 }
 
@@ -80,13 +87,13 @@ func (q *nftRequestsQ) FilterByNftId(id ...int64) data.NftRequestsQ {
 	return q
 }
 
-func (q *nftRequestsQ) FilterByCollectionAddress(address ...string) data.NftRequestsQ {
-	q.selector = q.selector.Where(squirrel.Eq{nftRequestsCollectionAddress: address})
+func (q *nftRequestsQ) FilterByNftAddress(address ...string) data.NftRequestsQ {
+	q.selector = q.selector.Where(squirrel.Eq{nftRequestsNftAddress: address})
 	return q
 }
 
-func (q *nftRequestsQ) FilterByPayerAddress(address ...string) data.NftRequestsQ {
-	q.selector = q.selector.Where(squirrel.Eq{nftRequestsPayerAddress: address})
+func (q *nftRequestsQ) FilterByRequester(address ...string) data.NftRequestsQ {
+	q.selector = q.selector.Where(squirrel.Eq{nftRequestsRequester: address})
 	return q
 }
 
@@ -138,5 +145,17 @@ func (q *nftRequestsQ) UpdateStatus(newState resources.NftRequestStatus) data.Nf
 }
 
 func (q *nftRequestsQ) Update() error {
-	return q.database.Exec(q.updater)
+	result, err := q.database.ExecWithResult(q.updater)
+	if err != nil {
+		return errors.Wrap(err, "failed to update nft_request")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return errors.Wrap(err, "failed to get affected rows")
+	}
+	if rowsAffected == 0 {
+		return data.NoRowsAffected
+	}
+	return nil
 }

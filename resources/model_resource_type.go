@@ -12,6 +12,7 @@ const (
 	BOOKS              ResourceType = "books"
 	BOOK_NETWORK       ResourceType = "book-network"
 	BUY_WITH_VOUCHER   ResourceType = "buy-with-voucher"
+	CREATE_NFT_REQUEST ResourceType = "create-nft-request"
 	TASKS              ResourceType = "tasks"
 	FILES              ResourceType = "files"
 	NFT_PAYMENT        ResourceType = "nft-payment"

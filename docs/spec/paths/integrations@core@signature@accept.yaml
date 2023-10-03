@@ -1,0 +1,40 @@
+get:
+  tags:
+    - Signature
+  summary: Get accept signature
+  operationId: getAcceptSignature
+  parameters:
+    - name: 'filter[task_id]'
+      in: query
+      description: Task ID to be filtered with
+      explode: false
+      required: true
+      schema:
+        type: integer
+        format: int64
+    - name: 'filter[request_id]'
+      in: query
+      description: NFT request ID to be filtered with
+      explode: false
+      required: true
+      schema:
+        type: integer
+        format: int64
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Signature'
+    '400':
+      $ref: '#/components/responses/BadRequestError'
+    '403':
+      $ref: '#/components/responses/ForbiddenError'
+    '404':
+      $ref: '#/components/responses/NotFoundError'
+    '500':
+      $ref: '#/components/responses/InternalError'
